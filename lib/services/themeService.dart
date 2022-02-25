@@ -8,10 +8,10 @@ ThemeData light = ThemeData(
     scaffoldBackgroundColor: Color(0xfff1f1f1));
 
 ThemeData dark = ThemeData(
-  fontFamily: 'Poppins-Bold',
-  brightness: Brightness.dark,
-  primarySwatch: Colors.indigo,
-);
+    fontFamily: 'Poppins-Bold',
+    brightness: Brightness.dark,
+    primarySwatch: Colors.indigo,
+    scaffoldBackgroundColor: Colors.grey[900]);
 
 class ThemeService extends ChangeNotifier {
   final String key = "theme";

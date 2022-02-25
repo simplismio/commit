@@ -75,22 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(child: const Text('Show notifications')),
                 );
               }),
-          IconButton(
-              icon: const Icon(
-                Icons.add,
-                size: 35.0,
-              ),
-              onPressed: () {
-                showMaterialModalBottomSheet(
-                    expand: false,
-                    context: context,
-                    builder: (context) => Container(
-                        height: 300,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: NewCommitment(),
-                        )));
-              }),
         ],
       ),
       body: Scrollbar(
@@ -133,121 +117,122 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 5.0),
-              GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      Get.to(const DetailPage());
-                      //_lights = true;
-                    });
-                  },
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: _commitmentStream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Something went wrong');
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Text("Loading");
-                        }
-                        return ListView(
-                          shrinkWrap: true, // use this
-                          children: snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data()! as Map<String, dynamic>;
-                            return Builder(builder: (context) {
-                              return Dismissible(
-                                key: ValueKey<String>(document.id),
-                                background: Container(
-                                  color: Colors.blue,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.favorite,
-                                            color: Colors.white),
-                                        Text('Move to favorites',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ],
+              StreamBuilder<QuerySnapshot>(
+                  stream: _commitmentStream,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Something went wrong');
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text("Loading");
+                    }
+                    return ListView(
+                      shrinkWrap: true, // use this
+                      children:
+                          snapshot.data!.docs.map((DocumentSnapshot document) {
+                        Map<String, dynamic> data =
+                            document.data()! as Map<String, dynamic>;
+                        return Builder(builder: (context) {
+                          return Dismissible(
+                            key: ValueKey<String>(document.id),
+                            background: Container(
+                              color: Colors.blue,
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit, color: Colors.white),
+                                    SizedBox(width: 10),
+                                    Text('Edit commitment',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            secondaryBackground: Container(
+                              color: Colors.red,
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
                                     ),
+                                    SizedBox(width: 10),
+                                    Text('Delete commitment',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            confirmDismiss: (direction) async {
+                              if (direction == DismissDirection.startToEnd) {
+                                /// edit item
+                                showMaterialModalBottomSheet(
+                                    expand: false,
+                                    context: context,
+                                    builder: (context) => Container(
+                                        height: 300,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: EditCommitment(
+                                            commitmentKey: document.id,
+                                            currentDescription:
+                                                data['description'],
+                                          ),
+                                        )));
+                                return false;
+                              } else if (direction ==
+                                  DismissDirection.endToStart) {
+                                deleteCommitment(document.id);
+                                print('Remove item');
+                                return true;
+                              }
+                            },
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.to(DetailPage(
+                                    description: data['description']));
+                              },
+                              child: Card(
+                                margin: EdgeInsets.fromLTRB(5, 1, 5, 5),
+                                child: ListTile(
+                                  // leading: CachedNetworkImage(
+                                  //   imageUrl: "",
+                                  //   placeholder: (context, url) =>
+                                  //       const CircularProgressIndicator(),
+                                  //   errorWidget: (context, url, error) =>
+                                  //       const Icon(Icons.error),
+                                  // ),
+                                  title: Text(
+                                    data['description'],
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: 'Poppins-Bold',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: const Text(
+                                    'A sufficiently long subtitle warrants.',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontFamily: 'Poppins-Regular',
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                secondaryBackground: Container(
-                                  color: Colors.red,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Icon(Icons.delete, color: Colors.white),
-                                        Text('Move to trash',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                confirmDismiss: (direction) async {
-                                  if (direction ==
-                                      DismissDirection.startToEnd) {
-                                    /// edit item
-                                    showMaterialModalBottomSheet(
-                                        expand: false,
-                                        context: context,
-                                        builder: (context) => Container(
-                                            height: 300,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(15.0),
-                                              child: EditCommitment(
-                                                commitmentKey: document.id,
-                                                currentDescription:
-                                                    data['description'],
-                                              ),
-                                            )));
-                                    return false;
-                                  } else if (direction ==
-                                      DismissDirection.endToStart) {
-                                    deleteCommitment(document.id);
-                                    print('Remove item');
-                                    return true;
-                                  }
-                                },
-                                child: Card(
-                                  margin: EdgeInsets.all(5),
-                                  child: ListTile(
-                                    // leading: CachedNetworkImage(
-                                    //   imageUrl: "",
-                                    //   placeholder: (context, url) =>
-                                    //       const CircularProgressIndicator(),
-                                    //   errorWidget: (context, url, error) =>
-                                    //       const Icon(Icons.error),
-                                    // ),
-                                    title: Text(
-                                      data['description'],
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontFamily: 'Poppins-Bold',
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: const Text(
-                                      'A sufficiently long subtitle warrants .',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontFamily: 'Poppins-Regular',
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                          }).toList(),
-                        );
-                      })),
+                              ),
+                            ),
+                          );
+                        });
+                      }).toList(),
+                    );
+                  }),
             ],
           ),
         ),
@@ -286,7 +271,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Consumer<ThemeService>(
                 builder: (context, theme, child) => SwitchListTile(
-                  title: const Text("Dark Mode"),
+                  title: const Text(
+                    "Dark Mode",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   onChanged: (value) {
                     theme.toggleTheme();
                   },
@@ -296,7 +284,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Consumer<LocalAuthenticationService>(
                 builder: (context, localAuthentication, child) =>
                     SwitchListTile(
-                  title: const Text("Biometric Unlock"),
+                  title: const Text(
+                    "Biometric Unlock",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   onChanged: (value) {
                     localAuthentication.toggleBiometrics();
                   },
@@ -312,7 +303,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
                     child: GestureDetector(
-                        child: const Text("Log Out", style: const TextStyle()),
+                        child: const Text(
+                          "Log Out",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         onTap: () {
                           setState(() => loading = true);
                           AuthenticationService().signOut().then((result) {
@@ -328,7 +322,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       endDrawer: Drawer(
         child: Container(
-            child: Container(
           child: Stack(
             children: [
               Padding(
@@ -356,7 +349,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-        )),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add), //child widget inside this button
+        onPressed: () {
+          showMaterialModalBottomSheet(
+              expand: false,
+              context: context,
+              builder: (context) =>
+                  Container(height: 300, child: NewCommitment()));
+        },
       ),
     ));
   }
