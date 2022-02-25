@@ -11,7 +11,7 @@ class LoadingShare extends StatelessWidget {
           children: <Widget>[
             Padding(padding: EdgeInsets.only(top: 15.0)),
             Text(
-              "Start",
+              "Commit",
               style: TextStyle(fontSize: 25.0, color: Colors.grey),
             ),
             Padding(padding: EdgeInsets.only(top: 30.0)),

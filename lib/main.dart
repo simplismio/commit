@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:start/screens/iam/authorization.dart';
-import 'package:start/screens/iam/localAuthorization.dart';
-import 'package:start/screens/public/homeScreen.dart';
-import 'package:start/services/localAuthenticationService.dart';
+import 'package:commit/screens/iam/localAuthorization.dart';
+import 'package:commit/screens/public/homeScreen.dart';
+import 'package:commit/services/localAuthenticationService.dart';
 import 'package:provider/provider.dart';
-import 'package:start/services/themeService.dart';
+import 'package:commit/services/themeService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';

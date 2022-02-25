@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:start/screens/iam/authorization.dart';
-import 'package:start/services/authenticationService.dart';
-import 'package:start/shares/loadingShare.dart';
+import 'package:commit/screens/iam/authorization.dart';
+import 'package:commit/services/authenticationService.dart';
+import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {

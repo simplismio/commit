@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:start/screens/iam/authorization.dart';
-import 'package:start/screens/public/homeScreen.dart';
-import 'package:start/services/localAuthenticationService.dart';
+import 'package:commit/screens/iam/authorization.dart';
+import 'package:commit/screens/public/homeScreen.dart';
+import 'package:commit/services/localAuthenticationService.dart';
 
 class LocalAuthorization extends StatefulWidget {
   const LocalAuthorization({Key? key}) : super(key: key);

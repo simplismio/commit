@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:start/screens/iam/signupScreen.dart';
-import 'package:start/services/authenticationService.dart';
-import 'package:start/shares/loadingShare.dart';
+import 'package:commit/screens/iam/signupScreen.dart';
+import 'package:commit/services/authenticationService.dart';
+import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
