@@ -148,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (snapshot.hasError) {
                           return Text('Something went wrong');
                         }
-
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return Text("Loading");
@@ -159,124 +158,95 @@ class _HomeScreenState extends State<HomeScreen> {
                               .map((DocumentSnapshot document) {
                             Map<String, dynamic> data =
                                 document.data()! as Map<String, dynamic>;
-                            return ListTile(
-                              // leading: CachedNetworkImage(
-                              //   imageUrl: "",
-                              //   placeholder: (context, url) =>
-                              //       const CircularProgressIndicator(),
-                              //   errorWidget: (context, url, error) =>
-                              //       const Icon(Icons.error),
-                              // ),
-                              title: Text(
-                                data['description'],
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: 'Poppins-Bold',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: const Text(
-                                'A sufficiently long subtitle warrants .',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontFamily: 'Poppins-Regular',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              trailing: Wrap(
-                                children: <Widget>[
-                                  Column(
-                                    children: [
-                                      IconButton(
-                                          icon: const Icon(
-                                            Icons.edit,
-                                            size: 25.0,
-                                          ),
-                                          onPressed: () {
-                                            showMaterialModalBottomSheet(
-                                                expand: false,
-                                                context: context,
-                                                builder: (context) => Container(
-                                                    height: 300,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15.0),
-                                                      child: EditCommitment(
-                                                        commitmentKey:
-                                                            document.id,
-                                                        currentDescription:
-                                                            data['description'],
-                                                      ),
-                                                    )));
-                                          }),
-                                    ],
+                            return Builder(builder: (context) {
+                              return Dismissible(
+                                key: ValueKey<String>(document.id),
+                                background: Container(
+                                  color: Colors.blue,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.favorite,
+                                            color: Colors.white),
+                                        Text('Move to favorites',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ],
+                                    ),
                                   ),
-                                  Column(
-                                    children: [
-                                      IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            size: 25.0,
-                                          ),
-                                          onPressed: () {
-                                            deleteCommitment(document.id);
-                                          }),
-                                    ],
+                                ),
+                                secondaryBackground: Container(
+                                  color: Colors.red,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Icon(Icons.delete, color: Colors.white),
+                                        Text('Move to trash',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            );
+                                ),
+                                confirmDismiss: (direction) async {
+                                  if (direction ==
+                                      DismissDirection.startToEnd) {
+                                    /// edit item
+                                    showMaterialModalBottomSheet(
+                                        expand: false,
+                                        context: context,
+                                        builder: (context) => Container(
+                                            height: 300,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              child: EditCommitment(
+                                                commitmentKey: document.id,
+                                                currentDescription:
+                                                    data['description'],
+                                              ),
+                                            )));
+                                    return false;
+                                  } else if (direction ==
+                                      DismissDirection.endToStart) {
+                                    deleteCommitment(document.id);
+                                    print('Remove item');
+                                    return true;
+                                  }
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.all(5),
+                                  child: ListTile(
+                                    // leading: CachedNetworkImage(
+                                    //   imageUrl: "",
+                                    //   placeholder: (context, url) =>
+                                    //       const CircularProgressIndicator(),
+                                    //   errorWidget: (context, url, error) =>
+                                    //       const Icon(Icons.error),
+                                    // ),
+                                    title: Text(
+                                      data['description'],
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontFamily: 'Poppins-Bold',
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: const Text(
+                                      'A sufficiently long subtitle warrants .',
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontFamily: 'Poppins-Regular',
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
                           }).toList(),
                         );
-
-                        // child: Card(
-                        //     child: Padding(
-                        //   padding: const EdgeInsets.all(7.0),
-                        //   child: ListTile(
-                        //     leading: CachedNetworkImage(
-                        //       imageUrl: "",
-                        //       placeholder: (context, url) =>
-                        //           const CircularProgressIndicator(),
-                        //       errorWidget: (context, url, error) =>
-                        //           const Icon(Icons.error),
-                        //     ),
-                        //     title: const Text(
-                        //       "This is my ListTile",
-                        //       style: TextStyle(
-                        //           fontSize: 20,
-                        //           fontFamily: 'Poppins-Bold',
-                        //           fontWeight: FontWeight.bold),
-                        //     ),
-                        //     subtitle: const Text(
-                        //       'A sufficiently long subtitle warrants .',
-                        //       style: TextStyle(
-                        //           fontSize: 15,
-                        //           fontFamily: 'Poppins-Regular',
-                        //           fontWeight: FontWeight.bold),
-                        //     ),
-                        //     trailing: Wrap(
-                        //       spacing: 12, // space between two icons
-                        //       children: <Widget>[
-                        //         Column(
-                        //           children: [
-                        //             const Icon(Icons.mobile_friendly),
-                        //             const SizedBox(height: 5.0),
-                        //             const Icon(Icons.mobile_friendly),
-                        //           ],
-                        //         ), // icon-1
-                        //         Column(
-                        //           children: [
-                        //             const Icon(Icons.mobile_friendly),
-                        //             const SizedBox(height: 5.0),
-                        //             const Icon(Icons.mobile_friendly),
-                        //           ],
-                        //         ),
-
-                        //         // icon-2
-                        //       ],
-                        //     ),
-                        //     //isThreeLine: true,
-                        //   ),
-                        // )),
                       })),
             ],
           ),
