@@ -1,6 +1,8 @@
+// ignore_for_file: file_names
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:commit/screens/iam/authorization.dart';
-import 'package:commit/screens/public/homeScreen.dart';
 import 'package:commit/services/localAuthenticationService.dart';
 
 class LocalAuthorization extends StatefulWidget {
@@ -17,24 +19,34 @@ class _LocalAuthorizationState extends State<LocalAuthorization> {
 
   @override
   Widget build(BuildContext context) {
-    print('Loading local authentication status from memory: ' +
-        hasAuthenticated.toString());
+    if (kDebugMode) {
+      print('Loading local authentication status from memory: ' +
+          hasAuthenticated.toString());
+    }
 
     if (hasAuthenticated == true) {
-      print('The user is already authenticated using biometrics');
-      return Authorization();
+      if (kDebugMode) {
+        print('The user is already authenticated using biometrics');
+      }
+      return const Authorization();
     } else {
-      print('The user is not yet authenticated using biometrics');
+      if (kDebugMode) {
+        print('The user is not yet authenticated using biometrics');
+      }
 
       LocalAuthenticationService().authenticate().then((result) => setState(
           () => result == true
               ? hasAuthenticated = true
               : hasAuthenticated = false));
       if (hasAuthenticated == true) {
-        print('The user is now authenticated using biometrics');
-        return Authorization();
+        if (kDebugMode) {
+          print('The user is now authenticated using biometrics');
+        }
+        return const Authorization();
       } else {
-        print('The user could not be authenticated using biometrics');
+        if (kDebugMode) {
+          print('The user could not be authenticated using biometrics');
+        }
         //return LocalAuthorization();
         return Container();
       }

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, file_names, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors
 
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,6 @@ import 'package:commit/services/localAuthenticationService.dart';
 import 'package:commit/services/themeService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -39,8 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: Builder(
           builder: (context) {
@@ -71,8 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   expand: false,
                   context: context,
                   backgroundColor: Colors.white,
-                  builder: (context) =>
-                      Container(child: const Text('Show notifications')),
+                  builder: (context) => const Text('Show notifications'),
                 );
               }),
         ],
@@ -87,21 +84,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                     const Text(
                       "Just in",
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Poppins-Bold',
                       ),
                     ),
                     const Spacer(),
-                    Container(
-                      child: const Text(
-                        "Sort by",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Poppins-Bold',
-                        ),
+                    const Text(
+                      "Sort by",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins-Bold',
                       ),
                     ),
                     Builder(
@@ -122,10 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
-                      return Text('Something went wrong');
+                      return const Text('Something went wrong');
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text("Loading");
+                      return const Text("Loading");
                     }
                     return ListView(
                       shrinkWrap: true, // use this
@@ -141,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Icon(Icons.edit, color: Colors.white),
                                     SizedBox(width: 10),
                                     Text('Edit commitment',
@@ -158,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.delete,
                                       color: Colors.white,
@@ -178,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 showMaterialModalBottomSheet(
                                     expand: false,
                                     context: context,
-                                    builder: (context) => Container(
+                                    builder: (context) => SizedBox(
                                         height: 300,
                                         child: Padding(
                                           padding: const EdgeInsets.all(15.0),
@@ -192,9 +187,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               } else if (direction ==
                                   DismissDirection.endToStart) {
                                 deleteCommitment(document.id);
-                                print('Remove item');
+                                print('Remove commitment');
                                 return true;
                               }
+                              return null;
                             },
                             child: GestureDetector(
                               onTap: () {
@@ -202,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     description: data['description']));
                               },
                               child: Card(
-                                margin: EdgeInsets.fromLTRB(5, 1, 5, 5),
+                                margin: const EdgeInsets.fromLTRB(5, 1, 5, 5),
                                 child: ListTile(
                                   // leading: CachedNetworkImage(
                                   //   imageUrl: "",
@@ -213,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   // ),
                                   title: Text(
                                     data['description'],
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         fontFamily: 'Poppins-Bold',
                                         fontWeight: FontWeight.bold),
@@ -238,130 +234,124 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       drawer: Drawer(
-        child: Container(
-          child: Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  children: [
-                    const Positioned(
-                      top: 30.0,
-                      left: 90.0,
-                      child: CircleAvatar(
-                        radius: 50,
-                        child: const Icon(Icons.person,
-                            size: 60, color: Colors.grey),
-                      ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.width,
+              child: Stack(
+                children: const [
+                  Positioned(
+                    top: 30.0,
+                    left: 90.0,
+                    child: CircleAvatar(
+                      radius: 50,
+                      child: Icon(Icons.person, size: 60, color: Colors.grey),
                     ),
-                    const Positioned(
-                      child: const Text(
-                        'Username',
-                        style: TextStyle(
-                          fontFamily: 'Poppins-Bold',
-                          fontSize: 30,
-                        ),
-                      ),
-                      top: 150,
-                      left: 60,
-                    ),
-                  ],
-                ),
-              ),
-              Consumer<ThemeService>(
-                builder: (context, theme, child) => SwitchListTile(
-                  title: const Text(
-                    "Dark Mode",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  onChanged: (value) {
-                    theme.toggleTheme();
-                  },
-                  value: theme.darkTheme,
-                ),
-              ),
-              Consumer<LocalAuthenticationService>(
-                builder: (context, localAuthentication, child) =>
-                    SwitchListTile(
-                  title: const Text(
-                    "Biometric Unlock",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  onChanged: (value) {
-                    localAuthentication.toggleBiometrics();
-                  },
-                  value: localAuthentication.biometrics,
-                ),
-              ),
-              const Divider(
-                color: Colors.white,
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
-                    child: GestureDetector(
-                        child: const Text(
-                          "Log Out",
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        onTap: () {
-                          setState(() => loading = true);
-                          AuthenticationService().signOut().then((result) {
-                            Get.back();
-                          });
-                        }),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      endDrawer: Drawer(
-        child: Container(
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 50),
-                    const Text(
-                      'Sort',
-                      style: const TextStyle(
+                  Positioned(
+                    child: Text(
+                      'Username',
+                      style: TextStyle(
                         fontFamily: 'Poppins-Bold',
                         fontSize: 30,
                       ),
                     ),
-                    const SizedBox(height: 50),
-                    const Text(
-                      'Sort',
-                      style: const TextStyle(
-                        fontFamily: 'Poppins-Regular',
-                        fontSize: 20,
-                      ),
-                    )
-                  ],
-                ),
+                    top: 150,
+                    left: 60,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Consumer<ThemeService>(
+              builder: (context, theme, child) => SwitchListTile(
+                title: const Text(
+                  "Dark Mode",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onChanged: (value) {
+                  theme.toggleTheme();
+                },
+                value: theme.darkTheme,
+              ),
+            ),
+            Consumer<LocalAuthenticationService>(
+              builder: (context, localAuthentication, child) => SwitchListTile(
+                title: const Text(
+                  "Biometric Unlock",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onChanged: (value) {
+                  localAuthentication.toggleBiometrics();
+                },
+                value: localAuthentication.biometrics,
+              ),
+            ),
+            const Divider(
+              color: Colors.white,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
+                  child: GestureDetector(
+                      child: const Text(
+                        "Log Out",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () {
+                        setState(() => loading = true);
+                        AuthenticationService().signOut().then((result) {
+                          Get.back();
+                        });
+                      }),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+      endDrawer: Drawer(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: const [
+                  SizedBox(height: 50),
+                  Text(
+                    'Sort',
+                    style: TextStyle(
+                      fontFamily: 'Poppins-Bold',
+                      fontSize: 30,
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                  Text(
+                    'Sort',
+                    style: TextStyle(
+                      fontFamily: 'Poppins-Regular',
+                      fontSize: 20,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add), //child widget inside this button
+        child: const Icon(Icons.add), //child widget inside this button
         onPressed: () {
           showMaterialModalBottomSheet(
               expand: false,
               context: context,
               builder: (context) =>
-                  Container(height: 300, child: NewCommitment()));
+                  const SizedBox(height: 300, child: NewCommitment()));
         },
       ),
-    ));
+    );
   }
 }
 
@@ -421,13 +411,12 @@ class _NewCommitmentState extends State<NewCommitment> {
                             setState(() => description = val);
                           }),
                       const SizedBox(height: 10.0),
-                      ButtonTheme(
-                        minWidth: 330.0,
-                        height: 50.0,
+                      SizedBox(
+                        width: 300,
                         child: ElevatedButton(
                           child: const Text(
                             "Add commitment",
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -505,7 +494,6 @@ class _EditCommitmentState extends State<EditCommitment> {
                           initialValue: widget.currentDescription,
                           autofocus: true,
                           validator: (String? value) {
-                            //print(value.length);
                             return (value != null && value.length < 2)
                                 ? 'Please provide a valid commitment.'
                                 : null;
@@ -514,13 +502,12 @@ class _EditCommitmentState extends State<EditCommitment> {
                             setState(() => description = val);
                           }),
                       const SizedBox(height: 10.0),
-                      ButtonTheme(
-                        minWidth: 330.0,
-                        height: 50.0,
+                      SizedBox(
+                        width: 300,
                         child: ElevatedButton(
                           child: const Text(
                             "Edit commitment",
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),

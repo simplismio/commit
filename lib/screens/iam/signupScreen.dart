@@ -1,3 +1,6 @@
+// ignore: file_names
+// ignore_for_file: file_names, duplicate_ignore, prefer_const_constructors
+
 import 'package:get/get.dart';
 import 'package:commit/screens/iam/authorization.dart';
 import 'package:commit/services/authenticationService.dart';
@@ -34,8 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   }),
               elevation: 0.0,
               centerTitle: true,
-              title: const Text('Sign-Up',
-                  style: const TextStyle(color: Colors.white)),
+              title:
+                  const Text('Sign-Up', style: TextStyle(color: Colors.white)),
             ),
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
@@ -82,9 +85,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             //_showConfirmDialog(context);
                           }),
                       const SizedBox(height: 10.0),
-                      ButtonTheme(
-                        minWidth: 330.0,
-                        height: 50.0,
+                      SizedBox(
+                        width: 300,
                         child: ElevatedButton(
                           child: const Text(
                             "Sign-Up",
@@ -103,13 +105,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              Authorization()));
+                                              const Authorization()));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                     content: Text(
                                       result,
-                                      style: TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                     ),
                                   ));
                                 }
