@@ -1,4 +1,4 @@
-package com.joost.start
+package com.joost.commit
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterFragmentActivity

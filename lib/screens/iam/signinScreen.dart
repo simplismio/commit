@@ -149,10 +149,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           IconButton(
                               icon: FaIcon(FontAwesomeIcons.google),
                               onPressed: () {
-                                // setState(() => loading = true);
-                                // AuthenticationService()
-                                //     .signInWithGoogle()
-                                //     .then((result) {});
+                                setState(() => loading = true);
+                                AuthenticationService()
+                                    .signInWithGoogle()
+                                    .then((result) {});
                               }),
                           (kIsWeb && Platform.isIOS) ? Spacer() : Container(),
                           (kIsWeb && Platform.isIOS)
