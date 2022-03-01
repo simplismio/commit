@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors
 
+import 'package:commit/services/dataService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 import 'package:commit/screens/public/detailPage.dart';
@@ -20,21 +21,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool loading = false;
-
-  final Stream<QuerySnapshot> _commitmentStream = FirebaseFirestore.instance
-      .collection('commitments')
-      .snapshots(includeMetadataChanges: true);
-
-  CollectionReference commitments =
-      FirebaseFirestore.instance.collection('commitments');
-
-  Future<void> deleteCommitment(key) {
-    return commitments
-        .doc(key)
-        .delete()
-        .then((value) => print("Commitment deleted"))
-        .catchError((error) => print("Failed to delete user: $error"));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,14 +99,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               StreamBuilder<QuerySnapshot>(
-                  stream: _commitmentStream,
+                  stream: DataService().commitmentStream,
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
                       return const Text('Something went wrong');
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text("Loading");
+                      return const Text('Loading');
                     }
                     return ListView(
                       shrinkWrap: true, // use this
@@ -186,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return false;
                               } else if (direction ==
                                   DismissDirection.endToStart) {
-                                deleteCommitment(document.id);
+                                DataService().deleteCommitment(document.id);
                                 print('Remove commitment');
                                 return true;
                               }
@@ -272,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onChanged: (value) {
                   theme.toggleTheme();
                 },
-                value: theme.darkTheme,
+                value: theme.darkTheme != false ? true : false,
               ),
             ),
             Consumer<LocalAuthenticationService>(
@@ -371,16 +357,6 @@ class _NewCommitmentState extends State<NewCommitment> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference commitments =
-        FirebaseFirestore.instance.collection('commitments');
-
-    Future<void> addCommitment() {
-      return commitments
-          .add({'description': description})
-          .then((value) => print("Commitment Added"))
-          .catchError((error) => print("Failed to add user: $error"));
-    }
-
     return loading
         ? LoadingShare()
         : Scaffold(
@@ -423,7 +399,7 @@ class _NewCommitmentState extends State<NewCommitment> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              addCommitment();
+                              DataService().addCommitment(description);
                               Get.back();
                             } else {
                               setState(() {
@@ -461,17 +437,6 @@ class _EditCommitmentState extends State<EditCommitment> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference commitments =
-        FirebaseFirestore.instance.collection('commitments');
-
-    Future<void> editCommitment() {
-      return commitments
-          .doc(widget.commitmentKey)
-          .update({'description': description})
-          .then((value) => print("Commitment updated"))
-          .catchError((error) => print("Failed to merge data: $error"));
-    }
-
     return loading
         ? LoadingShare()
         : Scaffold(
@@ -514,7 +479,8 @@ class _EditCommitmentState extends State<EditCommitment> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              editCommitment();
+                              DataService().editCommitment(
+                                  widget.commitmentKey, description);
                               Get.back();
                             } else {
                               setState(() {

@@ -24,7 +24,7 @@ class ThemeService extends ChangeNotifier {
   }
 
   toggleTheme() {
-    _darkTheme = !_darkTheme;
+    _darkTheme = _darkTheme;
     _saveToPrefs();
     notifyListeners();
   }
@@ -42,6 +42,6 @@ class ThemeService extends ChangeNotifier {
 
   _saveToPrefs() async {
     SharedPreferences _pref = await _initPrefs();
-    _pref.setBool(key, _darkTheme);
+    _pref.setBool(key, _darkTheme!);
   }
 }

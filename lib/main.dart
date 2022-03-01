@@ -1,7 +1,8 @@
+import 'package:commit/pages/RootPage.dart';
+import 'package:commit/shares/loadingShare.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:commit/screens/iam/localAuthorization.dart';
-import 'package:commit/screens/public/homeScreen.dart';
+import 'package:get/get.dart';
 import 'package:commit/services/localAuthenticationService.dart';
 import 'package:provider/provider.dart';
 import 'package:commit/services/themeService.dart';
@@ -25,15 +26,23 @@ Future<void> main() async {
   // }
 
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    startTime();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -43,22 +52,22 @@ class _MyAppState extends State<MyApp> {
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {
-          print('The theme is dark: ' + theme.darkTheme.toString());
+          if (kDebugMode) {
+            print('The theme is dark: ' + theme.darkTheme.toString());
+          }
           return GetMaterialApp(
               title: "Flutter Provider",
               theme: theme.darkTheme ? dark : light,
-              home: SafeArea(child: Scaffold(body:
-                  Consumer<LocalAuthenticationService>(builder: (context,
-                      LocalAuthenticationService localAuthentication, child) {
-                print('Starting app, local user authentication status: ' +
-                    localAuthentication.biometrics.toString());
-
-                if (localAuthentication.biometrics == true) {
-                  return LocalAuthorization();
-                } else {
-                  return HomeScreen();
-                }
-              }))));
+              home: SafeArea(child: Scaffold(body: LoadingShare())));
         }));
+  }
+
+  startTime() async {
+    var duration = new Duration(seconds: 3);
+    return Timer(duration, route);
+  }
+
+  void route() {
+    Get.offAll(RootPage());
   }
 }

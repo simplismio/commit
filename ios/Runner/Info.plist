@@ -49,10 +49,34 @@
 				<string>Editor</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
+					<string>fb356687176318853</string>
 					<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
 					<string>com.googleusercontent.apps.236126728561-cnqhpmt1gpcf4u8ih9oo30n58f0fcqnr</string>
 				</array>
 			</dict>
+		</array>
+		<key>FacebookAppID</key>
+		<string>356687176318853</string>
+		<key>FacebookClientToken</key>
+		<string>CLIENT-TOKEN</string>
+		<key>FacebookDisplayName</key>
+		<string>Commit</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>fbapi</string>
+			<string>fbapi20130214</string>
+			<string>fbapi20130410</string>
+			<string>fbapi20130702</string>
+			<string>fbapi20131010</string>
+			<string>fbapi20131219</string>
+			<string>fbapi20140410</string>
+			<string>fbapi20140116</string>
+			<string>fbapi20150313</string>
+			<string>fbapi20150629</string>
+			<string>fbapi20160328</string>
+			<string>fb-messenger-share-api</string>
+			<string>fbauth2</string>
+			<string>fbshareextension</string>
 		</array>
 		<!-- End of the Google Sign-in Section -->
 		<key>UIViewControllerBasedStatusBarAppearance</key>

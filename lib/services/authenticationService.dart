@@ -2,7 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 //import 'package:crypto/crypto.dart';
@@ -60,16 +60,16 @@ class AuthenticationService {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  // Future<UserCredential?> signInWithFacebook() async {
-  //   final LoginResult result = await FacebookAuth.instance.login();
-  //   if (result.status == LoginStatus.success) {
-  //     print('FACEBOOK success');
-  //     final OAuthCredential credential =
-  //         FacebookAuthProvider.credential(result.accessToken!.token);
-  //     return await FirebaseAuth.instance.signInWithCredential(credential);
-  //   }
-  //   return null;
-  // }
+  Future<UserCredential?> signInWithFacebook() async {
+    final LoginResult result = await FacebookAuth.instance.login();
+    if (result.status == LoginStatus.success) {
+      print('FACEBOOK success');
+      final OAuthCredential credential =
+          FacebookAuthProvider.credential(result.accessToken!.token);
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    }
+    return null;
+  }
 
   // String generateNonce([int length = 32]) {
   //   final charset =

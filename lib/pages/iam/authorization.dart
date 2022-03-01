@@ -1,5 +1,5 @@
-import 'package:commit/screens/iam/signinScreen.dart';
-import 'package:commit/screens/public/homeScreen.dart';
+import 'package:commit/pages/iam/signinScreen.dart';
+import 'package:commit/pages/public/homeScreen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:commit/shares/loadingShare.dart';

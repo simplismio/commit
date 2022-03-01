@@ -85,7 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 builder: (context) => const SizedBox(
                                     height: 300, child: ForgotPassword()));
                           }),
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 10.0),
                       SizedBox(
                         width: 300,
                         child: ElevatedButton(
@@ -129,10 +129,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           onTap: () {
                             Get.to(const SignUpScreen());
                           }),
-                      const SizedBox(height: 5.0),
-                      const Divider(),
-                      SizedBox(height: 30.0),
-                      Text('Social Sign In'),
                       SizedBox(height: 10.0),
                       Row(
                         children: [
@@ -140,10 +136,10 @@ class _SignInScreenState extends State<SignInScreen> {
                           IconButton(
                               icon: FaIcon(FontAwesomeIcons.facebookSquare),
                               onPressed: () {
-                                // setState(() => loading = true);
-                                // AuthenticationService()
-                                //     .signInWithFacebook()
-                                //     .then((result) {});
+                                setState(() => loading = true);
+                                AuthenticationService()
+                                    .signInWithFacebook()
+                                    .then((result) {});
                               }),
                           Spacer(),
                           IconButton(
@@ -154,8 +150,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                     .signInWithGoogle()
                                     .then((result) {});
                               }),
-                          (kIsWeb && Platform.isIOS) ? Spacer() : Container(),
-                          (kIsWeb && Platform.isIOS)
+                          (Platform.isIOS) ? Spacer() : Container(),
+                          (kIsWeb || Platform.isIOS)
                               ? IconButton(
                                   icon: FaIcon(FontAwesomeIcons.apple),
                                   onPressed: () {

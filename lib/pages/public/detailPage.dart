@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:commit/screens/public/homeScreen.dart';
@@ -45,17 +47,14 @@ class _DetailPageState extends State<DetailPage> {
                   expand: false,
                   context: context,
                   backgroundColor: Colors.white,
-                  builder: (context) =>
-                      Container(child: Text('Show notifications')),
+                  builder: (context) => const Text('Show notifications'),
                 );
               }),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Container(
-          child: Text(widget.description),
-        ),
+        child: Text(widget.description),
       ),
     );
   }

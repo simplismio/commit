@@ -28,14 +28,4 @@ class LoadingShare extends StatelessWidget {
       ),
     );
   }
-  //   return Container(
-  //     color: Colors.grey[200],
-  //     child: Center(
-  //       child: SpinKitThreeBounce(
-  //         color: Colors.black,
-  //         size: 50.0,
-  //       ),
-  //     ),
-  //   );
-  // }
 }

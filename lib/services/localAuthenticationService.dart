@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: file_names
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
@@ -22,7 +24,9 @@ class LocalAuthenticationService extends ChangeNotifier {
       }
     } on PlatformException catch (e) {
       canCheckBiometrics = false;
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -39,7 +43,9 @@ class LocalAuthenticationService extends ChangeNotifier {
         return false;
       }
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return;
     }
   }
