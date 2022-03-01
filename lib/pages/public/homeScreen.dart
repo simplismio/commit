@@ -3,7 +3,7 @@
 import 'package:commit/services/dataService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
-import 'package:commit/screens/public/detailPage.dart';
+import 'package:commit/pages/public/detailPage.dart';
 import 'package:commit/services/authenticationService.dart';
 import 'package:commit/services/localAuthenticationService.dart';
 import 'package:commit/services/themeService.dart';
@@ -52,11 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onPressed: () {
                 showMaterialModalBottomSheet(
-                  expand: false,
-                  context: context,
-                  backgroundColor: Colors.white,
-                  builder: (context) => const Text('Show notifications'),
-                );
+                    expand: false,
+                    context: context,
+                    builder: (context) => const SizedBox(
+                        height: 300, child: Text('Notifications')));
               }),
         ],
       ),
@@ -106,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return const Text('Something went wrong');
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text('Loading');
+                      return const LoadingShare();
                     }
                     return ListView(
                       shrinkWrap: true, // use this
@@ -222,33 +221,49 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.3,
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: const [
-                  Positioned(
-                    top: 30.0,
-                    left: 90.0,
-                    child: CircleAvatar(
-                      radius: 50,
-                      child: Icon(Icons.person, size: 60, color: Colors.grey),
-                    ),
+            SizedBox(height: 100),
+            Container(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                child: Text(
+                  'Settings',
+                  style: TextStyle(
+                    fontFamily: 'Poppins-Bold',
+                    fontSize: 30,
                   ),
-                  Positioned(
-                    child: Text(
-                      'Username',
-                      style: TextStyle(
-                        fontFamily: 'Poppins-Bold',
-                        fontSize: 30,
-                      ),
-                    ),
-                    top: 150,
-                    left: 60,
-                  ),
-                ],
+                ),
               ),
             ),
+            SizedBox(height: 100),
+
+            // SizedBox(
+            //   height: MediaQuery.of(context).size.height * 0.3,
+            //   width: MediaQuery.of(context).size.width,
+            //   child: Stack(
+            //     children: const [
+            //       Positioned(
+            //         top: 30.0,
+            //         left: 90.0,
+            //         child: CircleAvatar(
+            //           radius: 50,
+            //           child: Icon(Icons.person, size: 60, color: Colors.grey),
+            //         ),
+            //       ),
+            //       Positioned(
+            //         child: Text(
+            //           'Username',
+            //           style: TextStyle(
+            //             fontFamily: 'Poppins-Bold',
+            //             fontSize: 30,
+            //           ),
+            //         ),
+            //         top: 150,
+            //         left: 60,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Consumer<ThemeService>(
               builder: (context, theme, child) => SwitchListTile(
                 title: const Text(
@@ -258,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onChanged: (value) {
                   theme.toggleTheme();
                 },
-                value: theme.darkTheme != false ? true : false,
+                value: theme.darkTheme,
               ),
             ),
             Consumer<LocalAuthenticationService>(
@@ -276,22 +291,27 @@ class _HomeScreenState extends State<HomeScreen> {
             const Divider(
               color: Colors.white,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
-                  child: GestureDetector(
+                  child: SizedBox(
+                    width: 100,
+                    child: ElevatedButton(
                       child: const Text(
-                        "Log Out",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        "Log out",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
-                      onTap: () {
+                      onPressed: () async {
                         setState(() => loading = true);
                         AuthenticationService().signOut().then((result) {
                           Get.back();
                         });
-                      }),
+                      },
+                    ),
+                  ),
                 )
               ],
             ),

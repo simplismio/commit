@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:commit/screens/public/homeScreen.dart';
+import 'package:commit/pages/public/homeScreen.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DetailPage extends StatefulWidget {

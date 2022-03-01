@@ -3,7 +3,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:commit/screens/iam/signupScreen.dart';
+import 'package:commit/pages/iam/signupScreen.dart';
 import 'package:commit/services/authenticationService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +56,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           validator: (String? value) {
                             //print(value.length);
                             return (value != null && value.length < 2)
-                                ? 'Please provide a valid number.'
+                                ? 'Please provide a valid email.'
                                 : null;
                           },
                           onChanged: (val) {
@@ -69,7 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           autofocus: true,
                           validator: (String? value) {
                             return (value != null && value.length < 2)
-                                ? 'Please provide a valid number.'
+                                ? 'Please provide a valid password.'
                                 : null;
                           },
                           onChanged: (val) {

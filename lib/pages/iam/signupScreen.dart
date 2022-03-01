@@ -2,7 +2,7 @@
 // ignore_for_file: file_names, duplicate_ignore, prefer_const_constructors
 
 import 'package:get/get.dart';
-import 'package:commit/screens/iam/authorization.dart';
+import 'package:commit/pages/iam/authorization.dart';
 import 'package:commit/services/authenticationService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';

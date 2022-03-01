@@ -8,10 +8,10 @@ ThemeData light = ThemeData(
     scaffoldBackgroundColor: Color(0xfff1f1f1));
 
 ThemeData dark = ThemeData(
-    fontFamily: 'Poppins-Bold',
-    brightness: Brightness.dark,
-    primarySwatch: Colors.indigo,
-    scaffoldBackgroundColor: Colors.grey[900]);
+  fontFamily: 'Poppins-Bold',
+  brightness: Brightness.dark,
+  primarySwatch: Colors.indigo,
+);
 
 class ThemeService extends ChangeNotifier {
   final String key = "theme";
@@ -24,7 +24,7 @@ class ThemeService extends ChangeNotifier {
   }
 
   toggleTheme() {
-    _darkTheme = _darkTheme;
+    _darkTheme = !_darkTheme;
     _saveToPrefs();
     notifyListeners();
   }
@@ -42,6 +42,6 @@ class ThemeService extends ChangeNotifier {
 
   _saveToPrefs() async {
     SharedPreferences _pref = await _initPrefs();
-    _pref.setBool(key, _darkTheme!);
+    _pref.setBool(key, _darkTheme);
   }
 }

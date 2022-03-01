@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:commit/screens/iam/authorization.dart';
+import 'package:commit/pages/iam/authorization.dart';
 import 'package:commit/services/localAuthenticationService.dart';
 
 class LocalAuthorization extends StatefulWidget {

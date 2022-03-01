@@ -1,5 +1,5 @@
-import 'package:commit/screens/iam/localAuthorization.dart';
-import 'package:commit/screens/public/homeScreen.dart';
+import 'package:commit/pages/iam/localAuthorization.dart';
+import 'package:commit/pages/public/homeScreen.dart';
 import 'package:commit/services/localAuthenticationService.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
