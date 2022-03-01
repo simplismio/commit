@@ -155,10 +155,10 @@ class _SignInScreenState extends State<SignInScreen> {
                               ? IconButton(
                                   icon: FaIcon(FontAwesomeIcons.apple),
                                   onPressed: () {
-                                    // setState(() => loading = true);
-                                    // AuthenticationService()
-                                    //     .signInWithApple()
-                                    //     .then((result) {});
+                                    setState(() => loading = true);
+                                    AuthenticationService()
+                                        .signInWithApple()
+                                        .then((result) {});
                                   })
                               : Container(),
                           (kIsWeb && Platform.isIOS) ? Spacer() : Container(),

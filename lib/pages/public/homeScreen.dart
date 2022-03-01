@@ -10,7 +10,6 @@ import 'package:commit/services/themeService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -24,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List commitments = Provider.of<List<DataService>>(context);
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -97,123 +97,113 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              StreamBuilder<QuerySnapshot>(
-                  stream: DataService().commitmentStream,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return const Text('Something went wrong');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const LoadingShare();
-                    }
-                    return ListView(
-                      shrinkWrap: true, // use this
-                      children:
-                          snapshot.data!.docs.map((DocumentSnapshot document) {
-                        Map<String, dynamic> data =
-                            document.data()! as Map<String, dynamic>;
-                        return Builder(builder: (context) {
-                          return Dismissible(
-                            key: ValueKey<String>(document.id),
-                            background: Container(
-                              color: Colors.blue,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  children: const [
-                                    Icon(Icons.edit, color: Colors.white),
-                                    SizedBox(width: 10),
-                                    Text('Edit commitment',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
+              SizedBox(
+                  height: double.maxFinite,
+                  width: double.maxFinite,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: commitments.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        // return Text(commitmentList[index].description);
+                        return Dismissible(
+                          key: ValueKey<String>(commitments[index].key),
+                          background: Container(
+                            color: Colors.blue,
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                children: const [
+                                  Icon(Icons.edit, color: Colors.white),
+                                  SizedBox(width: 10),
+                                  Text('Edit commitment',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                ],
                               ),
                             ),
-                            secondaryBackground: Container(
-                              color: Colors.red,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: const [
-                                    Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text('Delete commitment',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
+                          ),
+                          secondaryBackground: Container(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: const [
+                                  Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Delete commitment',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                ],
                               ),
                             ),
-                            confirmDismiss: (direction) async {
-                              if (direction == DismissDirection.startToEnd) {
-                                /// edit item
-                                showMaterialModalBottomSheet(
-                                    expand: false,
-                                    context: context,
-                                    builder: (context) => SizedBox(
-                                        height: 300,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: EditCommitment(
-                                            commitmentKey: document.id,
-                                            currentDescription:
-                                                data['description'],
-                                          ),
-                                        )));
-                                return false;
-                              } else if (direction ==
-                                  DismissDirection.endToStart) {
-                                DataService().deleteCommitment(document.id);
-                                print('Remove commitment');
-                                return true;
-                              }
-                              return null;
+                          ),
+                          confirmDismiss: (direction) async {
+                            if (direction == DismissDirection.startToEnd) {
+                              /// edit item
+                              showMaterialModalBottomSheet(
+                                  expand: false,
+                                  context: context,
+                                  builder: (context) => SizedBox(
+                                      height: 300,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: EditCommitment(
+                                          commitmentKey: commitments[index].key,
+                                          currentDescription:
+                                              commitments[index].description,
+                                        ),
+                                      )));
+                              return false;
+                            } else if (direction ==
+                                DismissDirection.endToStart) {
+                              DataService()
+                                  .deleteCommitment(commitments[index].key);
+                              print('Remove commitment');
+                              return true;
+                            }
+                            return null;
+                          },
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.to(DetailPage(
+                                  description: commitments[index].description));
                             },
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.to(DetailPage(
-                                    description: data['description']));
-                              },
-                              child: Card(
-                                margin: const EdgeInsets.fromLTRB(5, 1, 5, 5),
-                                child: ListTile(
-                                  // leading: CachedNetworkImage(
-                                  //   imageUrl: "",
-                                  //   placeholder: (context, url) =>
-                                  //       const CircularProgressIndicator(),
-                                  //   errorWidget: (context, url, error) =>
-                                  //       const Icon(Icons.error),
-                                  // ),
-                                  title: Text(
-                                    data['description'],
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontFamily: 'Poppins-Bold',
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: const Text(
-                                    'A sufficiently long subtitle warrants.',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontFamily: 'Poppins-Regular',
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                            child: Card(
+                              margin: const EdgeInsets.fromLTRB(5, 1, 5, 5),
+                              child: ListTile(
+                                // leading: CachedNetworkImage(
+                                //   imageUrl: "",
+                                //   placeholder: (context, url) =>
+                                //       const CircularProgressIndicator(),
+                                //   errorWidget: (context, url, error) =>
+                                //       const Icon(Icons.error),
+                                // ),
+                                title: Text(
+                                  commitments[index].description,
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'Poppins-Bold',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: const Text(
+                                  'A sufficiently long subtitle warrants.',
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontFamily: 'Poppins-Regular',
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
-                          );
-                        });
-                      }).toList(),
-                    );
-                  }),
+                          ),
+                        );
+                      },
+                      scrollDirection: Axis.vertical)),
             ],
           ),
         ),

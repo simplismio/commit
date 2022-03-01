@@ -1,4 +1,5 @@
 import 'package:commit/pages/RootPage.dart';
+import 'package:commit/services/dataService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,13 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
+          StreamProvider<List<DataService>>.value(
+            value: DataService().commitments, initialData: [],
+            // catchError: (BuildContext context, e) {
+            //   print("Error:$e");
+            //   return ;
+            // }, initialData: [],
+          ),
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {
