@@ -1,9 +1,9 @@
 // ignore: file_names
 // ignore_for_file: file_names, duplicate_ignore, prefer_const_constructors
 
+import 'package:commit/services/userService.dart';
 import 'package:get/get.dart';
 import 'package:commit/pages/iam/authorization.dart';
-import 'package:commit/services/authenticationService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 
@@ -97,8 +97,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              AuthenticationService()
-                                  .signUp(email: email, password: password)
+                              UserService()
+                                  .signUpUsingEmailAndPassword(
+                                      email: email, password: password)
                                   .then((result) {
                                 if (result == null) {
                                   Navigator.pushReplacement(

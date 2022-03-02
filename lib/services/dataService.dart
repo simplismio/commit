@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DataService extends ChangeNotifier {
-  CollectionReference _commitments =
+  final CollectionReference _commitments =
       FirebaseFirestore.instance.collection('commitments');
 
   final String? key;

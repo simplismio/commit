@@ -1,10 +1,10 @@
 // ignore_for_file: deprecated_member_use, file_names, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors
 
 import 'package:commit/services/dataService.dart';
+import 'package:commit/services/userService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 import 'package:commit/pages/public/detailPage.dart';
-import 'package:commit/services/authenticationService.dart';
 import 'package:commit/services/localAuthenticationService.dart';
 import 'package:commit/services/themeService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -23,6 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final UserService _user = UserService();
+
+    UserService? us = Provider.of<UserService?>(context);
+    print(us?.uid);
+
     List commitments = Provider.of<List<DataService>>(context);
     return Scaffold(
       appBar: AppBar(
@@ -296,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: () async {
                         setState(() => loading = true);
-                        AuthenticationService().signOut().then((result) {
+                        UserService().signOut().then((result) {
                           Get.back();
                         });
                       },

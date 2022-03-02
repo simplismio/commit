@@ -1,20 +1,39 @@
-// ignore_for_file: file_names
-
-import 'dart:convert';
-import 'dart:math';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'dart:math';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 
-class AuthenticationService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  get user => _auth.currentUser;
+class UserService extends ChangeNotifier {
+  final String? uid;
+  // final String username;
 
-  Future signUp({String? email, String? password}) async {
+  UserService({
+    this.uid,
+    // this.username,
+  });
+
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  UserService? _userFromFirebaseUser(User? user) {
+    if (kDebugMode && user != null) {
+      print('Return userFromFirebaseUser with UID: ${user.uid}');
+    }
+    return UserService(uid: user?.uid);
+  }
+
+  Stream<UserService?> get user {
+    return _auth.userChanges().map(_userFromFirebaseUser);
+  }
+
+  Future signUpUsingEmailAndPassword({String? email, String? password}) async {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email!, password: password!);
@@ -24,7 +43,7 @@ class AuthenticationService {
   }
 
   //SIGN IN METHOD
-  Future signIn(String? email, String? password) async {
+  Future signInUsingEmailAndPassword(String? email, String? password) async {
     try {
       await _auth.signInWithEmailAndPassword(
           email: email!, password: password!);
@@ -38,9 +57,28 @@ class AuthenticationService {
     if (kDebugMode) {
       print(email);
     }
-
     try {
       await _auth.sendPasswordResetEmail(email: email!);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+
+  Future currentUser() async {
+    var user = _auth.currentUser;
+    if (user?.uid != null) {
+      return _userFromFirebaseUser(user);
+    } else {
+      if (kDebugMode) {
+        print('No active user is signed in');
+      }
+    }
+  }
+
+  Future signOut() async {
+    try {
+      await _auth.signOut();
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -110,13 +148,5 @@ class AuthenticationService {
     );
 
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
-  }
-
-  Future signOut() async {
-    await _auth.signOut();
-
-    if (kDebugMode) {
-      print('signout');
-    }
   }
 }

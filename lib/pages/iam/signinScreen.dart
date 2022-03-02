@@ -1,10 +1,10 @@
 // ignore_for_file: unnecessary_import, file_names, prefer_const_constructors
 
 import 'dart:io';
+import 'package:commit/services/userService.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:commit/pages/iam/signupScreen.dart';
-import 'package:commit/services/authenticationService.dart';
 import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -98,8 +98,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              AuthenticationService()
-                                  .signIn(email, password)
+                              UserService()
+                                  .signInUsingEmailAndPassword(email, password)
                                   .then((result) {
                                 if (result == null) {
                                   Get.back();
@@ -137,7 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               icon: FaIcon(FontAwesomeIcons.facebookSquare),
                               onPressed: () {
                                 setState(() => loading = true);
-                                AuthenticationService()
+                                UserService()
                                     .signInWithFacebook()
                                     .then((result) {});
                               }),
@@ -146,7 +146,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               icon: FaIcon(FontAwesomeIcons.google),
                               onPressed: () {
                                 setState(() => loading = true);
-                                AuthenticationService()
+                                UserService()
                                     .signInWithGoogle()
                                     .then((result) {});
                               }),
@@ -156,7 +156,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   icon: FaIcon(FontAwesomeIcons.apple),
                                   onPressed: () {
                                     setState(() => loading = true);
-                                    AuthenticationService()
+                                    UserService()
                                         .signInWithApple()
                                         .then((result) {});
                                   })
@@ -228,9 +228,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              AuthenticationService()
-                                  .resetPassword(email)
-                                  .then((result) {
+                              UserService().resetPassword(email).then((result) {
                                 if (result == null) {
                                   Get.back();
                                 } else {

@@ -1,6 +1,7 @@
-import 'package:commit/pages/RootPage.dart';
+import 'package:commit/pages/iam/localAuthorization.dart';
+import 'package:commit/pages/public/homeScreen.dart';
 import 'package:commit/services/dataService.dart';
-import 'package:commit/shares/loadingShare.dart';
+import 'package:commit/services/userService.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,23 +40,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState() {
-    super.initState();
-    startTime();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
           StreamProvider<List<DataService>>.value(
-            value: DataService().commitments, initialData: [],
-            // catchError: (BuildContext context, e) {
-            //   print("Error:$e");
-            //   return ;
-            // }, initialData: [],
+            value: DataService().commitments,
+            initialData: const [],
+          ),
+          StreamProvider<UserService?>.value(
+            value: UserService().user,
+            initialData: null,
+            catchError: (BuildContext context, e) {
+              if (kDebugMode) {
+                print("Error:$e");
+              }
+              return null;
+            },
           ),
         ],
         child: Consumer<ThemeService>(
@@ -64,18 +66,20 @@ class _MyAppState extends State<MyApp> {
             print('The theme is dark: ' + theme.darkTheme.toString());
           }
           return GetMaterialApp(
-              title: "Flutter Provider",
               theme: theme.darkTheme ? dark : light,
-              home: SafeArea(child: Scaffold(body: LoadingShare())));
+              home: SafeArea(child: Scaffold(body:
+                  Consumer<LocalAuthenticationService>(builder: (context,
+                      LocalAuthenticationService localAuthentication, child) {
+                if (kDebugMode) {
+                  print('Starting app, local user authentication status: ' +
+                      localAuthentication.biometrics.toString());
+                }
+                if (localAuthentication.biometrics == true) {
+                  return const LocalAuthorization();
+                } else {
+                  return const HomeScreen();
+                }
+              }))));
         }));
-  }
-
-  startTime() async {
-    var duration = new Duration(seconds: 3);
-    return Timer(duration, route);
-  }
-
-  void route() {
-    Get.offAll(RootPage());
   }
 }
