@@ -79,6 +79,9 @@ class UserService extends ChangeNotifier {
   Future signOut() async {
     try {
       await _auth.signOut();
+      if (kDebugMode) {
+        print('Signing out user');
+      }
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;

@@ -13,6 +13,9 @@ class LocalAuthenticationService extends ChangeNotifier {
 
   bool get biometrics => _biometrics;
 
+  final Future<SharedPreferences> _preferences =
+      SharedPreferences.getInstance();
+
   Future checkBiometrics() async {
     late bool canCheckBiometrics;
     try {
@@ -61,20 +64,14 @@ class LocalAuthenticationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  _initPrefs() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    return _pref;
-  }
-
   _loadFromPrefs() async {
-    SharedPreferences _pref = await _initPrefs();
-    _biometrics = _pref.getBool(key) ?? true;
+    final SharedPreferences preferences = await _preferences;
+    _biometrics = preferences.getBool(key) ?? true;
     notifyListeners();
   }
 
   _saveToPrefs() async {
-    SharedPreferences _pref = await _initPrefs();
-    _pref.setBool(key, _biometrics);
-    //notifyListeners();
+    final SharedPreferences preferences = await _preferences;
+    await preferences.setBool(key, _biometrics);
   }
 }

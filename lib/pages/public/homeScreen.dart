@@ -24,11 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final UserService _user = UserService();
-
     UserService? us = Provider.of<UserService?>(context);
-    print(us?.uid);
-
     List commitments = Provider.of<List<DataService>>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -73,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: <Widget>[
                     const Text(
-                      "Just in",
+                      "Commitments",
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,

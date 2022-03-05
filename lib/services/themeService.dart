@@ -14,12 +14,16 @@ ThemeData dark = ThemeData(
 );
 
 class ThemeService extends ChangeNotifier {
-  final String key = "theme";
+  final String key = "theme2";
   late bool _darkTheme;
 
   bool get darkTheme => _darkTheme;
 
+  final Future<SharedPreferences> _preferences =
+      SharedPreferences.getInstance();
+
   ThemeService() {
+    _darkTheme = false;
     _loadFromPrefs();
   }
 
@@ -29,19 +33,14 @@ class ThemeService extends ChangeNotifier {
     notifyListeners();
   }
 
-  _initPrefs() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    return _pref;
-  }
-
-  _loadFromPrefs() async {
-    SharedPreferences _pref = await _initPrefs();
-    _darkTheme = _pref.getBool(key) ?? true;
+  Future<void> _loadFromPrefs() async {
+    final SharedPreferences prefs = await _preferences;
+    _darkTheme = prefs.getBool(key) ?? true;
     notifyListeners();
   }
 
   _saveToPrefs() async {
-    SharedPreferences _pref = await _initPrefs();
-    _pref.setBool(key, _darkTheme);
+    final SharedPreferences prefs = await _preferences;
+    await prefs.setBool(key, _darkTheme);
   }
 }

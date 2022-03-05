@@ -15,7 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ignore: invalid_use_of_visible_for_testing_member
-  SharedPreferences.setMockInitialValues({});
+  //SharedPreferences.setMockInitialValues({});
 
   // if (kIsWeb) {
   //   // initialiaze the facebook javascript SDK
@@ -66,10 +66,10 @@ class _MyAppState extends State<MyApp> {
             print('The theme is dark: ' + theme.darkTheme.toString());
           }
           return GetMaterialApp(
-              theme: theme.darkTheme ? dark : light,
-              home: SafeArea(child: Scaffold(body:
-                  Consumer<LocalAuthenticationService>(builder: (context,
-                      LocalAuthenticationService localAuthentication, child) {
+              theme: theme.darkTheme == true ? dark : light,
+              home: Scaffold(body: Consumer<LocalAuthenticationService>(builder:
+                  (context, LocalAuthenticationService localAuthentication,
+                      child) {
                 if (kDebugMode) {
                   print('Starting app, local user authentication status: ' +
                       localAuthentication.biometrics.toString());
@@ -79,7 +79,7 @@ class _MyAppState extends State<MyApp> {
                 } else {
                   return const HomeScreen();
                 }
-              }))));
+              })));
         }));
   }
 }

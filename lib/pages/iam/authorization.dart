@@ -15,29 +15,9 @@ class Authorization extends StatefulWidget {
 }
 
 class _AuthorizationState extends State<Authorization> {
-  final UserService _user = UserService();
-
-  Future<String> getActiveUserUid() async {
-    var user = await _user.currentUser();
-    return user.uid;
-  }
-
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserService?>(context, listen: true);
-    return FutureBuilder<String>(
-        future: getActiveUserUid(),
-        initialData: null,
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingShare();
-          } else {
-            if (!snapshot.hasData) {
-              return const SignInScreen();
-            } else {
-              return const HomeScreen();
-            }
-          }
-        });
+    UserService? us = Provider.of<UserService?>(context, listen: true);
+    return us?.uid != null ? const HomeScreen() : const SignInScreen();
   }
 }
