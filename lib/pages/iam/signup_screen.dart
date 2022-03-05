@@ -1,11 +1,9 @@
-// ignore: file_names
-// ignore_for_file: file_names, duplicate_ignore, prefer_const_constructors
-
-import 'package:commit/services/userService.dart';
 import 'package:get/get.dart';
-import 'package:commit/pages/iam/authorization.dart';
-import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
+
+import '../../services/user_service.dart';
+import '../../shares/loading_share.dart';
+import 'authorization.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -17,7 +15,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String error = '';
+  String? error;
 
   String? email;
   String? password;
@@ -25,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingShare()
+        ? const LoadingShare()
         : Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: true,

@@ -1,10 +1,7 @@
-import 'package:commit/pages/iam/signinScreen.dart';
-import 'package:commit/pages/public/homeScreen.dart';
-import 'package:commit/services/userService.dart';
-import 'package:flutter/foundation.dart';
+import '../../services/user_service.dart';
+import '../public/home_screen.dart';
+import 'signin_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:commit/shares/loadingShare.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 class Authorization extends StatefulWidget {

@@ -1,19 +1,18 @@
-// ignore_for_file: file_names, prefer_typing_uninitialized_variables
-
+import 'package:commit/pages/public/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:commit/pages/public/homeScreen.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class DetailPage extends StatefulWidget {
+class DetailScreen extends StatefulWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final description;
-  const DetailPage({Key? key, this.description}) : super(key: key);
+  const DetailScreen({Key? key, this.description}) : super(key: key);
 
   @override
-  _DetailPageState createState() => _DetailPageState();
+  _DetailScreenState createState() => _DetailScreenState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

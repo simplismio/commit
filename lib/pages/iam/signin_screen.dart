@@ -1,14 +1,13 @@
-// ignore_for_file: unnecessary_import, file_names, prefer_const_constructors
-
 import 'dart:io';
-import 'package:commit/services/userService.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:commit/pages/iam/signupScreen.dart';
-import 'package:commit/shares/loadingShare.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import '../../services/user_service.dart';
+import '../../shares/loading_share.dart';
+import 'signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -20,7 +19,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String error = '';
+  String? error;
 
   String? email;
   String? password;
@@ -28,7 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingShare()
+        ? const LoadingShare()
         : Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: true,
@@ -129,31 +128,34 @@ class _SignInScreenState extends State<SignInScreen> {
                           onTap: () {
                             Get.to(const SignUpScreen());
                           }),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       Row(
                         children: [
-                          (kIsWeb && Platform.isIOS) ? Spacer() : Container(),
+                          (kIsWeb && Platform.isIOS)
+                              ? const Spacer()
+                              : Container(),
                           IconButton(
-                              icon: FaIcon(FontAwesomeIcons.facebookSquare),
+                              icon:
+                                  const FaIcon(FontAwesomeIcons.facebookSquare),
                               onPressed: () {
                                 setState(() => loading = true);
                                 UserService()
                                     .signInWithFacebook()
                                     .then((result) {});
                               }),
-                          Spacer(),
+                          const Spacer(),
                           IconButton(
-                              icon: FaIcon(FontAwesomeIcons.google),
+                              icon: const FaIcon(FontAwesomeIcons.google),
                               onPressed: () {
                                 setState(() => loading = true);
                                 UserService()
                                     .signInWithGoogle()
                                     .then((result) {});
                               }),
-                          (Platform.isIOS) ? Spacer() : Container(),
+                          (Platform.isIOS) ? const Spacer() : Container(),
                           (kIsWeb || Platform.isIOS)
                               ? IconButton(
-                                  icon: FaIcon(FontAwesomeIcons.apple),
+                                  icon: const FaIcon(FontAwesomeIcons.apple),
                                   onPressed: () {
                                     setState(() => loading = true);
                                     UserService()
@@ -161,7 +163,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                         .then((result) {});
                                   })
                               : Container(),
-                          (kIsWeb && Platform.isIOS) ? Spacer() : Container(),
+                          (kIsWeb && Platform.isIOS)
+                              ? const Spacer()
+                              : Container(),
                         ],
                       ),
                     ],
@@ -188,7 +192,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingShare()
+        ? const LoadingShare()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),

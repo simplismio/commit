@@ -1,9 +1,7 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:commit/pages/iam/authorization.dart';
-import 'package:commit/services/localAuthenticationService.dart';
+import '../../services/local_authentication_service.dart';
+import 'authorization.dart';
 
 class LocalAuthorization extends StatefulWidget {
   const LocalAuthorization({Key? key}) : super(key: key);

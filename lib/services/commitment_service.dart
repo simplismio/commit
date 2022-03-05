@@ -1,36 +1,40 @@
-// ignore_for_file: file_names
-
+import 'package:commit/services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DataService extends ChangeNotifier {
+class CommitmentService extends ChangeNotifier {
   final CollectionReference _commitments =
       FirebaseFirestore.instance.collection('commitments');
+
+  final Query<Map<String, dynamic>> _commitmentsByLoggedInUser =
+      FirebaseFirestore.instance
+          .collection('commitments')
+          .where('user_id', isEqualTo: user.uid);
 
   final String? key;
   final String? description;
 
-  DataService({
+  CommitmentService({
     this.key,
     this.description,
   });
 
-  List<DataService> _listingsFromSnapshot(QuerySnapshot snapshot) {
+  List<CommitmentService> _commitmentsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return DataService(
+      return CommitmentService(
         key: doc.id,
         description: doc['description'],
       );
     }).toList();
   }
 
-  Stream<List<DataService>> get commitments {
-    return _commitments.snapshots().map(_listingsFromSnapshot);
+  Stream<List<CommitmentService>> get commitments {
+    return _commitmentsByLoggedInUser.snapshots().map(_commitmentsFromSnapshot);
   }
 
-  Future<void> addCommitment(_description) {
+  Future<void> addCommitment(_user_id, _description) {
     return _commitments
-        .add({'description': _description})
+        .add({'user_id': _user_id, 'description': _description})
         .then((value) => print("Commitment Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }

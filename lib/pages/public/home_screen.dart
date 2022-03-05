@@ -1,12 +1,10 @@
-// ignore_for_file: deprecated_member_use, file_names, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors
-
-import 'package:commit/services/dataService.dart';
-import 'package:commit/services/userService.dart';
-import 'package:commit/shares/loadingShare.dart';
+import '../../services/commitment_service.dart';
+import '../../services/user_service.dart';
+import '../../services/local_authentication_service.dart';
+import '../../services/theme_service.dart';
+import '../../shares/loading_share.dart';
+import '../../pages/public/detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:commit/pages/public/detailPage.dart';
-import 'package:commit/services/localAuthenticationService.dart';
-import 'package:commit/services/themeService.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserService _user = UserService();
-    UserService? us = Provider.of<UserService?>(context);
-    List commitments = Provider.of<List<DataService>>(context);
+    List commitments = Provider.of<List<CommitmentService>>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -165,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return false;
                             } else if (direction ==
                                 DismissDirection.endToStart) {
-                              DataService()
+                              CommitmentService()
                                   .deleteCommitment(commitments[index].key);
                               print('Remove commitment');
                               return true;
@@ -174,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           child: GestureDetector(
                             onTap: () {
-                              Get.to(DetailPage(
+                              Get.to(DetailScreen(
                                   description: commitments[index].description));
                             },
                             child: Card(
@@ -214,11 +210,11 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Drawer(
         child: Column(
           children: [
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
             Container(
               alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                 child: Text(
                   'Settings',
                   style: TextStyle(
@@ -228,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
 
             // SizedBox(
             //   height: MediaQuery.of(context).size.height * 0.3,
@@ -364,14 +360,16 @@ class NewCommitment extends StatefulWidget {
 class _NewCommitmentState extends State<NewCommitment> {
   final _formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String error = '';
+  String? error;
 
   String? description;
 
   @override
   Widget build(BuildContext context) {
+    UserService? us = Provider.of<UserService?>(context);
+
     return loading
-        ? LoadingShare()
+        ? const LoadingShare()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
@@ -412,7 +410,8 @@ class _NewCommitmentState extends State<NewCommitment> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              DataService().addCommitment(description);
+                              CommitmentService()
+                                  .addCommitment(us?.uid, description);
                               Get.back();
                             } else {
                               setState(() {
@@ -451,7 +450,7 @@ class _EditCommitmentState extends State<EditCommitment> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? LoadingShare()
+        ? const LoadingShare()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
@@ -492,7 +491,7 @@ class _EditCommitmentState extends State<EditCommitment> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              DataService().editCommitment(
+                              CommitmentService().editCommitment(
                                   widget.commitmentKey, description);
                               Get.back();
                             } else {

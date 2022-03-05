@@ -1,21 +1,18 @@
-import 'package:commit/pages/iam/localAuthorization.dart';
-import 'package:commit/pages/public/homeScreen.dart';
-import 'package:commit/services/dataService.dart';
-import 'package:commit/services/userService.dart';
+import './pages/iam/local_authorization.dart';
+import './pages/public/home_screen.dart';
+import './services/commitment_service.dart';
+import './services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:commit/services/localAuthenticationService.dart';
+import './services/local_authentication_service.dart';
 import 'package:provider/provider.dart';
-import 'package:commit/services/themeService.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import './services/theme_service.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // ignore: invalid_use_of_visible_for_testing_member
-  //SharedPreferences.setMockInitialValues({});
 
   // if (kIsWeb) {
   //   // initialiaze the facebook javascript SDK
@@ -45,8 +42,8 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
-          StreamProvider<List<DataService>>.value(
-            value: DataService().commitments,
+          StreamProvider<List<CommitmentService>>.value(
+            value: CommitmentService().commitments,
             initialData: const [],
           ),
           StreamProvider<UserService?>.value(

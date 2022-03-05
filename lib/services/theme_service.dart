@@ -5,7 +5,7 @@ ThemeData light = ThemeData(
     fontFamily: 'Poppins-Bold',
     brightness: Brightness.light,
     primarySwatch: Colors.grey,
-    scaffoldBackgroundColor: Color(0xfff1f1f1));
+    scaffoldBackgroundColor: const Color(0xfff1f1f1));
 
 ThemeData dark = ThemeData(
   fontFamily: 'Poppins-Bold',
@@ -34,13 +34,13 @@ class ThemeService extends ChangeNotifier {
   }
 
   Future<void> _loadFromPrefs() async {
-    final SharedPreferences prefs = await _preferences;
-    _darkTheme = prefs.getBool(key) ?? true;
+    final SharedPreferences preferences = await _preferences;
+    _darkTheme = preferences.getBool(key) ?? true;
     notifyListeners();
   }
 
   _saveToPrefs() async {
-    final SharedPreferences prefs = await _preferences;
-    await prefs.setBool(key, _darkTheme);
+    final SharedPreferences preferences = await _preferences;
+    await preferences.setBool(key, _darkTheme);
   }
 }
