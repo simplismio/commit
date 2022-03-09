@@ -1,5 +1,5 @@
+import 'storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 ThemeData light = ThemeData(
     fontFamily: 'Poppins-Bold',
@@ -14,33 +14,28 @@ ThemeData dark = ThemeData(
 );
 
 class ThemeService extends ChangeNotifier {
-  final String key = "theme2";
+  final String key = "theme";
   late bool _darkTheme;
 
   bool get darkTheme => _darkTheme;
 
-  final Future<SharedPreferences> _preferences =
-      SharedPreferences.getInstance();
-
   ThemeService() {
     _darkTheme = false;
-    _loadFromPrefs();
+    _loadFromStorage();
   }
 
   toggleTheme() {
     _darkTheme = !_darkTheme;
-    _saveToPrefs();
+    _saveToStorage();
+  }
+
+  Future<void> _loadFromStorage() async {
+    _darkTheme = await StorageService.readData(key);
     notifyListeners();
   }
 
-  Future<void> _loadFromPrefs() async {
-    final SharedPreferences preferences = await _preferences;
-    _darkTheme = preferences.getBool(key) ?? true;
+  _saveToStorage() async {
+    StorageService.saveData(key, _darkTheme);
     notifyListeners();
-  }
-
-  _saveToPrefs() async {
-    final SharedPreferences preferences = await _preferences;
-    await preferences.setBool(key, _darkTheme);
   }
 }

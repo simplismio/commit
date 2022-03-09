@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
+import 'storage_service.dart';
 
 class LocalAuthenticationService extends ChangeNotifier {
   final LocalAuthentication auth = LocalAuthentication();
@@ -10,9 +10,6 @@ class LocalAuthenticationService extends ChangeNotifier {
   late bool _biometrics;
 
   bool get biometrics => _biometrics;
-
-  final Future<SharedPreferences> _preferences =
-      SharedPreferences.getInstance();
 
   Future checkBiometrics() async {
     late bool canCheckBiometrics;
@@ -53,23 +50,21 @@ class LocalAuthenticationService extends ChangeNotifier {
 
   LocalAuthenticationService() {
     _biometrics = false;
-    _loadFromPrefs();
+    _loadFromStorage();
   }
 
   toggleBiometrics() {
     _biometrics = !_biometrics;
-    _saveToPrefs();
+    _saveToStorage();
+  }
+
+  _loadFromStorage() async {
+    _biometrics = await StorageService.readData(key);
     notifyListeners();
   }
 
-  _loadFromPrefs() async {
-    final SharedPreferences preferences = await _preferences;
-    _biometrics = preferences.getBool(key) ?? true;
+  _saveToStorage() async {
+    StorageService.saveData(key, _biometrics);
     notifyListeners();
-  }
-
-  _saveToPrefs() async {
-    final SharedPreferences preferences = await _preferences;
-    await preferences.setBool(key, _biometrics);
   }
 }
