@@ -21,7 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List commitments = Provider.of<List<CommitmentService>>(context);
+    List commitments =
+        Provider.of<List<CommitmentService>>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(

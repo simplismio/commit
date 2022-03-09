@@ -1,5 +1,5 @@
+import 'package:commit/pages/iam/authorization.dart';
 import './pages/iam/local_authorization.dart';
-import './pages/public/home_screen.dart';
 import './services/commitment_service.dart';
 import './services/user_service.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +15,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // if (kIsWeb) {
-  //   // initialiaze the facebook javascript SDK
+  //   // initialiase the facebook javascript SDK
   //   FacebookAuth.i.webInitialize(
   //     appId: "315647996686093", //<-- YOUR APP_ID
   //     cookie: true,
@@ -42,10 +42,6 @@ class _MyAppState extends State<MyApp> {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
-          StreamProvider<List<CommitmentService>>.value(
-            value: CommitmentService().commitments,
-            initialData: const [],
-          ),
           StreamProvider<UserService?>.value(
             value: UserService().user,
             initialData: null,
@@ -56,6 +52,15 @@ class _MyAppState extends State<MyApp> {
               return null;
             },
           ),
+          StreamProvider<List<CommitmentService>>.value(
+              value: CommitmentService().commitments,
+              initialData: [],
+              catchError: (BuildContext context, e) {
+                if (kDebugMode) {
+                  print("Error:$e");
+                }
+                return [];
+              }),
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {
@@ -74,7 +79,7 @@ class _MyAppState extends State<MyApp> {
                 if (localAuthentication.biometrics == true) {
                   return const LocalAuthorization();
                 } else {
-                  return const HomeScreen();
+                  return const Authorization();
                 }
               })));
         }));

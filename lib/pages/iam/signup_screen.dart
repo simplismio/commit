@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-
 import '../../services/user_service.dart';
 import '../../shares/loading_share.dart';
 import 'authorization.dart';

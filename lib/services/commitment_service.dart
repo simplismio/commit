@@ -1,40 +1,46 @@
-import 'package:commit/services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CommitmentService extends ChangeNotifier {
-  final CollectionReference _commitments =
-      FirebaseFirestore.instance.collection('commitments');
-
-  final Query<Map<String, dynamic>> _commitmentsByLoggedInUser =
-      FirebaseFirestore.instance
-          .collection('commitments')
-          .where('user_id', isEqualTo: user.uid);
-
   final String? key;
   final String? description;
+  final String? userId;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   CommitmentService({
     this.key,
     this.description,
+    this.userId,
   });
+
+  final CollectionReference _commitments =
+      FirebaseFirestore.instance.collection('commitments');
 
   List<CommitmentService> _commitmentsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return CommitmentService(
         key: doc.id,
         description: doc['description'],
+        userId: doc['user_id'],
       );
     }).toList();
   }
 
   Stream<List<CommitmentService>> get commitments {
-    return _commitmentsByLoggedInUser.snapshots().map(_commitmentsFromSnapshot);
+    var getUser = _auth.currentUser;
+    var firebaseUid = getUser?.uid;
+    return FirebaseFirestore.instance
+        .collection('commitments')
+        .where("user_id", isEqualTo: firebaseUid)
+        .snapshots()
+        .map(_commitmentsFromSnapshot);
   }
 
-  Future<void> addCommitment(_user_id, _description) {
+  Future<void> addCommitment(_userId, _description) {
     return _commitments
-        .add({'user_id': _user_id, 'description': _description})
+        .add({'user_id': _userId, 'description': _description})
         .then((value) => print("Commitment Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -9,16 +8,13 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 
 class UserService extends ChangeNotifier {
-  final String? uid;
+  String? uid;
   // final String username;
 
   UserService({
     this.uid,
     // this.username,
   });
-
-  final CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection('users');
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -62,17 +58,6 @@ class UserService extends ChangeNotifier {
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
-    }
-  }
-
-  Future currentUser() async {
-    var user = _auth.currentUser;
-    if (user?.uid != null) {
-      return _userFromFirebaseUser(user);
-    } else {
-      if (kDebugMode) {
-        print('No active user is signed in');
-      }
     }
   }
 
