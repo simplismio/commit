@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Home',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontFamily: 'Poppins-Bold',
             )),
         centerTitle: true,
         elevation: 0,
@@ -72,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins-Bold',
                       ),
                     ),
                     const Spacer(),
@@ -81,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins-Bold',
                       ),
                     ),
                     Builder(
@@ -188,14 +185,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   commitments[index].description,
                                   style: const TextStyle(
                                       fontSize: 18,
-                                      fontFamily: 'Poppins-Bold',
                                       fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: const Text(
                                   'A sufficiently long subtitle warrants.',
                                   style: TextStyle(
                                       fontSize: 13,
-                                      fontFamily: 'Poppins-Regular',
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -219,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'Settings',
                   style: TextStyle(
-                    fontFamily: 'Poppins-Bold',
                     fontSize: 30,
                   ),
                 ),
@@ -244,7 +238,6 @@ class _HomeScreenState extends State<HomeScreen> {
             //         child: Text(
             //           'Username',
             //           style: TextStyle(
-            //             fontFamily: 'Poppins-Bold',
             //             fontSize: 30,
             //           ),
             //         ),
@@ -319,7 +312,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'Sort',
                     style: TextStyle(
-                      fontFamily: 'Poppins-Bold',
                       fontSize: 30,
                     ),
                   ),
@@ -327,7 +319,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'Sort',
                     style: TextStyle(
-                      fontFamily: 'Poppins-Regular',
                       fontSize: 20,
                     ),
                   )

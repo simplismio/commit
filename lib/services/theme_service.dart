@@ -2,13 +2,11 @@ import 'storage_service.dart';
 import 'package:flutter/material.dart';
 
 ThemeData light = ThemeData(
-    fontFamily: 'Poppins-Bold',
     brightness: Brightness.light,
     primarySwatch: Colors.grey,
     scaffoldBackgroundColor: const Color(0xfff1f1f1));
 
 ThemeData dark = ThemeData(
-  fontFamily: 'Poppins-Bold',
   brightness: Brightness.dark,
   primarySwatch: Colors.indigo,
 );

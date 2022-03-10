@@ -20,7 +20,7 @@ class UserService extends ChangeNotifier {
 
   UserService? _userFromFirebaseUser(User? user) {
     if (kDebugMode && user != null) {
-      print('Return userFromFirebaseUser with UID: ${user.uid}');
+      print('Firebase UID is: ${user.uid}');
     }
     return UserService(uid: user?.uid);
   }

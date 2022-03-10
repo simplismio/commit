@@ -107,8 +107,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                       .showSnackBar(SnackBar(
                                     content: Text(
                                       result,
-                                      style: const TextStyle(fontSize: 16),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
+                                    backgroundColor: Colors.grey[800],
                                   ));
                                 }
                               });
@@ -130,41 +134,41 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 10.0),
                       Row(
                         children: [
-                          (kIsWeb && Platform.isIOS)
-                              ? const Spacer()
-                              : Container(),
-                          IconButton(
-                              icon:
-                                  const FaIcon(FontAwesomeIcons.facebookSquare),
-                              onPressed: () {
-                                setState(() => loading = true);
-                                UserService()
-                                    .signInWithFacebook()
-                                    .then((result) {});
-                              }),
-                          const Spacer(),
-                          IconButton(
-                              icon: const FaIcon(FontAwesomeIcons.google),
-                              onPressed: () {
-                                setState(() => loading = true);
-                                UserService()
-                                    .signInWithGoogle()
-                                    .then((result) {});
-                              }),
-                          (Platform.isIOS) ? const Spacer() : Container(),
-                          (kIsWeb || Platform.isIOS)
-                              ? IconButton(
-                                  icon: const FaIcon(FontAwesomeIcons.apple),
-                                  onPressed: () {
-                                    setState(() => loading = true);
-                                    UserService()
-                                        .signInWithApple()
-                                        .then((result) {});
-                                  })
-                              : Container(),
-                          (kIsWeb && Platform.isIOS)
-                              ? const Spacer()
-                              : Container(),
+                          //   (kIsWeb && Platform.isIOS)
+                          //       ? const Spacer()
+                          //       : Container(),
+                          //   IconButton(
+                          //       icon:
+                          //           const FaIcon(FontAwesomeIcons.facebookSquare),
+                          //       onPressed: () {
+                          //         setState(() => loading = true);
+                          //         UserService()
+                          //             .signInWithFacebook()
+                          //             .then((result) {});
+                          //       }),
+                          //   const Spacer(),
+                          //   IconButton(
+                          //       icon: const FaIcon(FontAwesomeIcons.google),
+                          //       onPressed: () {
+                          //         setState(() => loading = true);
+                          //         UserService()
+                          //             .signInWithGoogle()
+                          //             .then((result) {});
+                          //       }),
+                          //   (Platform.isIOS) ? const Spacer() : Container(),
+                          //   (kIsWeb || Platform.isIOS)
+                          //       ? IconButton(
+                          //           icon: const FaIcon(FontAwesomeIcons.apple),
+                          //           onPressed: () {
+                          //             setState(() => loading = true);
+                          //             UserService()
+                          //                 .signInWithApple()
+                          //                 .then((result) {});
+                          //           })
+                          //       : Container(),
+                          //   (kIsWeb && Platform.isIOS)
+                          //       ? const Spacer()
+                          //       : Container(),
                         ],
                       ),
                     ],

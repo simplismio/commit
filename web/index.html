@@ -18,12 +18,12 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Commitments">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="start">
+  <meta name="apple-mobile-web-app-title" content="commit">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
@@ -33,6 +33,37 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-analytics.js"></script>
+  
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="/__/firebase/8.6.5/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js"></script>
+  
+  
+  <!-- Initialize Firebase -->
+  <script src="/__/firebase/init.js"></script>
+  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2lwITHjZIWtWK8TAlid104yt8cAmRrOU",
+      authDomain: "commit-b9e29.firebaseapp.com",
+      projectId: "commit-b9e29",
+      storageBucket: "commit-b9e29.appspot.com",
+      messagingSenderId: "236126728561",
+      appId: "1:236126728561:web:777f7f92d8ed6a5b7e86d0",
+      measurementId: "G-8Z10Z47T7F"
+
+    };
+
+    firebase.initializeApp(firebaseConfig)
+</script>
+
+
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
@@ -49,7 +80,9 @@
       scriptTag.type = 'application/javascript';
       document.body.append(scriptTag);
     }
+      </script>
 
+      <script>
     if ('serviceWorker' in navigator) {
       // Service workers are supported. Use them.
       window.addEventListener('load', function () {

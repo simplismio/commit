@@ -109,8 +109,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       .showSnackBar(SnackBar(
                                     content: Text(
                                       result,
-                                      style: const TextStyle(fontSize: 16),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
+                                    backgroundColor: Colors.grey[800],
                                   ));
                                 }
                               });

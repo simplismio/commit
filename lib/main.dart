@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import './services/theme_service.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,14 +18,22 @@ Future<void> main() async {
   // if (kIsWeb) {
   //   // initialiase the facebook javascript SDK
   //   FacebookAuth.i.webInitialize(
-  //     appId: "315647996686093", //<-- YOUR APP_ID
+  //     appId: "356687176318853", //<-- YOUR APP_ID
   //     cookie: true,
   //     xfbml: true,
   //     version: "v9.0",
   //   );
   // }
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    // Replace with actual values
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyC2lwITHjZIWtWK8TAlid104yt8cAmRrOU",
+      appId: "1:236126728561:web:777f7f92d8ed6a5b7e86d0",
+      messagingSenderId: "236126728561",
+      projectId: "commit-b9e29",
+    ),
+  );
   runApp(const MyApp());
 }
 
