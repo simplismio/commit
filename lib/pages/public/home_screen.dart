@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
 
 import '../../services/commitment_service.dart';
 import '../../services/user_service.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     List commitments =
         Provider.of<List<CommitmentService>>(context, listen: true);
-
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        title: const Text('Home',
+        title: const Text('Commit',
             style: TextStyle(
               fontWeight: FontWeight.bold,
             )),
@@ -96,111 +96,118 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(
-                  height: double.maxFinite,
-                  width: double.maxFinite,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: commitments.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        // return Text(commitmentList[index].description);
-                        return Dismissible(
-                          key: ValueKey<String>(commitments[index].key),
-                          background: Container(
-                            color: Colors.blue,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.edit, color: Colors.white),
-                                  SizedBox(width: 10),
-                                  Text('Edit commitment',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                          ),
-                          secondaryBackground: Container(
-                            color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: const [
-                                  Icon(
-                                    Icons.delete,
-                                    color: Colors.white,
+              commitments.isEmpty
+                  ? const LoadingShare()
+                  : SizedBox(
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: commitments.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // return Text(commitmentList[index].description);
+                            return Dismissible(
+                              key: ValueKey<String>(commitments[index].key),
+                              background: Container(
+                                color: Colors.blue,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Row(
+                                    children: const [
+                                      Icon(Icons.edit, color: Colors.white),
+                                      SizedBox(width: 10),
+                                      Text('Edit commitment',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
                                   ),
-                                  SizedBox(width: 10),
-                                  Text('Delete commitment',
+                                ),
+                              ),
+                              secondaryBackground: Container(
+                                color: Colors.red,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: const [
+                                      Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text('Delete commitment',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              confirmDismiss: (direction) async {
+                                if (direction == DismissDirection.startToEnd) {
+                                  /// edit item
+                                  showMaterialModalBottomSheet(
+                                      expand: false,
+                                      context: context,
+                                      builder: (context) => SizedBox(
+                                          height: 300,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: EditCommitment(
+                                              commitmentKey:
+                                                  commitments[index].key,
+                                              currentDescription:
+                                                  commitments[index]
+                                                      .description,
+                                            ),
+                                          )));
+                                  return false;
+                                } else if (direction ==
+                                    DismissDirection.endToStart) {
+                                  CommitmentService()
+                                      .deleteCommitment(commitments[index].key);
+                                  if (kDebugMode) {
+                                    print('Remove commitment');
+                                  }
+                                  return true;
+                                }
+                                return null;
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.to(DetailScreen(
+                                      description:
+                                          commitments[index].description));
+                                },
+                                child: Card(
+                                  margin: const EdgeInsets.fromLTRB(5, 1, 5, 5),
+                                  child: ListTile(
+                                    // leading: CachedNetworkImage(
+                                    //   imageUrl: "",
+                                    //   placeholder: (context, url) =>
+                                    //       const CircularProgressIndicator(),
+                                    //   errorWidget: (context, url, error) =>
+                                    //       const Icon(Icons.error),
+                                    // ),
+                                    title: Text(
+                                      commitments[index].description,
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: const Text(
+                                      'A sufficiently long subtitle warrants.',
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold)),
-                                ],
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          confirmDismiss: (direction) async {
-                            if (direction == DismissDirection.startToEnd) {
-                              /// edit item
-                              showMaterialModalBottomSheet(
-                                  expand: false,
-                                  context: context,
-                                  builder: (context) => SizedBox(
-                                      height: 300,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: EditCommitment(
-                                          commitmentKey: commitments[index].key,
-                                          currentDescription:
-                                              commitments[index].description,
-                                        ),
-                                      )));
-                              return false;
-                            } else if (direction ==
-                                DismissDirection.endToStart) {
-                              CommitmentService()
-                                  .deleteCommitment(commitments[index].key);
-                              print('Remove commitment');
-                              return true;
-                            }
-                            return null;
+                            );
                           },
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.to(DetailScreen(
-                                  description: commitments[index].description));
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.fromLTRB(5, 1, 5, 5),
-                              child: ListTile(
-                                // leading: CachedNetworkImage(
-                                //   imageUrl: "",
-                                //   placeholder: (context, url) =>
-                                //       const CircularProgressIndicator(),
-                                //   errorWidget: (context, url, error) =>
-                                //       const Icon(Icons.error),
-                                // ),
-                                title: Text(
-                                  commitments[index].description,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: const Text(
-                                  'A sufficiently long subtitle warrants.',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      scrollDirection: Axis.vertical)),
+                          scrollDirection: Axis.vertical)),
             ],
           ),
         ),

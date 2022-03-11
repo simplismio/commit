@@ -1,4 +1,4 @@
-import 'storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 ThemeData light = ThemeData(
@@ -19,21 +19,23 @@ class ThemeService extends ChangeNotifier {
 
   ThemeService() {
     _darkTheme = false;
-    _loadFromStorage();
+    _loadFromPrefs();
   }
 
   toggleTheme() {
     _darkTheme = !_darkTheme;
-    _saveToStorage();
+    _saveToPrefs();
   }
 
-  Future<void> _loadFromStorage() async {
-    _darkTheme = await StorageService.readData(key) ?? true;
+  _loadFromPrefs() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _darkTheme = _pref.getBool(key) ?? true;
     notifyListeners();
   }
 
-  _saveToStorage() async {
-    StorageService.saveData(key, _darkTheme);
+  _saveToPrefs() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    await _pref.setBool(key, _darkTheme);
     notifyListeners();
   }
 }

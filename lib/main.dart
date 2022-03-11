@@ -1,6 +1,5 @@
 import './pages/iam/authorization.dart';
 import './pages/iam/local_authorization.dart';
-import './services/commitment_service.dart';
 import './services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:provider/provider.dart';
 import './services/theme_service.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 Future<void> main() async {
@@ -68,15 +66,6 @@ class _MyAppState extends State<MyApp> {
               return null;
             },
           ),
-          // StreamProvider<List<CommitmentService>>.value(
-          //     value: CommitmentService().commitments,
-          //     initialData: [],
-          //     catchError: (BuildContext context, e) {
-          //       if (kDebugMode) {
-          //         print("Error:$e");
-          //       }
-          //       return [];
-          //     }),
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {

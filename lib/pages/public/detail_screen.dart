@@ -1,4 +1,3 @@
-import 'package:commit/pages/public/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -24,7 +23,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 Icons.chevron_left,
               ),
               onPressed: () {
-                Get.to(const HomeScreen());
+                Get.back();
               },
             );
           },

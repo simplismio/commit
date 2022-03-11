@@ -1,4 +1,3 @@
-import 'package:commit/services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,13 +28,13 @@ class CommitmentService extends ChangeNotifier {
   }
 
   Stream<List<CommitmentService>> get commitments {
-    // final FirebaseAuth _auth = FirebaseAuth.instance;
-
-    final getUser = FirebaseAuth.instance.currentUser;
-    print(getUser);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final getUser = _auth.currentUser;
     firebaseUid = getUser?.uid;
 
-    print('In stream ${firebaseUid}');
+    if (kDebugMode) {
+      print('Loading commitments');
+    }
     return FirebaseFirestore.instance
         .collection('commitments')
         .where("user_id", isEqualTo: firebaseUid)
@@ -46,7 +45,9 @@ class CommitmentService extends ChangeNotifier {
   Future<void> addCommitment(_userId, _description) {
     return _commitments
         .add({'user_id': _userId, 'description': _description})
+        // ignore: avoid_print
         .then((value) => print("Commitment Added"))
+        // ignore: avoid_print
         .catchError((error) => print("Failed to add user: $error"));
   }
 
@@ -54,7 +55,9 @@ class CommitmentService extends ChangeNotifier {
     return _commitments
         .doc(_key)
         .update({'description': _description})
+        // ignore: avoid_print
         .then((value) => print("Commitment updated"))
+        // ignore: avoid_print
         .catchError((error) => print("Failed to merge data: $error"));
   }
 
@@ -62,7 +65,9 @@ class CommitmentService extends ChangeNotifier {
     return _commitments
         .doc(_key)
         .delete()
+        // ignore: avoid_print
         .then((value) => print("Commitment deleted"))
+        // ignore: avoid_print
         .catchError((error) => print("Failed to delete user: $error"));
   }
 }
