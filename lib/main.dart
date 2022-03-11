@@ -1,4 +1,4 @@
-import 'package:commit/pages/iam/authorization.dart';
+import './pages/iam/authorization.dart';
 import './pages/iam/local_authorization.dart';
 import './services/commitment_service.dart';
 import './services/user_service.dart';
@@ -10,7 +10,8 @@ import 'package:provider/provider.dart';
 import './services/theme_service.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,15 +26,21 @@ Future<void> main() async {
   //   );
   // }
 
-  await Firebase.initializeApp(
-    // Replace with actual values
-    options: const FirebaseOptions(
+  if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.android) {
+    await Firebase.initializeApp();
+    // FirebaseFirestore.instance.settings =
+    //     const Settings(persistenceEnabled: true);
+  } else {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
       apiKey: "AIzaSyC2lwITHjZIWtWK8TAlid104yt8cAmRrOU",
       appId: "1:236126728561:web:777f7f92d8ed6a5b7e86d0",
       messagingSenderId: "236126728561",
       projectId: "commit-b9e29",
-    ),
-  );
+    ));
+    // await FirebaseFirestore.instance.enablePersistence();
+  }
   runApp(const MyApp());
 }
 
@@ -61,36 +68,43 @@ class _MyAppState extends State<MyApp> {
               return null;
             },
           ),
-          StreamProvider<List<CommitmentService>>.value(
-              value: CommitmentService().commitments,
-              initialData: [],
-              catchError: (BuildContext context, e) {
-                if (kDebugMode) {
-                  print("Error:$e");
-                }
-                return [];
-              }),
+          // StreamProvider<List<CommitmentService>>.value(
+          //     value: CommitmentService().commitments,
+          //     initialData: [],
+          //     catchError: (BuildContext context, e) {
+          //       if (kDebugMode) {
+          //         print("Error:$e");
+          //       }
+          //       return [];
+          //     }),
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {
           if (kDebugMode) {
             print('The theme is dark: ' + theme.darkTheme.toString());
           }
-          return GetMaterialApp(
-              theme: theme.darkTheme == true ? dark : light,
-              home: Scaffold(body: Consumer<LocalAuthenticationService>(builder:
-                  (context, LocalAuthenticationService localAuthentication,
-                      child) {
-                if (kDebugMode) {
-                  print('Starting app, local user authentication status: ' +
-                      localAuthentication.biometrics.toString());
-                }
-                if (localAuthentication.biometrics == true) {
-                  return const LocalAuthorization();
-                } else {
-                  return const Authorization();
-                }
-              })));
+          if (defaultTargetPlatform == TargetPlatform.iOS ||
+              defaultTargetPlatform == TargetPlatform.android) {
+            return GetMaterialApp(
+                theme: theme.darkTheme == true ? dark : light,
+                home: Scaffold(body: Consumer<LocalAuthenticationService>(
+                    builder: (context,
+                        LocalAuthenticationService localAuthentication, child) {
+                  if (kDebugMode) {
+                    print('Starting app, local user authentication status: ' +
+                        localAuthentication.biometrics.toString());
+                  }
+                  if (localAuthentication.biometrics == true) {
+                    return const LocalAuthorization();
+                  } else {
+                    return const Authorization();
+                  }
+                })));
+          } else {
+            return GetMaterialApp(
+                theme: theme.darkTheme == true ? dark : light,
+                home: const Scaffold(body: Authorization()));
+          }
         }));
   }
 }

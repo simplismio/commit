@@ -22,6 +22,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
   String? email;
   String? password;
+  bool _obscureText = true;
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +68,19 @@ class _SignInScreenState extends State<SignInScreen> {
                             setState(() => email = val);
                           }),
                       TextFormField(
-                          decoration:
-                              const InputDecoration(hintText: "Password"),
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            suffixIcon: InkWell(
+                              onTap: _toggle,
+                              child: Icon(
+                                _obscureText
+                                    ? FontAwesomeIcons.eye
+                                    : FontAwesomeIcons.eyeSlash,
+                                size: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
                           textAlign: TextAlign.left,
                           autofocus: true,
                           validator: (String? value) {

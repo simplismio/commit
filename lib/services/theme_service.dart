@@ -28,7 +28,7 @@ class ThemeService extends ChangeNotifier {
   }
 
   Future<void> _loadFromStorage() async {
-    _darkTheme = await StorageService.readData(key);
+    _darkTheme = await StorageService.readData(key) ?? true;
     notifyListeners();
   }
 

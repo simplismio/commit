@@ -1,3 +1,4 @@
+import 'package:commit/services/commitment_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -26,6 +27,7 @@ class UserService extends ChangeNotifier {
   }
 
   Stream<UserService?> get user {
+    print(_auth.currentUser);
     return _auth.userChanges().map(_userFromFirebaseUser);
   }
 
@@ -43,6 +45,8 @@ class UserService extends ChangeNotifier {
     try {
       await _auth.signInWithEmailAndPassword(
           email: email!, password: password!);
+      // var test = _auth.currentUser;
+      // CommitmentService.firebaseUid = test?.uid;
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;

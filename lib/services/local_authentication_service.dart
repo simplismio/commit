@@ -59,7 +59,7 @@ class LocalAuthenticationService extends ChangeNotifier {
   }
 
   _loadFromStorage() async {
-    _biometrics = await StorageService.readData(key);
+    _biometrics = await StorageService.readData(key) ?? true;
     notifyListeners();
   }
 

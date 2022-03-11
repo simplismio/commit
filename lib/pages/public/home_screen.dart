@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../services/commitment_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
@@ -259,18 +261,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 value: theme.darkTheme,
               ),
             ),
-            Consumer<LocalAuthenticationService>(
-              builder: (context, localAuthentication, child) => SwitchListTile(
-                title: const Text(
-                  "Biometric Unlock",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                onChanged: (value) {
-                  localAuthentication.toggleBiometrics();
-                },
-                value: localAuthentication.biometrics,
-              ),
-            ),
+            defaultTargetPlatform == TargetPlatform.iOS ||
+                    defaultTargetPlatform == TargetPlatform.android
+                ? Consumer<LocalAuthenticationService>(
+                    builder: (context, localAuthentication, child) =>
+                        SwitchListTile(
+                      title: const Text(
+                        "Biometric Unlock",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      onChanged: (value) {
+                        localAuthentication.toggleBiometrics();
+                      },
+                      value: localAuthentication.biometrics,
+                    ),
+                  )
+                : Container(),
             const Divider(
               color: Colors.white,
             ),

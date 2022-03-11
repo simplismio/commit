@@ -1,3 +1,4 @@
+import 'package:commit/services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,8 +7,7 @@ class CommitmentService extends ChangeNotifier {
   final String? key;
   final String? description;
   final String? userId;
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  static String? firebaseUid;
 
   CommitmentService({
     this.key,
@@ -29,8 +29,13 @@ class CommitmentService extends ChangeNotifier {
   }
 
   Stream<List<CommitmentService>> get commitments {
-    var getUser = _auth.currentUser;
-    var firebaseUid = getUser?.uid;
+    // final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    final getUser = FirebaseAuth.instance.currentUser;
+    print(getUser);
+    firebaseUid = getUser?.uid;
+
+    print('In stream ${firebaseUid}');
     return FirebaseFirestore.instance
         .collection('commitments')
         .where("user_id", isEqualTo: firebaseUid)

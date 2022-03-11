@@ -4,11 +4,11 @@ class StorageService {
   static void saveData(String _key, dynamic _value) async {
     final _preferences = await SharedPreferences.getInstance();
     if (_value is int) {
-      _preferences.setInt(_key, _value);
+      await _preferences.setInt(_key, _value);
     } else if (_value is String) {
-      _preferences.setString(_key, _value);
+      await _preferences.setString(_key, _value);
     } else if (_value is bool) {
-      _preferences.setBool(_key, _value);
+      await _preferences.setBool(_key, _value);
     } else {
       print("Invalid Type");
     }
