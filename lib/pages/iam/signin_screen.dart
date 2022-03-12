@@ -66,6 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             setState(() => email = val);
                           }),
                       TextFormField(
+                          obscureText: _obscureText,
                           decoration: InputDecoration(
                             hintText: "Password",
                             suffixIcon: InkWell(
@@ -74,8 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 _obscureText
                                     ? FontAwesomeIcons.eye
                                     : FontAwesomeIcons.eyeSlash,
-                                size: 15.0,
-                                color: Colors.black,
+                                size: 20.0,
                               ),
                             ),
                           ),

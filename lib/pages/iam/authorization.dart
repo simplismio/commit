@@ -1,4 +1,5 @@
 import 'package:commit/pages/root_page.dart';
+import 'package:commit/shares/loading_share.dart';
 
 import '../../services/user_service.dart';
 import '../root_page.dart';
@@ -14,9 +15,15 @@ class Authorization extends StatefulWidget {
 }
 
 class _AuthorizationState extends State<Authorization> {
+  bool loading = true;
+
   @override
   Widget build(BuildContext context) {
     UserService? us = Provider.of<UserService?>(context, listen: true);
-    return us?.uid != null ? const RootPage() : const SignInScreen();
+    return us?.uid == null
+        ? const SignInScreen()
+        : us?.uid != null
+            ? const RootPage()
+            : const LoadingShare();
   }
 }

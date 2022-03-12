@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../services/user_service.dart';
 import '../../shares/loading_share.dart';
 import 'authorization.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -18,6 +19,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   String? email;
   String? password;
+
+  bool _obscureText = true;
+
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,22 +73,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             //_showConfirmDialog(context);
                           }),
                       TextFormField(
-                          decoration:
-                              const InputDecoration(hintText: "Password"),
+                          obscureText: _obscureText,
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            suffixIcon: InkWell(
+                              onTap: _toggle,
+                              child: Icon(
+                                _obscureText
+                                    ? FontAwesomeIcons.eye
+                                    : FontAwesomeIcons.eyeSlash,
+                                size: 20.0,
+                              ),
+                            ),
+                          ),
                           textAlign: TextAlign.left,
-                          // initialValue: _auth.phoneNumberSignIn == ''
-                          //     ? '+95 9'
-                          //     : _auth.phoneNumberSignIn,
                           autofocus: true,
                           validator: (String? value) {
-                            //print(value.length);
                             return (value != null && value.length < 2)
-                                ? 'Please provide a valid number.'
+                                ? 'Please provide a valid password.'
                                 : null;
                           },
                           onChanged: (val) {
                             setState(() => password = val);
-                            //_showConfirmDialog(context);
                           }),
                       const SizedBox(height: 10.0),
                       SizedBox(
