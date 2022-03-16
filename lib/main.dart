@@ -1,14 +1,15 @@
-import './pages/iam/authorization.dart';
-import './pages/iam/local_authorization.dart';
 import './services/user_service.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import './services/theme_service.dart';
 import './services/local_authentication_service.dart';
 import 'package:provider/provider.dart';
-import './services/theme_service.dart';
-import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'services/data_service.dart';
+import 'utilities/authorization_utility.dart';
+import 'utilities/local_authorization_utility.dart';
+
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 Future<void> main() async {
@@ -42,14 +43,9 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -66,6 +62,15 @@ class _MyAppState extends State<MyApp> {
               return null;
             },
           ),
+          StreamProvider<List<DataService>>.value(
+              value: DataService().contracts,
+              initialData: const [],
+              catchError: (BuildContext context, e) {
+                if (kDebugMode) {
+                  print("Error:$e");
+                }
+                return [];
+              }),
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {
@@ -74,7 +79,7 @@ class _MyAppState extends State<MyApp> {
           }
           if (defaultTargetPlatform == TargetPlatform.iOS ||
               defaultTargetPlatform == TargetPlatform.android) {
-            return GetMaterialApp(
+            return MaterialApp(
                 theme: theme.darkTheme == true ? dark : light,
                 home: Scaffold(body: Consumer<LocalAuthenticationService>(
                     builder: (context,
@@ -84,15 +89,15 @@ class _MyAppState extends State<MyApp> {
                         localAuthentication.biometrics.toString());
                   }
                   if (localAuthentication.biometrics == true) {
-                    return const LocalAuthorization();
+                    return const LocalAuthorizationUtility();
                   } else {
-                    return const Authorization();
+                    return const AuthorizationUtility();
                   }
                 })));
           } else {
-            return GetMaterialApp(
+            return MaterialApp(
                 theme: theme.darkTheme == true ? dark : light,
-                home: const Scaffold(body: Authorization()));
+                home: const Scaffold(body: AuthorizationUtility()));
           }
         }));
   }

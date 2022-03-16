@@ -1,9 +1,7 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../services/user_service.dart';
-import '../../shares/loading_share.dart';
 import 'signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -31,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingShare()
+        ? const CircularProgressIndicator()
         : Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: true,
@@ -116,7 +114,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   .signInUsingEmailAndPassword(email, password)
                                   .then((result) {
                                 if (result == null) {
-                                  Get.back();
+                                  Navigator.pop(context);
                                 } else {
                                   setState(() => loading = false);
                                   ScaffoldMessenger.of(context)
@@ -145,7 +143,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       GestureDetector(
                           child: const Text("Sign-up using email"),
                           onTap: () {
-                            Get.to(const SignUpScreen());
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const SignUpScreen()));
                           }),
                       const SizedBox(height: 10.0),
                       Row(
@@ -211,7 +213,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingShare()
+        ? const CircularProgressIndicator()
         : Scaffold(
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
@@ -253,7 +255,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               setState(() => loading = true);
                               UserService().resetPassword(email).then((result) {
                                 if (result == null) {
-                                  Get.back();
+                                  Navigator.pop(context);
                                 } else {
                                   setState(() => loading = false);
                                   ScaffoldMessenger.of(context)

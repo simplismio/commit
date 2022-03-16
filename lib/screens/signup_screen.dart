@@ -1,9 +1,7 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../services/user_service.dart';
-import '../../shares/loading_share.dart';
-import 'authorization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../utilities/authorization_utility.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -31,7 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingShare()
+        ? const CircularProgressIndicator()
         : Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: true,
@@ -39,7 +37,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: const Icon(Icons.chevron_left),
                   color: Colors.white,
                   onPressed: () {
-                    Get.offAll(const Authorization());
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => const AuthorizationUtility()),
+                        (Route<dynamic> route) => false);
                   }),
               elevation: 0.0,
               centerTitle: true,
@@ -118,7 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const Authorization()));
+                                              const AuthorizationUtility()));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(

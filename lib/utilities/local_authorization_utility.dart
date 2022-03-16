@@ -1,16 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../services/local_authentication_service.dart';
-import 'authorization.dart';
+import 'authorization_utility.dart';
 
-class LocalAuthorization extends StatefulWidget {
-  const LocalAuthorization({Key? key}) : super(key: key);
+class LocalAuthorizationUtility extends StatefulWidget {
+  const LocalAuthorizationUtility({Key? key}) : super(key: key);
 
   @override
-  _LocalAuthorizationState createState() => _LocalAuthorizationState();
+  _LocalAuthorizationUtilityState createState() =>
+      _LocalAuthorizationUtilityState();
 }
 
-class _LocalAuthorizationState extends State<LocalAuthorization> {
+class _LocalAuthorizationUtilityState extends State<LocalAuthorizationUtility> {
   //Future<dynamic> _canAuthenticate =
   //LocalAuthenticationService().checkBiometrics();
   bool hasAuthenticated = false;
@@ -26,7 +27,7 @@ class _LocalAuthorizationState extends State<LocalAuthorization> {
       if (kDebugMode) {
         print('The user is already authenticated using biometrics');
       }
-      return const Authorization();
+      return const AuthorizationUtility();
     } else {
       if (kDebugMode) {
         print('The user is not yet authenticated using biometrics');
@@ -40,7 +41,7 @@ class _LocalAuthorizationState extends State<LocalAuthorization> {
         if (kDebugMode) {
           print('The user is now authenticated using biometrics');
         }
-        return const Authorization();
+        return const AuthorizationUtility();
       } else {
         if (kDebugMode) {
           print('The user could not be authenticated using biometrics');
