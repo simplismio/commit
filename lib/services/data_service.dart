@@ -1,20 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 class DataService extends ChangeNotifier {
-  static String? contractKeyforQuery;
-
   final String? key;
   final String? description;
   final String? userId;
   final List? commitments;
-  static String? firebaseUid;
+
+  // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 3001);
+  // await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
 
   DataService({this.key, this.description, this.userId, this.commitments});
-
-  final CollectionReference _contracts =
-      FirebaseFirestore.instance.collection('contracts');
 
   List<DataService> _contractsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
@@ -27,15 +25,18 @@ class DataService extends ChangeNotifier {
   }
 
   Stream<List<DataService>> get contracts {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final getUser = _auth.currentUser;
-    firebaseUid = getUser?.uid;
-
-    if (kDebugMode) {
+    if (foundation.kDebugMode) {
       print('Loading contracts');
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }
-    // _contracts
-    //     .doc('WIMJXZomRXNg8bTq4HZz') // <-- Document ID
+
+    final _user = FirebaseAuth.instance.currentUser;
+
+    // FirebaseFirestore.instance
+    //     .collection('contracts')
+    //     .doc('jDKWi9IwTIHlzvEyf9Rt') // <-- Document ID
     //     .update({
     //       'commitments': FieldValue.arrayUnion(
     //         [
@@ -48,13 +49,19 @@ class DataService extends ChangeNotifier {
 
     return FirebaseFirestore.instance
         .collection('contracts')
-        .where("user_id", isEqualTo: firebaseUid)
+        .where("user_id", isEqualTo: _user?.uid)
         .snapshots()
         .map(_contractsFromSnapshot);
   }
 
   Future<void> addContract(_userId, _description) {
-    return _contracts
+    if (foundation.kDebugMode) {
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+    }
+
+    return FirebaseFirestore.instance
+        .collection('contracts')
         .add({'user_id': _userId, 'description': _description})
         // ignore: avoid_print
         .then((value) => print("Contract Added"))
@@ -63,7 +70,13 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> editContract(_key, _description) {
-    return _contracts
+    if (foundation.kDebugMode) {
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+    }
+
+    return FirebaseFirestore.instance
+        .collection('contracts')
         .doc(_key)
         .update({'description': _description})
         // ignore: avoid_print
@@ -73,7 +86,12 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> deleteContract(_key) {
-    return _contracts
+    if (foundation.kDebugMode) {
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+    }
+    return FirebaseFirestore.instance
+        .collection('contracts')
         .doc(_key)
         .delete()
         // ignore: avoid_print
@@ -83,7 +101,13 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> addCommitment(_contractId, _userId, _description) {
-    return _contracts
+    if (foundation.kDebugMode) {
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+    }
+
+    return FirebaseFirestore.instance
+        .collection('contracts')
         .doc(_contractId) // <-- Document ID
         .update({
           'commitments': FieldValue.arrayUnion(
@@ -97,7 +121,12 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> editCommitment(_key, _description) {
-    return _contracts
+    if (foundation.kDebugMode) {
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+    }
+    return FirebaseFirestore.instance
+        .collection('contracts')
         .doc(_key)
         .update({'description': _description})
         // ignore: avoid_print
@@ -107,7 +136,12 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> deleteCommitment(_key) {
-    return _contracts
+    if (foundation.kDebugMode) {
+      FirebaseFirestore.instance.settings = const Settings(
+          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+    }
+    return FirebaseFirestore.instance
+        .collection('contracts')
         .doc(_key)
         .delete()
         // ignore: avoid_print

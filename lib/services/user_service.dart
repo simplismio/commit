@@ -16,8 +16,6 @@ class UserService extends ChangeNotifier {
     // this.username,
   });
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   UserService? _userFromFirebaseUser(User? user) {
     if (kDebugMode && user != null) {
       if (kDebugMode) {
@@ -28,13 +26,20 @@ class UserService extends ChangeNotifier {
   }
 
   Stream<UserService?> get user {
-    return _auth.userChanges().map(_userFromFirebaseUser);
+    if (kDebugMode) {
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    }
+
+    return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
   }
 
   Future signUpUsingEmailAndPassword({String? email, String? password}) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email!, password: password!);
+      if (kDebugMode) {
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      }
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email!, password: password!);
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
@@ -43,8 +48,11 @@ class UserService extends ChangeNotifier {
   //SIGN IN METHOD
   Future signInUsingEmailAndPassword(String? email, String? password) async {
     try {
-      await _auth.signInWithEmailAndPassword(
-          email: email!, password: password!);
+      if (kDebugMode) {
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      }
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email!, password: password!);
 
       return null;
     } on FirebaseAuthException catch (e) {
@@ -53,11 +61,12 @@ class UserService extends ChangeNotifier {
   }
 
   Future resetPassword(String? email) async {
-    if (kDebugMode) {
-      print(email);
-    }
     try {
-      await _auth.sendPasswordResetEmail(email: email!);
+      if (kDebugMode) {
+        print('Sending password reset email');
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      }
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email!);
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -66,10 +75,12 @@ class UserService extends ChangeNotifier {
 
   Future signOut() async {
     try {
-      await _auth.signOut();
       if (kDebugMode) {
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
         print('Signing out user');
       }
+      await FirebaseAuth.instance.signOut();
+
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -91,6 +102,9 @@ class UserService extends ChangeNotifier {
     );
 
     // Once signed in, return the UserCredential
+    if (kDebugMode) {
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    }
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
@@ -102,6 +116,9 @@ class UserService extends ChangeNotifier {
       }
       final OAuthCredential credential =
           FacebookAuthProvider.credential(result.accessToken!.token);
+      if (kDebugMode) {
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      }
       return await FirebaseAuth.instance.signInWithCredential(credential);
     }
     return null;
@@ -137,7 +154,9 @@ class UserService extends ChangeNotifier {
       idToken: appleCredential.identityToken,
       rawNonce: rawNonce,
     );
-
+    if (kDebugMode) {
+      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    }
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 }

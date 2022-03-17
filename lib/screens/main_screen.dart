@@ -4,12 +4,11 @@ import '../../services/data_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
 import '../../services/theme_service.dart';
+import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
-
-import '../utilities/authorization_utility.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -759,7 +758,7 @@ class _NewContractState extends State<NewContract> {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
                               DataService().addContract(us?.uid, description);
-                              Navigator.pop(context);
+                              //Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;
@@ -840,7 +839,7 @@ class _EditContractState extends State<EditContract> {
                               setState(() => loading = true);
                               DataService().editContract(
                                   widget.commitmentKey, description);
-                              Navigator.pop(context);
+                              //Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;
@@ -921,7 +920,7 @@ class _NewCommitmentState extends State<NewCommitment> {
                               setState(() => loading = true);
                               DataService().addCommitment(
                                   widget.contractKey, us?.uid, description);
-                              Navigator.pop(context);
+                              //Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;
@@ -1002,7 +1001,7 @@ class _EditCommitmentState extends State<EditCommitment> {
                               setState(() => loading = true);
                               DataService().editCommitment(
                                   widget.commitmentKey, description);
-                              Navigator.pop(context);
+                              //Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;

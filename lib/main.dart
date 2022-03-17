@@ -38,13 +38,13 @@ Future<void> main() async {
       messagingSenderId: "236126728561",
       projectId: "commit-b9e29",
     ));
-    // await FirebaseFirestore.instance.enablePersistence();
   }
-  runApp(const MyApp());
+
+  runApp(const CommitApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class CommitApp extends StatelessWidget {
+  const CommitApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

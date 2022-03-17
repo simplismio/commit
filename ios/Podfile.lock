@@ -8,6 +8,10 @@ PODS:
     - Firebase/Firestore (= 8.11.0)
     - firebase_core
     - Flutter
+  - cloud_functions (3.2.10):
+    - Firebase/Functions (= 8.11.0)
+    - firebase_core
+    - Flutter
   - FBAEMKit (12.3.2):
     - FBSDKCoreKit_Basics (= 12.3.2)
   - FBSDKCoreKit (12.3.2):
@@ -24,12 +28,22 @@ PODS:
   - Firebase/Firestore (8.11.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 8.11.0)
+  - Firebase/Functions (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (~> 8.11.0)
+  - Firebase/Storage (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 8.11.0)
   - firebase_auth (3.3.10):
     - Firebase/Auth (= 8.11.0)
     - firebase_core
     - Flutter
   - firebase_core (1.13.1):
     - Firebase/CoreOnly (= 8.11.0)
+    - Flutter
+  - firebase_storage (10.2.9):
+    - Firebase/Storage (= 8.11.0)
+    - firebase_core
     - Flutter
   - FirebaseAuth (8.11.0):
     - FirebaseCore (~> 8.0)
@@ -53,6 +67,12 @@ PODS:
   - FirebaseFirestore/Base (8.11.0)
   - FirebaseFirestore/WithLeveldb (8.11.0):
     - FirebaseFirestore/Base
+  - FirebaseFunctions (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - FirebaseStorage (8.11.0):
+    - FirebaseCore (~> 8.0)
+    - GTMSessionFetcher/Core (~> 1.5)
   - Flutter (1.0.0)
   - flutter_facebook_auth (3.5.3):
     - FBSDKCoreKit (~> 12.3.2)
@@ -111,8 +131,10 @@ PODS:
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`, tag `8.11.0`)
   - Flutter (from `Flutter`)
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
@@ -134,6 +156,8 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseFunctions
+    - FirebaseStorage
     - FMDB
     - GoogleDataTransport
     - GoogleSignIn
@@ -146,10 +170,14 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  cloud_functions:
+    :path: ".symlinks/plugins/cloud_functions/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_storage:
+    :path: ".symlinks/plugins/firebase_storage/ios"
   FirebaseFirestore:
     :git: https://github.com/invertase/firestore-ios-sdk-frameworks.git
     :tag: 8.11.0
@@ -178,6 +206,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   cloud_firestore: c6c42fe62809b7417aa3c45a6ef0c2812f7fb0d6
+  cloud_functions: 8415560122ac43e9edc2efd070ae14e664aa2fd3
   FBAEMKit: 955ca52eba8219c20f90774e8c6ff8bc7b3192a3
   FBSDKCoreKit: 678f64eda3f0ff25c189c2ebbfe87b1d96a85a6d
   FBSDKCoreKit_Basics: 6bee7c1f0932432901781203fa5e587ec5099148
@@ -185,10 +214,13 @@ SPEC CHECKSUMS:
   Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
   firebase_auth: fa562bf84ce3e872cc4225374cb687edb32e8d26
   firebase_core: 08f6a85f62060111de5e98d6a214810d11365de9
+  firebase_storage: 5b964cad5f351e9c35f8b0e0b878cdd095f30d09
   FirebaseAuth: d96d73aba85d192d7a7aa0b86dd6d7f8ec170b4b
   FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
   FirebaseCoreDiagnostics: 3b40dfadef5b90433a60ae01f01e90fe87aa76aa
   FirebaseFirestore: 8a0c6a06219bbaad86c72bcb66688c28995dde84
+  FirebaseFunctions: 2bad3e4365dee72a85a6baa6ccd684f024d14696
+  FirebaseStorage: 4d05cb1112ff8822a0f9f5090da8bd6d550602ec
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_facebook_auth: 9fb37e24281c7f13198d03708bad164c2a20fb53
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a

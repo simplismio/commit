@@ -12,5 +12,44 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "emulators": {
+    "ui": {
+      "enabled": true,
+      "host": "localhost",
+      "port": 3000
+    },
+    "functions": {
+      "port": 3001
+    },
+    "firestore": {
+      "host": "0.0.0.0",
+      "enabled": true,
+      "port": 8080
+    },
+    "auth": {
+      "enabled": true,
+      "port": 9099
+    },
+    "hosting": {
+      "port": 3002
+    },
+    "storage": {
+      "enabled": true,
+      "port": 9199
+    }
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": {
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run lint",
+      "npm --prefix \"$RESOURCE_DIR\" run build"
+    ]
   }
 }
