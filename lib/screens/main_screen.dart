@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import '../../services/data_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
@@ -8,7 +6,7 @@ import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, defaultTargetPlatform;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -339,7 +337,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                           );
                                                                         },
                                                                         scrollDirection: Axis.vertical)),
-                                                            SizedBox(
+                                                            const SizedBox(
                                                                 height: 10),
                                                           ],
                                                         ),
@@ -776,8 +774,8 @@ class _NewContractState extends State<NewContract> {
 }
 
 class EditContract extends StatefulWidget {
-  final currentDescription;
-  final commitmentKey;
+  final String? currentDescription;
+  final int? commitmentKey;
 
   const EditContract({Key? key, this.commitmentKey, this.currentDescription})
       : super(key: key);
@@ -857,7 +855,7 @@ class _EditContractState extends State<EditContract> {
 }
 
 class NewCommitment extends StatefulWidget {
-  final contractKey;
+  final String? contractKey;
 
   const NewCommitment({Key? key, this.contractKey}) : super(key: key);
 
@@ -938,8 +936,8 @@ class _NewCommitmentState extends State<NewCommitment> {
 }
 
 class EditCommitment extends StatefulWidget {
-  final currentDescription;
-  final commitmentKey;
+  final String? currentDescription;
+  final int? commitmentKey;
 
   const EditCommitment({Key? key, this.commitmentKey, this.currentDescription})
       : super(key: key);

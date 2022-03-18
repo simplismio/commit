@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, ChangeNotifier;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' as foundation;
 
 class DataService extends ChangeNotifier {
   final String? key;
@@ -25,7 +24,7 @@ class DataService extends ChangeNotifier {
   }
 
   Stream<List<DataService>> get contracts {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       print('Loading contracts');
       FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
       FirebaseFirestore.instance.settings = const Settings(
@@ -36,7 +35,7 @@ class DataService extends ChangeNotifier {
 
     // FirebaseFirestore.instance
     //     .collection('contracts')
-    //     .doc('jDKWi9IwTIHlzvEyf9Rt') // <-- Document ID
+    //     .doc('eN0BqtJIzUKIolOocC7p') // <-- Document ID
     //     .update({
     //       'commitments': FieldValue.arrayUnion(
     //         [
@@ -55,7 +54,7 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> addContract(_userId, _description) {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }
@@ -70,7 +69,7 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> editContract(_key, _description) {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }
@@ -86,7 +85,7 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> deleteContract(_key) {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }
@@ -101,7 +100,7 @@ class DataService extends ChangeNotifier {
   }
 
   Future<void> addCommitment(_contractId, _userId, _description) {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }
@@ -110,33 +109,44 @@ class DataService extends ChangeNotifier {
         .collection('contracts')
         .doc(_contractId) // <-- Document ID
         .update({
-          'commitments': FieldValue.arrayUnion(
-            [
-              {"description": _description, "user_id": _userId}
-            ],
-          )
-        }) // <-- Add data
-        .then((_) => print('New commitment added'))
-        .catchError((error) => print('Add failed: $error'));
+      'commitments': FieldValue.arrayUnion(
+        [
+          {"description": _description, "user_id": _userId}
+        ],
+      )
+    }) // <-- Add data
+        .then((_) {
+      if (kDebugMode) {
+        print('New commitment added');
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print('Add failed: $error');
+      }
+    });
   }
 
   Future<void> editCommitment(_key, _description) {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_key)
-        .update({'description': _description})
-        // ignore: avoid_print
-        .then((value) => print("Commitment updated"))
-        // ignore: avoid_print
-        .catchError((error) => print("Failed to merge data: $error"));
+        .update({'description': _description}).then((value) {
+      if (kDebugMode) {
+        print("Commitment updated");
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("Failed to merge data: $error");
+      }
+    });
   }
 
   Future<void> deleteCommitment(_key) {
-    if (foundation.kDebugMode) {
+    if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
     }

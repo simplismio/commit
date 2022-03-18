@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../services/user_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../utilities/authorization_utility.dart';
+import '../../services/user_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -53,11 +53,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   key: _formKeyForm,
                   child: Column(
                     children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('Welcome',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20.0),
                       TextFormField(
                           decoration: const InputDecoration(hintText: "Email"),

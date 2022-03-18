@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, ChangeNotifier;
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -18,9 +18,8 @@ class UserService extends ChangeNotifier {
 
   UserService? _userFromFirebaseUser(User? user) {
     if (kDebugMode && user != null) {
-      if (kDebugMode) {
-        print('Firebase UID is: ${user.uid}');
-      }
+      // ignore: avoid_print
+      print('Firebase UID is: ${user.uid}');
     }
     return UserService(uid: user?.uid);
   }

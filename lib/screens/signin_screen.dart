@@ -45,11 +45,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 20.0),
-                      const Text('Welcome',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 5.0),
                       TextFormField(
                           decoration: const InputDecoration(hintText: "Email"),
                           textAlign: TextAlign.left,
