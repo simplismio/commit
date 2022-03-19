@@ -37,10 +37,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: const Icon(Icons.chevron_left),
                   color: Colors.white,
                   onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const AuthorizationUtility()),
-                        (Route<dynamic> route) => false);
+                    // Navigator.of(context).pushAndRemoveUntil(
+                    //     MaterialPageRoute(
+                    //         builder: (context) => const AuthorizationUtility()),
+                    //     (Route<dynamic> route) => false);
                   }),
               elevation: 0.0,
               centerTitle: true,
@@ -110,11 +110,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       email: email, password: password)
                                   .then((result) {
                                 if (result == null) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AuthorizationUtility()));
+                                  // Navigator.pushReplacement(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) =>
+                                  //             const AuthorizationUtility()));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(

@@ -7,6 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
 
+import 'emulator_service.dart';
+
 class UserService extends ChangeNotifier {
   String? uid;
   // final String username;
@@ -26,16 +28,15 @@ class UserService extends ChangeNotifier {
 
   Stream<UserService?> get user {
     if (kDebugMode) {
-      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      EmulatorService.setupAuthEmulator();
     }
-
     return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
   }
 
   Future signUpUsingEmailAndPassword({String? email, String? password}) async {
     try {
       if (kDebugMode) {
-        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+        EmulatorService.setupAuthEmulator();
       }
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email!, password: password!);
@@ -48,11 +49,10 @@ class UserService extends ChangeNotifier {
   Future signInUsingEmailAndPassword(String? email, String? password) async {
     try {
       if (kDebugMode) {
-        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+        EmulatorService.setupAuthEmulator();
       }
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email!, password: password!);
-
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
@@ -63,7 +63,7 @@ class UserService extends ChangeNotifier {
     try {
       if (kDebugMode) {
         print('Sending password reset email');
-        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+        EmulatorService.setupAuthEmulator();
       }
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email!);
       return null;
@@ -75,7 +75,7 @@ class UserService extends ChangeNotifier {
   Future signOut() async {
     try {
       if (kDebugMode) {
-        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+        EmulatorService.setupAuthEmulator();
         print('Signing out user');
       }
       await FirebaseAuth.instance.signOut();
@@ -102,7 +102,7 @@ class UserService extends ChangeNotifier {
 
     // Once signed in, return the UserCredential
     if (kDebugMode) {
-      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      EmulatorService.setupAuthEmulator();
     }
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
@@ -116,7 +116,7 @@ class UserService extends ChangeNotifier {
       final OAuthCredential credential =
           FacebookAuthProvider.credential(result.accessToken!.token);
       if (kDebugMode) {
-        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+        EmulatorService.setupAuthEmulator();
       }
       return await FirebaseAuth.instance.signInWithCredential(credential);
     }
@@ -154,7 +154,7 @@ class UserService extends ChangeNotifier {
       rawNonce: rawNonce,
     );
     if (kDebugMode) {
-      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      EmulatorService.setupAuthEmulator();
     }
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }

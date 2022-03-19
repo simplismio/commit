@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, defaultTargetPlatform;
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -32,8 +33,12 @@ class _MainScreenState extends State<MainScreen> {
 
   final Map<int, bool> _toggleCommitments = {};
   bool _toggleCommitmentsValue = false;
+  final FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics.instance;
 
-  toggleCommitments(int _index, bool _value) {
+  toggleCommitments(int _index, bool _value) async {
+    await _firebaseAnalytics.logSelectContent(
+        contentType: 'Contract', itemId: _index.toString());
+
     _toggleCommitmentsValue = _value;
     _toggleCommitments[_index] = _value;
   }
@@ -703,7 +708,9 @@ class _MainScreenState extends State<MainScreen> {
                     icon: const Icon(
                       Icons.notifications,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      await _firebaseAnalytics.logSelectItem();
+
                       showMaterialModalBottomSheet(
                           expand: false,
                           context: context,

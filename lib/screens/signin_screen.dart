@@ -109,7 +109,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   .signInUsingEmailAndPassword(email, password)
                                   .then((result) {
                                 if (result == null) {
-                                  Navigator.pop(context);
+                                  // Navigator.pop(context);
                                 } else {
                                   setState(() => loading = false);
                                   ScaffoldMessenger.of(context)
@@ -250,7 +250,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               setState(() => loading = true);
                               UserService().resetPassword(email).then((result) {
                                 if (result == null) {
-                                  Navigator.pop(context);
+                                  // Navigator.pop(context);
                                 } else {
                                   setState(() => loading = false);
                                   ScaffoldMessenger.of(context)

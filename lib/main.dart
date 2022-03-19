@@ -9,10 +9,10 @@ import 'dart:async';
 import 'services/data_service.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/local_authorization_utility.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
+
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 Future<void> main() async {
@@ -31,6 +31,7 @@ Future<void> main() async {
   if (defaultTargetPlatform == TargetPlatform.iOS ||
       defaultTargetPlatform == TargetPlatform.android) {
     await Firebase.initializeApp();
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // FirebaseFirestore.instance.settings =
     //     const Settings(persistenceEnabled: true);
   } else {
@@ -43,19 +44,14 @@ Future<void> main() async {
             messagingSenderId: "236126728561",
             appId: "1:236126728561:web:777f7f92d8ed6a5b7e86d0",
             measurementId: "G-8Z10Z47T7F"));
-
-    if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
-    }
   }
+
   final FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics.instance;
   await _firebaseAnalytics.logAppOpen();
 
   FirebasePerformance _performance = FirebasePerformance.instance;
   await _performance.setPerformanceCollectionEnabled(true);
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runZonedGuarded<Future<void>>(() async {
     runApp(const CommitApp());
   }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));

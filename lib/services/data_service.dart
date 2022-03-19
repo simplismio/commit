@@ -1,4 +1,6 @@
-import 'package:flutter/foundation.dart' show kDebugMode, ChangeNotifier;
+import 'emulator_service.dart';
+import 'package:flutter/foundation.dart'
+    show ChangeNotifier, TargetPlatform, defaultTargetPlatform, kDebugMode;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -26,25 +28,24 @@ class DataService extends ChangeNotifier {
   Stream<List<DataService>> get contracts {
     if (kDebugMode) {
       print('Loading contracts');
-      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-      FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+      EmulatorService.setupAuthEmulator();
+      EmulatorService.setupFirestoreEmulator();
     }
 
     final _user = FirebaseAuth.instance.currentUser;
 
-    // FirebaseFirestore.instance
-    //     .collection('contracts')
-    //     .doc('eN0BqtJIzUKIolOocC7p') // <-- Document ID
-    //     .update({
-    //       'commitments': FieldValue.arrayUnion(
-    //         [
-    //           {"description": 'Co2'}
-    //         ],
-    //       )
-    //     }) // <-- Add data
-    //     .then((_) => print('New commitment added'))
-    //     .catchError((error) => print('Add failed: $error'));
+    FirebaseFirestore.instance
+        .collection('contracts')
+        .doc('K7liGS2MU7Ad376caRWv') // <-- Document ID
+        .update({
+          'commitments': FieldValue.arrayUnion(
+            [
+              {"description": 'Co5'}
+            ],
+          )
+        }) // <-- Add data
+        .then((_) => print('New commitment added'))
+        .catchError((error) => print('Add failed: $error'));
 
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -55,8 +56,17 @@ class DataService extends ChangeNotifier {
 
   Future<void> addContract(_userId, _description) {
     if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: '10.0.2.2:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      } else {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: 'localhost:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      }
     }
 
     return FirebaseFirestore.instance
@@ -70,8 +80,17 @@ class DataService extends ChangeNotifier {
 
   Future<void> editContract(_key, _description) {
     if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: '10.0.2.2:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      } else {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: 'localhost:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      }
     }
 
     return FirebaseFirestore.instance
@@ -86,8 +105,17 @@ class DataService extends ChangeNotifier {
 
   Future<void> deleteContract(_key) {
     if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: '10.0.2.2:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      } else {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: 'localhost:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      }
     }
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -101,8 +129,17 @@ class DataService extends ChangeNotifier {
 
   Future<void> addCommitment(_contractId, _userId, _description) {
     if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: '10.0.2.2:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      } else {
+        FirebaseFirestore.instance.settings = const Settings(
+            host: 'localhost:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
+      }
     }
 
     return FirebaseFirestore.instance
@@ -129,7 +166,7 @@ class DataService extends ChangeNotifier {
   Future<void> editCommitment(_key, _description) {
     if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+          host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
     }
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -148,7 +185,7 @@ class DataService extends ChangeNotifier {
   Future<void> deleteCommitment(_key) {
     if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
-          host: 'localhost:8080', sslEnabled: false, persistenceEnabled: false);
+          host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
     }
     return FirebaseFirestore.instance
         .collection('contracts')
