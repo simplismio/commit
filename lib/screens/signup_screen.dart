@@ -37,15 +37,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: const Icon(Icons.chevron_left),
                   color: Colors.white,
                   onPressed: () {
-                    // Navigator.of(context).pushAndRemoveUntil(
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const AuthorizationUtility()),
-                    //     (Route<dynamic> route) => false);
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => const AuthorizationUtility()),
+                        (Route<dynamic> route) => false);
                   }),
               elevation: 0.0,
               centerTitle: true,
-              title:
-                  const Text('Sign-Up', style: TextStyle(color: Colors.white)),
+              title: const Text('Sign-Up'),
             ),
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
@@ -98,9 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: ElevatedButton(
                           child: const Text(
                             "Sign-Up",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
@@ -110,11 +107,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       email: email, password: password)
                                   .then((result) {
                                 if (result == null) {
-                                  // Navigator.pushReplacement(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) =>
-                                  //             const AuthorizationUtility()));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AuthorizationUtility()));
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(

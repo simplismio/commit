@@ -4,28 +4,25 @@ import 'package:flutter/foundation.dart'
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class DataService extends ChangeNotifier {
+class ContractService extends ChangeNotifier {
   final String? key;
-  final String? description;
+  final String? title;
   final String? userId;
   final List? commitments;
 
-  // FirebaseFunctions.instance.useFunctionsEmulator('localhost', 3001);
-  // await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+  ContractService({this.key, this.title, this.userId, this.commitments});
 
-  DataService({this.key, this.description, this.userId, this.commitments});
-
-  List<DataService> _contractsFromSnapshot(QuerySnapshot snapshot) {
+  List<ContractService> _contractsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return DataService(
+      return ContractService(
           key: doc.id,
-          description: doc['description'],
+          title: doc['title'],
           userId: doc['user_id'],
           commitments: doc['commitments']);
     }).toList();
   }
 
-  Stream<List<DataService>> get contracts {
+  Stream<List<ContractService>> get contracts {
     if (kDebugMode) {
       print('Loading contracts');
       EmulatorService.setupAuthEmulator();
@@ -34,18 +31,18 @@ class DataService extends ChangeNotifier {
 
     final _user = FirebaseAuth.instance.currentUser;
 
-    FirebaseFirestore.instance
-        .collection('contracts')
-        .doc('K7liGS2MU7Ad376caRWv') // <-- Document ID
-        .update({
-          'commitments': FieldValue.arrayUnion(
-            [
-              {"description": 'Co5'}
-            ],
-          )
-        }) // <-- Add data
-        .then((_) => print('New commitment added'))
-        .catchError((error) => print('Add failed: $error'));
+    // FirebaseFirestore.instance
+    //     .collection('contracts')
+    //     .doc('K7liGS2MU7Ad376caRWv') // <-- Document ID
+    //     .update({
+    //       'commitments': FieldValue.arrayUnion(
+    //         [
+    //           {"description": 'Co5'}
+    //         ],
+    //       )
+    //     }) // <-- Add data
+    //     .then((_) => print('New commitment added'))
+    //     .catchError((error) => print('Add failed: $error'));
 
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -54,7 +51,7 @@ class DataService extends ChangeNotifier {
         .map(_contractsFromSnapshot);
   }
 
-  Future<void> addContract(_userId, _description) {
+  Future<void> addContract(_title, _commitment) {
     if (kDebugMode) {
       if (defaultTargetPlatform == TargetPlatform.android) {
         FirebaseFirestore.instance.settings = const Settings(
@@ -69,13 +66,23 @@ class DataService extends ChangeNotifier {
       }
     }
 
-    return FirebaseFirestore.instance
-        .collection('contracts')
-        .add({'user_id': _userId, 'description': _description})
-        // ignore: avoid_print
-        .then((value) => print("Contract Added"))
-        // ignore: avoid_print
-        .catchError((error) => print("Failed to add user: $error"));
+    final _user = FirebaseAuth.instance.currentUser;
+
+    return FirebaseFirestore.instance.collection('contracts').add({
+      'user_id': _user?.uid,
+      'title': _title,
+      'commitments': FieldValue.arrayUnion([
+        {"commitment": '_commitment'},
+      ])
+    }).then((value) {
+      if (kDebugMode) {
+        print("Contract Added");
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("Failed to add user: $error");
+      }
+    });
   }
 
   Future<void> editContract(_key, _description) {
@@ -98,7 +105,7 @@ class DataService extends ChangeNotifier {
         .doc(_key)
         .update({'description': _description})
         // ignore: avoid_print
-        .then((value) => print("Commitment updated"))
+        .then((value) => print("Contract updated"))
         // ignore: avoid_print
         .catchError((error) => print("Failed to merge data: $error"));
   }
@@ -122,12 +129,12 @@ class DataService extends ChangeNotifier {
         .doc(_key)
         .delete()
         // ignore: avoid_print
-        .then((value) => print("Commitment deleted"))
+        .then((value) => print("Contract deleted"))
         // ignore: avoid_print
         .catchError((error) => print("Failed to delete user: $error"));
   }
 
-  Future<void> addCommitment(_contractId, _userId, _description) {
+  Future<void> addCommitment(_contractKey, _commitment) {
     if (kDebugMode) {
       if (defaultTargetPlatform == TargetPlatform.android) {
         FirebaseFirestore.instance.settings = const Settings(
@@ -144,11 +151,11 @@ class DataService extends ChangeNotifier {
 
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractId) // <-- Document ID
+        .doc(_contractKey) // <-- Document ID
         .update({
       'commitments': FieldValue.arrayUnion(
         [
-          {"description": _description, "user_id": _userId}
+          {"commitment": _commitment}
         ],
       )
     }) // <-- Add data

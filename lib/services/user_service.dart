@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:crypto/crypto.dart';
-
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'emulator_service.dart';
+import 'package:crypto/crypto.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
@@ -36,8 +36,11 @@ class UserService extends ChangeNotifier {
   Future signUpUsingEmailAndPassword({String? email, String? password}) async {
     try {
       if (kDebugMode) {
+        print('Signing up user');
         EmulatorService.setupAuthEmulator();
       }
+      await FirebaseAnalytics.instance
+          .logSignUp(signUpMethod: 'email/password');
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email!, password: password!);
     } on FirebaseAuthException catch (e) {
@@ -49,8 +52,10 @@ class UserService extends ChangeNotifier {
   Future signInUsingEmailAndPassword(String? email, String? password) async {
     try {
       if (kDebugMode) {
+        print('Signing in user');
         EmulatorService.setupAuthEmulator();
       }
+      await FirebaseAnalytics.instance.logLogin();
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email!, password: password!);
       return null;

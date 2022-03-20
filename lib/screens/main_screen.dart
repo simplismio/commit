@@ -1,13 +1,15 @@
-import '../../services/data_service.dart';
+import '../services/contract_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
 import '../../services/theme_service.dart';
 import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, defaultTargetPlatform;
-import 'package:firebase_analytics/firebase_analytics.dart';
+
+import 'edit_commitment_screen.dart';
+import 'edit_contract_screen.dart';
+import 'new_contract_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -33,19 +35,15 @@ class _MainScreenState extends State<MainScreen> {
 
   final Map<int, bool> _toggleCommitments = {};
   bool _toggleCommitmentsValue = false;
-  final FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics.instance;
 
   toggleCommitments(int _index, bool _value) async {
-    await _firebaseAnalytics.logSelectContent(
-        contentType: 'Contract', itemId: _index.toString());
-
     _toggleCommitmentsValue = _value;
     _toggleCommitments[_index] = _value;
   }
 
   @override
   Widget build(BuildContext context) {
-    List _contracts = Provider.of<List<DataService>>(context, listen: true);
+    List _contracts = Provider.of<List<ContractService>>(context, listen: true);
     ThemeService _theme = Provider.of<ThemeService>(context, listen: true);
 
     mobileView() {
@@ -103,25 +101,19 @@ class _MainScreenState extends State<MainScreen> {
                             confirmDismiss: (direction) async {
                               if (direction == DismissDirection.startToEnd) {
                                 /// edit item
-                                showMaterialModalBottomSheet(
-                                    expand: false,
-                                    context: context,
-                                    builder: (context) => SizedBox(
-                                        height: 300,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: EditContract(
-                                            commitmentKey:
-                                                _contracts[contractIndex].key,
-                                            currentDescription:
-                                                _contracts[contractIndex]
-                                                    .description,
-                                          ),
-                                        )));
+                                ///
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            EditContractScreen(
+                                              contract:
+                                                  _contracts[contractIndex],
+                                            )));
                                 return false;
                               } else if (direction ==
                                   DismissDirection.endToStart) {
-                                DataService().deleteContract(
+                                ContractService().deleteContract(
                                     _contracts[contractIndex].key);
                                 if (kDebugMode) {
                                   print('Remove commitment');
@@ -153,7 +145,7 @@ class _MainScreenState extends State<MainScreen> {
                                     padding:
                                         const EdgeInsets.fromLTRB(5, 10, 5, 10),
                                     child: Text(
-                                      _contracts[contractIndex].description,
+                                      _contracts[contractIndex].title,
                                       style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
@@ -240,32 +232,24 @@ class _MainScreenState extends State<MainScreen> {
                                                         if (direction ==
                                                             DismissDirection
                                                                 .startToEnd) {
-                                                          /// edit item
-                                                          showMaterialModalBottomSheet(
-                                                              expand: false,
-                                                              context: context,
-                                                              builder: (context) =>
-                                                                  SizedBox(
-                                                                      height:
-                                                                          300,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(5.0),
-                                                                        child:
-                                                                            EditCommitment(
-                                                                          commitmentKey:
-                                                                              commitmentIndex,
-                                                                          currentDescription:
-                                                                              _contracts[contractIndex].commitments[commitmentIndex]['description'],
-                                                                        ),
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      EditCommitmentScreen(
+                                                                        commitmentKey:
+                                                                            commitmentIndex,
+                                                                        currentDescription:
+                                                                            _contracts[contractIndex].commitments[commitmentIndex]['commitment'],
                                                                       )));
+
                                                           return false;
                                                         } else if (direction ==
                                                             DismissDirection
                                                                 .endToStart) {
-                                                          DataService().deleteCommitment(
-                                                              _contracts[
+                                                          ContractService()
+                                                              .deleteCommitment(_contracts[
                                                                       contractIndex]
                                                                   .commitments[
                                                                       commitmentIndex]
@@ -298,7 +282,7 @@ class _MainScreenState extends State<MainScreen> {
                                                             _contracts[contractIndex]
                                                                         .commitments[
                                                                     commitmentIndex]
-                                                                ['description'],
+                                                                ['commitment'],
                                                             style: const TextStyle(
                                                                 fontSize: 14,
                                                                 fontWeight:
@@ -382,8 +366,7 @@ class _MainScreenState extends State<MainScreen> {
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         5, 15.0, 5, 25.0),
-                                    child: Text(
-                                        _contracts[contractIndex].description,
+                                    child: Text(_contracts[contractIndex].title,
                                         style: const TextStyle(
                                             fontSize: 24,
                                             fontWeight: FontWeight.bold)),
@@ -398,7 +381,7 @@ class _MainScreenState extends State<MainScreen> {
                                               .length,
                                           itemBuilder: (BuildContext context,
                                               int commitmentIndex) {
-                                            // return Text(commitmentList[index].description);
+                                            // return Text(commitmentList[index].title);
                                             return Dismissible(
                                               key: ValueKey<int>(
                                                   commitmentIndex),
@@ -453,38 +436,33 @@ class _MainScreenState extends State<MainScreen> {
                                                 if (direction ==
                                                     DismissDirection
                                                         .startToEnd) {
-                                                  /// edit item
-                                                  showMaterialModalBottomSheet(
-                                                      expand: false,
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          SizedBox(
-                                                              height: 300,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        5.0),
-                                                                child:
-                                                                    EditCommitment(
-                                                                  commitmentKey:
-                                                                      commitmentIndex,
-                                                                  currentDescription:
-                                                                      _contracts[contractIndex]
-                                                                              .commitments[commitmentIndex]
-                                                                          [
-                                                                          'description'],
-                                                                ),
-                                                              )));
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            EditCommitmentScreen(
+                                                          commitmentKey:
+                                                              commitmentIndex,
+                                                          currentDescription:
+                                                              _contracts[contractIndex]
+                                                                          .commitments[
+                                                                      commitmentIndex]
+                                                                  [
+                                                                  'commitment'],
+                                                        ),
+                                                      ));
                                                   return false;
                                                 } else if (direction ==
                                                     DismissDirection
                                                         .endToStart) {
-                                                  DataService().deleteCommitment(
-                                                      _contracts[contractIndex]
-                                                          .commitments[
-                                                              commitmentIndex]
-                                                          .key);
+                                                  ContractService()
+                                                      .deleteCommitment(
+                                                          _contracts[
+                                                                  contractIndex]
+                                                              .commitments[
+                                                                  commitmentIndex]
+                                                              .key);
                                                   if (kDebugMode) {
                                                     print('Remove commitment');
                                                   }
@@ -508,7 +486,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     _contracts[contractIndex]
                                                                 .commitments[
                                                             commitmentIndex]
-                                                        ['description'],
+                                                        ['commitment'],
                                                     style: const TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
@@ -631,7 +609,6 @@ class _MainScreenState extends State<MainScreen> {
                         setState(() => loading = true);
                         UserService().signOut().then((result) {
                           setState(() => loading = false);
-
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -659,16 +636,18 @@ class _MainScreenState extends State<MainScreen> {
                 children: const [
                   SizedBox(height: 50),
                   Text(
-                    'Sort',
+                    'Notifications',
                     style: TextStyle(
                       fontSize: 30,
                     ),
                   ),
                   SizedBox(height: 50),
-                  Text(
-                    'Sort',
-                    style: TextStyle(
-                      fontSize: 20,
+                  Card(
+                    child: Text(
+                      'Notification',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                     ),
                   )
                 ],
@@ -704,19 +683,32 @@ class _MainScreenState extends State<MainScreen> {
               centerTitle: true,
               elevation: 0,
               actions: [
-                IconButton(
+                Builder(
+                  builder: (context) {
+                    return IconButton(
+                      icon: const Icon(
+                        Icons.notifications,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                    );
+                  },
+                ),
+                Builder(builder: (context) {
+                  return IconButton(
                     icon: const Icon(
-                      Icons.notifications,
+                      Icons.add_box,
                     ),
-                    onPressed: () async {
-                      await _firebaseAnalytics.logSelectItem();
-
-                      showMaterialModalBottomSheet(
-                          expand: false,
-                          context: context,
-                          builder: (context) => const SizedBox(
-                              height: 300, child: Text('Notifications')));
-                    }),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const NewContractScreen()));
+                    },
+                  );
+                })
               ],
             ),
             body: Scrollbar(
@@ -738,337 +730,6 @@ class _MainScreenState extends State<MainScreen> {
             ),
             drawer: drawerLeft(),
             endDrawer: drawerRight(),
-            floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.add), //child widget inside this button
-              onPressed: () {
-                showMaterialModalBottomSheet(
-                    expand: false,
-                    context: context,
-                    builder: (context) =>
-                        const SizedBox(height: 300, child: NewContract()));
-              },
-            ),
-          );
-  }
-}
-
-class NewContract extends StatefulWidget {
-  const NewContract({Key? key}) : super(key: key);
-
-  @override
-  _NewContractState createState() => _NewContractState();
-}
-
-class _NewContractState extends State<NewContract> {
-  final _formKeyForm = GlobalKey<FormState>();
-  bool loading = false;
-  String? error;
-
-  String? description;
-
-  @override
-  Widget build(BuildContext context) {
-    UserService? us = Provider.of<UserService?>(context);
-
-    return loading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-              child: Form(
-                  key: _formKeyForm,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('New contract',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 5.0),
-                      TextFormField(
-                          decoration:
-                              const InputDecoration(hintText: "New contract"),
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          validator: (String? value) {
-                            //print(value.length);
-                            return (value != null && value.length < 2)
-                                ? 'Please provide a valid contract title.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => description = val);
-                          }),
-                      const SizedBox(height: 10.0),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text(
-                            "Add contract",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
-                              setState(() => loading = true);
-                              DataService().addContract(us?.uid, description);
-                              //Navigator.pop(context);
-                            } else {
-                              setState(() {
-                                loading = false;
-                                error = 'Something went wrong.';
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          );
-  }
-}
-
-class EditContract extends StatefulWidget {
-  final String? currentDescription;
-  final int? commitmentKey;
-
-  const EditContract({Key? key, this.commitmentKey, this.currentDescription})
-      : super(key: key);
-
-  @override
-  _EditContractState createState() => _EditContractState();
-}
-
-class _EditContractState extends State<EditContract> {
-  final _formKeyForm = GlobalKey<FormState>();
-  bool loading = false;
-  String error = '';
-
-  String? description;
-
-  @override
-  Widget build(BuildContext context) {
-    return loading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-              child: Form(
-                  key: _formKeyForm,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('Edit commitment',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 5.0),
-                      TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: "Edit commitment"),
-                          textAlign: TextAlign.left,
-                          initialValue: widget.currentDescription,
-                          autofocus: true,
-                          validator: (String? value) {
-                            return (value != null && value.length < 2)
-                                ? 'Please provide a valid commitment.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => description = val);
-                          }),
-                      const SizedBox(height: 10.0),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text(
-                            "Edit commitment",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
-                              setState(() => loading = true);
-                              DataService().editContract(
-                                  widget.commitmentKey, description);
-                              //Navigator.pop(context);
-                            } else {
-                              setState(() {
-                                loading = false;
-                                error = 'Something went wrong.';
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          );
-  }
-}
-
-class NewCommitment extends StatefulWidget {
-  final String? contractKey;
-
-  const NewCommitment({Key? key, this.contractKey}) : super(key: key);
-
-  @override
-  _NewCommitmentState createState() => _NewCommitmentState();
-}
-
-class _NewCommitmentState extends State<NewCommitment> {
-  final _formKeyForm = GlobalKey<FormState>();
-  bool loading = false;
-  String? error;
-
-  String? description;
-
-  @override
-  Widget build(BuildContext context) {
-    UserService? us = Provider.of<UserService?>(context);
-
-    return loading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-              child: Form(
-                  key: _formKeyForm,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('New commitment',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 5.0),
-                      TextFormField(
-                          decoration:
-                              const InputDecoration(hintText: "New commitment"),
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          validator: (String? value) {
-                            //print(value.length);
-                            return (value != null && value.length < 2)
-                                ? 'Please provide a valid commitment.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => description = val);
-                          }),
-                      const SizedBox(height: 10.0),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text(
-                            "Add commitment",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
-                              setState(() => loading = true);
-                              DataService().addCommitment(
-                                  widget.contractKey, us?.uid, description);
-                              //Navigator.pop(context);
-                            } else {
-                              setState(() {
-                                loading = false;
-                                error = 'Something went wrong.';
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          );
-  }
-}
-
-class EditCommitment extends StatefulWidget {
-  final String? currentDescription;
-  final int? commitmentKey;
-
-  const EditCommitment({Key? key, this.commitmentKey, this.currentDescription})
-      : super(key: key);
-
-  @override
-  _EditCommitmentState createState() => _EditCommitmentState();
-}
-
-class _EditCommitmentState extends State<EditCommitment> {
-  final _formKeyForm = GlobalKey<FormState>();
-  bool loading = false;
-  String error = '';
-
-  String? description;
-
-  @override
-  Widget build(BuildContext context) {
-    return loading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-              child: Form(
-                  key: _formKeyForm,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      const Text('Edit commitment',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 5.0),
-                      TextFormField(
-                          decoration: const InputDecoration(
-                              hintText: "Edit commitment"),
-                          textAlign: TextAlign.left,
-                          initialValue: widget.currentDescription,
-                          autofocus: true,
-                          validator: (String? value) {
-                            return (value != null && value.length < 2)
-                                ? 'Please provide a valid commitment.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => description = val);
-                          }),
-                      const SizedBox(height: 10.0),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text(
-                            "Edit commitment",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
-                              setState(() => loading = true);
-                              DataService().editCommitment(
-                                  widget.commitmentKey, description);
-                              //Navigator.pop(context);
-                            } else {
-                              setState(() {
-                                loading = false;
-                                error = 'Something went wrong.';
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
           );
   }
 }

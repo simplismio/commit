@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../services/user_service.dart';
+import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -35,8 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
               automaticallyImplyLeading: true,
               elevation: 0.0,
               centerTitle: true,
-              title:
-                  const Text('Sign-In', style: TextStyle(color: Colors.white)),
+              title: const Text('Sign-In'),
             ),
             body: Padding(
               padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
@@ -86,11 +85,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       GestureDetector(
                           child: const Text("I forgot my password"),
                           onTap: () {
-                            showMaterialModalBottomSheet(
-                                expand: false,
-                                context: context,
-                                builder: (context) => const SizedBox(
-                                    height: 300, child: ForgotPassword()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const ForgotPasswordScreen()));
                           }),
                       const SizedBox(height: 10.0),
                       SizedBox(
@@ -98,9 +97,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: ElevatedButton(
                           child: const Text(
                             "Sign-In",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
@@ -183,93 +180,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           //       ? const Spacer()
                           //       : Container(),
                         ],
-                      ),
-                    ],
-                  )),
-            ),
-          );
-  }
-}
-
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
-
-  @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
-}
-
-class _ForgotPasswordState extends State<ForgotPassword> {
-  final _formKeyForm = GlobalKey<FormState>();
-  bool loading = false;
-  String error = '';
-
-  String? email;
-
-  @override
-  Widget build(BuildContext context) {
-    return loading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-              child: Form(
-                  key: _formKeyForm,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 30.0),
-                      const Text('Reset your password',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                          decoration: const InputDecoration(hintText: "Email"),
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          validator: (String? value) {
-                            //print(value.length);
-                            return (value != null && value.length < 2)
-                                ? 'Please provide a valid email.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => email = val);
-                          }),
-                      const SizedBox(height: 20.0),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          child: const Text(
-                            "Reset password",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () async {
-                            if (_formKeyForm.currentState!.validate()) {
-                              setState(() => loading = true);
-                              UserService().resetPassword(email).then((result) {
-                                if (result == null) {
-                                  // Navigator.pop(context);
-                                } else {
-                                  setState(() => loading = false);
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content: Text(
-                                      result,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ));
-                                }
-                              });
-                            } else {
-                              setState(() {
-                                loading = false;
-                                error = 'Something went wrong.';
-                              });
-                            }
-                          },
-                        ),
                       ),
                     ],
                   )),

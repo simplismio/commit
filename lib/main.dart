@@ -6,7 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'services/data_service.dart';
+import 'services/contract_service.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/local_authorization_utility.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -46,14 +46,20 @@ Future<void> main() async {
             measurementId: "G-8Z10Z47T7F"));
   }
 
-  final FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics.instance;
-  await _firebaseAnalytics.logAppOpen();
-
-  FirebasePerformance _performance = FirebasePerformance.instance;
-  await _performance.setPerformanceCollectionEnabled(true);
+  await FirebaseAnalytics.instance.logAppOpen();
+  await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
 
   runZonedGuarded<Future<void>>(() async {
-    runApp(const CommitApp());
+    runApp(StreamProvider<UserService?>.value(
+        value: UserService().user,
+        initialData: null,
+        catchError: (BuildContext context, e) {
+          if (kDebugMode) {
+            print("Error:$e");
+          }
+          return null;
+        },
+        child: const CommitApp()));
   }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
@@ -66,18 +72,8 @@ class CommitApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
-          StreamProvider<UserService?>.value(
-            value: UserService().user,
-            initialData: null,
-            catchError: (BuildContext context, e) {
-              if (kDebugMode) {
-                print("Error:$e");
-              }
-              return null;
-            },
-          ),
-          StreamProvider<List<DataService>>.value(
-              value: DataService().contracts,
+          StreamProvider<List<ContractService>>.value(
+              value: ContractService().contracts,
               initialData: const [],
               catchError: (BuildContext context, e) {
                 if (kDebugMode) {
@@ -94,6 +90,10 @@ class CommitApp extends StatelessWidget {
           if (defaultTargetPlatform == TargetPlatform.iOS ||
               defaultTargetPlatform == TargetPlatform.android) {
             return MaterialApp(
+                navigatorObservers: [
+                  FirebaseAnalyticsObserver(
+                      analytics: FirebaseAnalytics.instance),
+                ],
                 theme: theme.darkTheme == true ? dark : light,
                 home: Scaffold(body: Consumer<LocalAuthenticationService>(
                     builder: (context,
@@ -110,6 +110,10 @@ class CommitApp extends StatelessWidget {
                 })));
           } else {
             return MaterialApp(
+                navigatorObservers: [
+                  FirebaseAnalyticsObserver(
+                      analytics: FirebaseAnalytics.instance),
+                ],
                 theme: theme.darkTheme == true ? dark : light,
                 home: const Scaffold(body: AuthorizationUtility()));
           }
