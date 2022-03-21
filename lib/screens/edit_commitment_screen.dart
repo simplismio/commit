@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
 import '../services/contract_service.dart';
+import 'main_screen.dart';
 
 class EditCommitmentScreen extends StatefulWidget {
-  final String? currentDescription;
-  final int? commitmentKey;
+  final String? contractKey;
+  // ignore: prefer_typing_uninitialized_variables
+  final commitmentArray;
+  final int? commitmentIndex;
 
-  const EditCommitmentScreen(
-      {Key? key, this.commitmentKey, this.currentDescription})
-      : super(key: key);
+  const EditCommitmentScreen({
+    Key? key,
+    this.contractKey,
+    this.commitmentArray,
+    this.commitmentIndex,
+  }) : super(key: key);
 
   @override
   _EditCommitmentScreenState createState() => _EditCommitmentScreenState();
@@ -19,7 +25,7 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
   bool loading = false;
   String error = '';
 
-  String? description;
+  String? commitment;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +63,9 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
                           decoration: const InputDecoration(
                               hintText: "Edit commitment"),
                           textAlign: TextAlign.left,
-                          initialValue: widget.currentDescription,
+                          initialValue:
+                              widget.commitmentArray[widget.commitmentIndex]
+                                  ['commitment'],
                           autofocus: true,
                           validator: (String? value) {
                             return (value != null && value.length < 2)
@@ -65,7 +73,7 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
                                 : null;
                           },
                           onChanged: (val) {
-                            setState(() => description = val);
+                            setState(() => commitment = val);
                           }),
                       const SizedBox(height: 10.0),
                       SizedBox(
@@ -79,8 +87,14 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
                               ContractService().editCommitment(
-                                  widget.commitmentKey, description);
-                              //Navigator.pop(context);
+                                  widget.contractKey,
+                                  widget.commitmentArray,
+                                  widget.commitmentIndex,
+                                  commitment);
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainScreen()),
+                                  (Route<dynamic> route) => false);
                             } else {
                               setState(() {
                                 loading = false;

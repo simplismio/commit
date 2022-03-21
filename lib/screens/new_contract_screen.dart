@@ -1,3 +1,4 @@
+import 'package:commit/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/contract_service.dart';
 
@@ -88,7 +89,10 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
                               ContractService().addContract(title, commitment);
-                              Navigator.pop(context);
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainScreen()),
+                                  (Route<dynamic> route) => false);
                             } else {
                               setState(() {
                                 loading = false;

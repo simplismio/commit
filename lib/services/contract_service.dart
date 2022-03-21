@@ -72,7 +72,7 @@ class ContractService extends ChangeNotifier {
       'user_id': _user?.uid,
       'title': _title,
       'commitments': FieldValue.arrayUnion([
-        {"commitment": '_commitment'},
+        {"commitment": _commitment},
       ])
     }).then((value) {
       if (kDebugMode) {
@@ -170,15 +170,19 @@ class ContractService extends ChangeNotifier {
     });
   }
 
-  Future<void> editCommitment(_key, _description) {
+  Future<void> editCommitment(
+      _contractKey, _commitmentArray, _commitmentKey, _commitment) {
     if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
     }
+
+    _commitmentArray[_commitmentKey]['commitment'] = _commitment;
+
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_key)
-        .update({'description': _description}).then((value) {
+        .doc(_contractKey)
+        .update({'commitments': _commitmentArray}).then((value) {
       if (kDebugMode) {
         print("Commitment updated");
       }

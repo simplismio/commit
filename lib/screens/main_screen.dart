@@ -235,15 +235,21 @@ class _MainScreenState extends State<MainScreen> {
                                                           Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder: (BuildContext
-                                                                          context) =>
-                                                                      EditCommitmentScreen(
-                                                                        commitmentKey:
-                                                                            commitmentIndex,
-                                                                        currentDescription:
-                                                                            _contracts[contractIndex].commitments[commitmentIndex]['commitment'],
-                                                                      )));
-
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    EditCommitmentScreen(
+                                                                  contractKey:
+                                                                      _contracts[
+                                                                              contractIndex]
+                                                                          .key,
+                                                                  commitmentArray:
+                                                                      _contracts[
+                                                                              contractIndex]
+                                                                          .commitments,
+                                                                  commitmentIndex:
+                                                                      commitmentIndex,
+                                                                ),
+                                                              ));
                                                           return false;
                                                         } else if (direction ==
                                                             DismissDirection
@@ -442,14 +448,15 @@ class _MainScreenState extends State<MainScreen> {
                                                         builder: (BuildContext
                                                                 context) =>
                                                             EditCommitmentScreen(
-                                                          commitmentKey:
+                                                          contractKey: _contracts[
+                                                                  contractIndex]
+                                                              .key,
+                                                          commitmentArray:
+                                                              _contracts[
+                                                                      contractIndex]
+                                                                  .commitments,
+                                                          commitmentIndex:
                                                               commitmentIndex,
-                                                          currentDescription:
-                                                              _contracts[contractIndex]
-                                                                          .commitments[
-                                                                      commitmentIndex]
-                                                                  [
-                                                                  'commitment'],
                                                         ),
                                                       ));
                                                   return false;
