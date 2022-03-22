@@ -151,15 +151,13 @@ class ContractService extends ChangeNotifier {
 
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractKey) // <-- Document ID
+        .doc(_contractKey)
         .update({
-      'commitments': FieldValue.arrayUnion(
-        [
-          {"commitment": _commitment}
-        ],
-      )
+      'commitments': FieldValue.arrayUnion([
+        {"commitment": _commitment},
+      ])
     }) // <-- Add data
-        .then((_) {
+        .then((value) {
       if (kDebugMode) {
         print('New commitment added');
       }
@@ -193,18 +191,26 @@ class ContractService extends ChangeNotifier {
     });
   }
 
-  Future<void> deleteCommitment(_key) {
+  Future<void> deleteCommitment(
+      _contractKey, _commitmentArray, _commitmentIndex) {
     if (kDebugMode) {
       FirebaseFirestore.instance.settings = const Settings(
           host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
     }
+
+    _commitmentArray.removeAt(_commitmentIndex);
+
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_key)
-        .delete()
-        // ignore: avoid_print
-        .then((value) => print("Commitment deleted"))
-        // ignore: avoid_print
-        .catchError((error) => print("Failed to delete user: $error"));
+        .doc(_contractKey)
+        .update({'commitments': _commitmentArray}).then((value) {
+      if (kDebugMode) {
+        print("Commitment deleted");
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("Failed to merge data: $error");
+      }
+    });
   }
 }

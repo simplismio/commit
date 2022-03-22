@@ -1,7 +1,8 @@
+import 'package:commit/services/contract_service.dart';
 import 'package:flutter/material.dart';
 
 class EditContractScreen extends StatefulWidget {
-  final List? contract;
+  final ContractService? contract;
 
   const EditContractScreen({Key? key, this.contract}) : super(key: key);
 
@@ -14,10 +15,12 @@ class _EditContractScreenState extends State<EditContractScreen> {
   bool loading = false;
   String error = '';
 
-  String? description;
+  String? title;
 
   @override
   Widget build(BuildContext context) {
+    print(widget.contract!.title);
+
     return loading
         ? const CircularProgressIndicator()
         : Scaffold(
@@ -48,20 +51,20 @@ class _EditContractScreenState extends State<EditContractScreen> {
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 30.0),
-                      // TextFormField(
-                      //     decoration: const InputDecoration(
-                      //         hintText: "Edit commitment"),
-                      //     textAlign: TextAlign.left,
-                      //     initialValue: widget.contract,
-                      //     autofocus: true,
-                      //     validator: (String? value) {
-                      //       return (value != null && value.length < 2)
-                      //           ? 'Please provide a valid commitment.'
-                      //           : null;
-                      //     },
-                      //     onChanged: (val) {
-                      //       setState(() => description = val);
-                      //     }),
+                      TextFormField(
+                          decoration:
+                              const InputDecoration(hintText: "Edit contract"),
+                          textAlign: TextAlign.left,
+                          initialValue: widget.contract!.title,
+                          autofocus: true,
+                          validator: (String? value) {
+                            return (value != null && value.length < 2)
+                                ? 'Please provide a valid commitment.'
+                                : null;
+                          },
+                          onChanged: (val) {
+                            setState(() => title = val);
+                          }),
                       const SizedBox(height: 10.0),
                       SizedBox(
                         width: 300,
@@ -75,7 +78,7 @@ class _EditContractScreenState extends State<EditContractScreen> {
                               setState(() => loading = true);
                               // DataService().editContract(
                               //     widget.contractKey, description);
-                              //Navigator.pop(context);
+
                             } else {
                               setState(() {
                                 loading = false;

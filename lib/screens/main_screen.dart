@@ -6,10 +6,10 @@ import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, defaultTargetPlatform;
-
 import 'edit_commitment_screen.dart';
 import 'edit_contract_screen.dart';
 import 'new_contract_screen.dart';
+import 'new_commitment_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -22,10 +22,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
-    for (var i = 0; i < 50; i++) {
-      _toggleCommitments[i] = false;
-    }
   }
 
   bool loading = false;
@@ -34,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
   final int paneProportion = 70;
 
   final Map<int, bool> _toggleCommitments = {};
-  bool _toggleCommitmentsValue = false;
+  bool _toggleCommitmentsValue = true;
 
   toggleCommitments(int _index, bool _value) async {
     _toggleCommitmentsValue = _value;
@@ -59,261 +55,259 @@ class _MainScreenState extends State<MainScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: Dismissible(
-                            key:
-                                ValueKey<String>(_contracts[contractIndex].key),
-                            background: Container(
-                              color: Colors.blue,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  children: const [
-                                    Icon(Icons.edit, color: Colors.white),
-                                    SizedBox(width: 10),
-                                    Text('Edit commitment',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            secondaryBackground: Container(
-                              color: Colors.red,
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: const [
-                                    Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text('Delete commitment',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            confirmDismiss: (direction) async {
-                              if (direction == DismissDirection.startToEnd) {
-                                /// edit item
-                                ///
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            EditContractScreen(
-                                              contract:
-                                                  _contracts[contractIndex],
-                                            )));
-                                return false;
-                              } else if (direction ==
-                                  DismissDirection.endToStart) {
-                                ContractService().deleteContract(
-                                    _contracts[contractIndex].key);
-                                if (kDebugMode) {
-                                  print('Remove commitment');
-                                }
-                                return true;
-                              }
-                              return null;
-                            },
-                            child: GestureDetector(
-                              onTap: (() {
-                                setState(() {
-                                  toggleCommitments(
-                                      contractIndex, !_toggleCommitmentsValue);
-                                });
-                              }),
-                              child: Card(
-                                margin: const EdgeInsets.fromLTRB(5, 1, 5, 5),
-                                child: ListTile(
-                                  isThreeLine: true,
+                          child: GestureDetector(
+                            onTap: (() {
+                              setState(() {
+                                toggleCommitments(
+                                    contractIndex, !_toggleCommitmentsValue);
+                              });
+                            }),
+                            child: Container(
+                              color: _theme.darkTheme == true
+                                  ? Colors.grey[800]
+                                  : Colors.grey[200],
+                              child: ListTile(
+                                isThreeLine: true,
 
-                                  // leading: CachedNetworkImage(
-                                  //   imageUrl: "",
-                                  //   placeholder: (context, url) =>
-                                  //       const CircularProgressIndicator(),
-                                  //   errorWidget: (context, url, error) =>
-                                  //       const Icon(Icons.error),
-                                  // ),
-                                  title: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(5, 10, 5, 10),
-                                    child: Text(
-                                      _contracts[contractIndex].title,
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  subtitle: Column(
-                                    children: <Widget>[
-                                      _toggleCommitments[contractIndex] == false
-                                          ? Container()
-                                          : SizedBox(
-                                              child: ListView.builder(
-                                                  shrinkWrap: true,
-                                                  physics:
-                                                      const ClampingScrollPhysics(),
-                                                  itemCount:
-                                                      _contracts[contractIndex]
-                                                          .commitments
-                                                          .length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int commitmentIndex) {
-                                                    // return Text(commitmentList[index].description);
-                                                    return Dismissible(
-                                                      key: ValueKey<int>(
-                                                          commitmentIndex),
-                                                      background: Container(
-                                                        color: Colors.blue,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          child: Row(
-                                                            children: const [
-                                                              Icon(Icons.edit,
-                                                                  color: Colors
-                                                                      .white),
-                                                              SizedBox(
-                                                                  width: 10),
-                                                              Text(
-                                                                  'Edit commitment',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold)),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      secondaryBackground:
-                                                          Container(
-                                                        color: Colors.red,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .end,
-                                                            children: const [
-                                                              Icon(
-                                                                Icons.delete,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 10),
-                                                              Text(
-                                                                  'Delete commitment',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold)),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      confirmDismiss:
-                                                          (direction) async {
-                                                        if (direction ==
-                                                            DismissDirection
-                                                                .startToEnd) {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (BuildContext
-                                                                        context) =>
-                                                                    EditCommitmentScreen(
-                                                                  contractKey:
-                                                                      _contracts[
-                                                                              contractIndex]
-                                                                          .key,
-                                                                  commitmentArray:
-                                                                      _contracts[
-                                                                              contractIndex]
-                                                                          .commitments,
-                                                                  commitmentIndex:
-                                                                      commitmentIndex,
-                                                                ),
-                                                              ));
-                                                          return false;
-                                                        } else if (direction ==
-                                                            DismissDirection
-                                                                .endToStart) {
-                                                          ContractService()
-                                                              .deleteCommitment(_contracts[
-                                                                      contractIndex]
-                                                                  .commitments[
-                                                                      commitmentIndex]
-                                                                  .key);
-                                                          if (kDebugMode) {
-                                                            print(
-                                                                'Remove commitment');
-                                                          }
-                                                          return true;
-                                                        }
-                                                        return null;
-                                                      },
-                                                      child: Card(
-                                                        color:
-                                                            _theme.darkTheme ==
-                                                                    true
-                                                                ? Colors
-                                                                    .grey[700]
-                                                                : Colors
-                                                                    .grey[200],
-                                                        child: ListTile(
-                                                          // leading: CachedNetworkImage(
-                                                          //   imageUrl: "",
-                                                          //   placeholder: (context, url) =>
-                                                          //       const CircularProgressIndicator(),
-                                                          //   errorWidget: (context, url, error) =>
-                                                          //       const Icon(Icons.error),
-                                                          // ),
-                                                          title: Text(
-                                                            _contracts[contractIndex]
-                                                                        .commitments[
-                                                                    commitmentIndex]
-                                                                ['commitment'],
-                                                            style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                          subtitle: const Text(
-                                                            'subtitle.',
-                                                            style: TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  scrollDirection:
-                                                      Axis.vertical)),
-                                      const SizedBox(height: 10),
+                                // leading: CachedNetworkImage(
+                                //   imageUrl: "",
+                                //   placeholder: (context, url) =>
+                                //       const CircularProgressIndicator(),
+                                //   errorWidget: (context, url, error) =>
+                                //       const Icon(Icons.error),
+                                // ),
+                                title: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(2, 15, 5, 5),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        _contracts[contractIndex].title,
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Spacer(),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.more_horiz,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        EditContractScreen(
+                                                  contract:
+                                                      _contracts[contractIndex],
+                                                ),
+                                              ));
+                                        },
+                                      )
                                     ],
                                   ),
-                                  //subtitle:
                                 ),
+                                subtitle: Column(
+                                  children: <Widget>[
+                                    _toggleCommitments[contractIndex] == false
+                                        ? Container()
+                                        : _contracts.asMap().containsKey(0) ==
+                                                true
+                                            ? Column(
+                                                children: [
+                                                  SizedBox(
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        physics:
+                                                            const ClampingScrollPhysics(),
+                                                        itemCount: _contracts[
+                                                                contractIndex]
+                                                            .commitments
+                                                            .length,
+                                                        itemBuilder: (BuildContext
+                                                                context,
+                                                            int
+                                                                commitmentIndex) {
+                                                          // return Text(commitmentList[index].description);
+                                                          return Dismissible(
+                                                            key: ValueKey<int>(
+                                                                commitmentIndex),
+                                                            background:
+                                                                Container(
+                                                              color:
+                                                                  Colors.blue,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(15),
+                                                                child: Row(
+                                                                  children: const [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .edit,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            10),
+                                                                    Text(
+                                                                        'Edit commitment',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.bold)),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            secondaryBackground:
+                                                                Container(
+                                                              color: Colors.red,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(15),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  children: const [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .delete,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            10),
+                                                                    Text(
+                                                                        'Delete commitment',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.bold)),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            confirmDismiss:
+                                                                (direction) async {
+                                                              if (direction ==
+                                                                  DismissDirection
+                                                                      .startToEnd) {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder: (BuildContext
+                                                                              context) =>
+                                                                          EditCommitmentScreen(
+                                                                        contractKey:
+                                                                            _contracts[contractIndex].key,
+                                                                        commitmentArray:
+                                                                            _contracts[contractIndex].commitments,
+                                                                        commitmentIndex:
+                                                                            commitmentIndex,
+                                                                      ),
+                                                                    ));
+                                                                return false;
+                                                              } else if (direction ==
+                                                                  DismissDirection
+                                                                      .endToStart) {
+                                                                ContractService().deleteCommitment(
+                                                                    _contracts[
+                                                                            contractIndex]
+                                                                        .key,
+                                                                    _contracts[
+                                                                            contractIndex]
+                                                                        .commitments,
+                                                                    commitmentIndex);
+                                                                if (kDebugMode) {
+                                                                  print(
+                                                                      'Remove commitment');
+                                                                }
+                                                                return true;
+                                                              }
+                                                              return null;
+                                                            },
+                                                            child: Container(
+                                                              color: _theme
+                                                                          .darkTheme ==
+                                                                      true
+                                                                  ? Colors
+                                                                      .grey[700]
+                                                                  : Colors.grey[
+                                                                      200],
+                                                              child: ListTile(
+                                                                // leading: CachedNetworkImage(
+                                                                //   imageUrl: "",
+                                                                //   placeholder: (context, url) =>
+                                                                //       const CircularProgressIndicator(),
+                                                                //   errorWidget: (context, url, error) =>
+                                                                //       const Icon(Icons.error),
+                                                                // ),
+                                                                title: Text(
+                                                                  _contracts[contractIndex]
+                                                                              .commitments[
+                                                                          commitmentIndex]
+                                                                      [
+                                                                      'commitment'],
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                subtitle:
+                                                                    const Text(
+                                                                  'subtitle.',
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        scrollDirection:
+                                                            Axis.vertical),
+                                                  ),
+                                                  const SizedBox(height: 15),
+                                                  SizedBox(
+                                                      child: CircleAvatar(
+                                                          radius: 20,
+                                                          backgroundColor:
+                                                              Colors.grey[500],
+                                                          child: IconButton(
+                                                            icon: const Icon(
+                                                              Icons.add,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (BuildContext
+                                                                            context) =>
+                                                                        NewCommitmentScreen(
+                                                                      contractKey:
+                                                                          _contracts[contractIndex]
+                                                                              .key,
+                                                                    ),
+                                                                  ));
+                                                            },
+                                                          ))),
+                                                  const SizedBox(height: 15),
+                                                ],
+                                              )
+                                            : Container(),
+                                  ],
+                                ),
+                                //subtitle:
                               ),
                             ),
                           ),
@@ -327,200 +321,222 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     desktopView() {
-      return SizedBox(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GridView(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-              ),
-              primary: false,
-              shrinkWrap: true,
-              children: List<Widget>.generate(
-                  _contracts.length, // same length as the data
-                  (contractIndex) => GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (BuildContext
-                          //                 context) =>
-                          //             CommitmentScreen(
-                          //                 contract: _contracts[
-                          //                         index]
-                          //                     .key)));
-                        },
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: GridTile(
-                              // footer: Text(
-                              //   _contracts[
-                              //           contractIndex]
-                              //       .description,
-                              //   style: const TextStyle(
-                              //       fontSize: 14,
-                              //       fontWeight:
-                              //           FontWeight
-                              //               .bold),
-                              // ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        5, 15.0, 5, 25.0),
-                                    child: Text(_contracts[contractIndex].title,
-                                        style: const TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                  SizedBox(
-                                      child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const ClampingScrollPhysics(),
-                                          itemCount: _contracts[contractIndex]
-                                              .commitments
-                                              .length,
-                                          itemBuilder: (BuildContext context,
-                                              int commitmentIndex) {
-                                            // return Text(commitmentList[index].title);
-                                            return Dismissible(
-                                              key: ValueKey<int>(
-                                                  commitmentIndex),
-                                              background: Container(
-                                                color: Colors.blue,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(15),
-                                                  child: Row(
-                                                    children: const [
-                                                      Icon(Icons.edit,
-                                                          color: Colors.white),
-                                                      SizedBox(width: 10),
-                                                      Text('Edit commitment',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              secondaryBackground: Container(
-                                                color: Colors.red,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(15),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: const [
-                                                      Icon(
-                                                        Icons.delete,
-                                                        color: Colors.white,
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text('Delete commitment',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              confirmDismiss:
-                                                  (direction) async {
-                                                if (direction ==
-                                                    DismissDirection
-                                                        .startToEnd) {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            EditCommitmentScreen(
-                                                          contractKey: _contracts[
-                                                                  contractIndex]
-                                                              .key,
-                                                          commitmentArray:
-                                                              _contracts[
-                                                                      contractIndex]
-                                                                  .commitments,
-                                                          commitmentIndex:
-                                                              commitmentIndex,
-                                                        ),
-                                                      ));
-                                                  return false;
-                                                } else if (direction ==
-                                                    DismissDirection
-                                                        .endToStart) {
-                                                  ContractService()
-                                                      .deleteCommitment(
-                                                          _contracts[
-                                                                  contractIndex]
-                                                              .commitments[
-                                                                  commitmentIndex]
-                                                              .key);
-                                                  if (kDebugMode) {
-                                                    print('Remove commitment');
-                                                  }
-                                                  return true;
-                                                }
-                                                return null;
-                                              },
-                                              child: Card(
-                                                color: _theme.darkTheme == true
-                                                    ? Colors.grey[700]
-                                                    : Colors.grey[200],
-                                                child: ListTile(
-                                                  // leading: CachedNetworkImage(
-                                                  //   imageUrl: "",
-                                                  //   placeholder: (context, url) =>
-                                                  //       const CircularProgressIndicator(),
-                                                  //   errorWidget: (context, url, error) =>
-                                                  //       const Icon(Icons.error),
-                                                  // ),
-                                                  title: Text(
+      return _contracts.asMap().containsKey(0) == true
+          ? SizedBox(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GridView(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                    ),
+                    primary: false,
+                    shrinkWrap: true,
+                    children: List<Widget>.generate(
+                        _contracts.length, // same length as the data
+                        (contractIndex) => GestureDetector(
+                              onTap: () {
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (BuildContext
+                                //                 context) =>
+                                //             CommitmentScreen(
+                                //                 contract: _contracts[
+                                //                         index]
+                                //                     .key)));
+                              },
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: GridTile(
+                                    // footer: Text(
+                                    //   _contracts[
+                                    //           contractIndex]
+                                    //       .description,
+                                    //   style: const TextStyle(
+                                    //       fontSize: 14,
+                                    //       fontWeight:
+                                    //           FontWeight
+                                    //               .bold),
+                                    // ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 15.0, 5, 25.0),
+                                          child: Text(
+                                              _contracts[contractIndex].title,
+                                              style: const TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        SizedBox(
+                                            child: ListView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const ClampingScrollPhysics(),
+                                                itemCount:
                                                     _contracts[contractIndex]
-                                                                .commitments[
-                                                            commitmentIndex]
-                                                        ['commitment'],
-                                                    style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  subtitle: const Text(
-                                                    'subtitle.',
-                                                    style: TextStyle(
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          scrollDirection: Axis.vertical)),
-                                ],
-                              ),
+                                                        .commitments
+                                                        .length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int commitmentIndex) {
+                                                  return Dismissible(
+                                                    key: ValueKey<int>(
+                                                        commitmentIndex),
+                                                    background: Container(
+                                                      color: Colors.blue,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15),
+                                                        child: Row(
+                                                          children: const [
+                                                            Icon(Icons.edit,
+                                                                color: Colors
+                                                                    .white),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                                'Edit commitment',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    secondaryBackground:
+                                                        Container(
+                                                      color: Colors.red,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: const [
+                                                            Icon(
+                                                              Icons.delete,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                                'Delete commitment',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    confirmDismiss:
+                                                        (direction) async {
+                                                      if (direction ==
+                                                          DismissDirection
+                                                              .startToEnd) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  EditCommitmentScreen(
+                                                                contractKey:
+                                                                    _contracts[
+                                                                            contractIndex]
+                                                                        .key,
+                                                                commitmentArray:
+                                                                    _contracts[
+                                                                            contractIndex]
+                                                                        .commitments,
+                                                                commitmentIndex:
+                                                                    commitmentIndex,
+                                                              ),
+                                                            ));
+                                                        return false;
+                                                      } else if (direction ==
+                                                          DismissDirection
+                                                              .endToStart) {
+                                                        ContractService()
+                                                            .deleteCommitment(
+                                                                _contracts[
+                                                                        contractIndex]
+                                                                    .key,
+                                                                _contracts[
+                                                                        contractIndex]
+                                                                    .commitments,
+                                                                commitmentIndex);
+                                                        if (kDebugMode) {
+                                                          print(
+                                                              'Remove commitment');
+                                                        }
+                                                        return true;
+                                                      }
+                                                      return null;
+                                                    },
+                                                    child: Container(
+                                                      color: _theme.darkTheme ==
+                                                              true
+                                                          ? Colors.grey[700]
+                                                          : Colors.grey[200],
+                                                      child: ListTile(
+                                                        // leading: CachedNetworkImage(
+                                                        //   imageUrl: "",
+                                                        //   placeholder: (context, url) =>
+                                                        //       const CircularProgressIndicator(),
+                                                        //   errorWidget: (context, url, error) =>
+                                                        //       const Icon(Icons.error),
+                                                        // ),
+                                                        title: Text(
+                                                          _contracts[contractIndex]
+                                                                      .commitments[
+                                                                  commitmentIndex]
+                                                              ['commitment'],
+                                                          style: const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        subtitle: const Text(
+                                                          'subtitle.',
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                scrollDirection:
+                                                    Axis.vertical)),
+                                      ],
+                                    ),
 
-                              //just for testing, will fill with image later
-                            ),
-                          ),
-                        ),
-                      ))),
-        ),
-      );
+                                    //just for testing, will fill with image later
+                                  ),
+                                ),
+                              ),
+                            ))),
+              ),
+            )
+          : Container();
     }
 
     drawerLeft() {
@@ -702,20 +718,6 @@ class _MainScreenState extends State<MainScreen> {
                     );
                   },
                 ),
-                Builder(builder: (context) {
-                  return IconButton(
-                    icon: const Icon(
-                      Icons.add_box,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const NewContractScreen()));
-                    },
-                  );
-                })
               ],
             ),
             body: Scrollbar(
@@ -737,6 +739,24 @@ class _MainScreenState extends State<MainScreen> {
             ),
             drawer: drawerLeft(),
             endDrawer: drawerRight(),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            const NewContractScreen()));
+              },
+              child: const Icon(
+                Icons.add,
+                size: 29,
+              ),
+              tooltip: 'New Contract',
+              elevation: 5,
+              splashColor: Colors.grey,
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           );
   }
 }

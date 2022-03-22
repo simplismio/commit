@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import '../services/contract_service.dart';
+import 'main_screen.dart';
 
-class NewContractScreen extends StatefulWidget {
-  const NewContractScreen({Key? key}) : super(key: key);
+class NewCommitmentScreen extends StatefulWidget {
+  final String? contractKey;
+  const NewCommitmentScreen({Key? key, this.contractKey}) : super(key: key);
 
   @override
-  _NewContractScreenState createState() => _NewContractScreenState();
+  _NewCommitmentScreenState createState() => _NewCommitmentScreenState();
 }
 
-class _NewContractScreenState extends State<NewContractScreen> {
+class _NewCommitmentScreenState extends State<NewCommitmentScreen> {
   final _formKeyForm = GlobalKey<FormState>();
   bool loading = false;
   String? error;
-
-  String? contractKey; //TODO: switch to widget.contractKey
   String? commitment;
 
   @override
@@ -50,7 +50,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                       const SizedBox(height: 30.0),
                       TextFormField(
                           decoration:
-                              const InputDecoration(hintText: "New contract"),
+                              const InputDecoration(hintText: "New commitment"),
                           textAlign: TextAlign.left,
                           autofocus: true,
                           validator: (String? value) {
@@ -67,15 +67,18 @@ class _NewContractScreenState extends State<NewContractScreen> {
                         width: 300,
                         child: ElevatedButton(
                           child: const Text(
-                            "Add contract",
+                            "Add commitment",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              ContractService()
-                                  .addCommitment(contractKey, commitment);
-                              //Navigator.pop(context);
+                              ContractService().addCommitment(
+                                  widget.contractKey, commitment);
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainScreen()),
+                                  (Route<dynamic> route) => false);
                             } else {
                               setState(() {
                                 loading = false;
