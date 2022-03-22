@@ -85,7 +85,7 @@ class ContractService extends ChangeNotifier {
     });
   }
 
-  Future<void> editContract(_key, _description) {
+  Future<void> editContract(_contractKey, _title) {
     if (kDebugMode) {
       if (defaultTargetPlatform == TargetPlatform.android) {
         FirebaseFirestore.instance.settings = const Settings(
@@ -102,15 +102,15 @@ class ContractService extends ChangeNotifier {
 
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_key)
-        .update({'description': _description})
+        .doc(_contractKey)
+        .update({'title': _title})
         // ignore: avoid_print
         .then((value) => print("Contract updated"))
         // ignore: avoid_print
         .catchError((error) => print("Failed to merge data: $error"));
   }
 
-  Future<void> deleteContract(_key) {
+  Future<void> deleteContract(_contractKey) {
     if (kDebugMode) {
       if (defaultTargetPlatform == TargetPlatform.android) {
         FirebaseFirestore.instance.settings = const Settings(
@@ -126,7 +126,7 @@ class ContractService extends ChangeNotifier {
     }
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_key)
+        .doc(_contractKey)
         .delete()
         // ignore: avoid_print
         .then((value) => print("Contract deleted"))

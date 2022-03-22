@@ -22,6 +22,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+
+    for (var i = 0; i < 100; i++) {
+      _toggleCommitments[i] = false;
+    }
   }
 
   bool loading = false;
@@ -30,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   final int paneProportion = 70;
 
   final Map<int, bool> _toggleCommitments = {};
-  bool _toggleCommitmentsValue = true;
+  bool _toggleCommitmentsValue = false;
 
   toggleCommitments(int _index, bool _value) async {
     _toggleCommitmentsValue = _value;
@@ -65,10 +69,9 @@ class _MainScreenState extends State<MainScreen> {
                             child: Container(
                               color: _theme.darkTheme == true
                                   ? Colors.grey[800]
-                                  : Colors.grey[200],
+                                  : Colors.grey[300],
                               child: ListTile(
                                 isThreeLine: true,
-
                                 // leading: CachedNetworkImage(
                                 //   imageUrl: "",
                                 //   placeholder: (context, url) =>
@@ -78,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                                 // ),
                                 title: Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(2, 15, 5, 5),
+                                      const EdgeInsets.fromLTRB(2, 10, 2, 10),
                                   child: Row(
                                     children: [
                                       Text(
@@ -87,24 +90,40 @@ class _MainScreenState extends State<MainScreen> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
                                       ),
+                                      Text(
+                                        _contracts[contractIndex]
+                                            .commitments
+                                            .length
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                       Spacer(),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.more_horiz,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        EditContractScreen(
-                                                  contract:
-                                                      _contracts[contractIndex],
-                                                ),
-                                              ));
-                                        },
-                                      )
+                                      _toggleCommitmentsValue == false
+                                          ? IconButton(
+                                              icon: const Icon(
+                                                Icons.chevron_right,
+                                              ),
+                                              onPressed: () {},
+                                            )
+                                          : IconButton(
+                                              icon: const Icon(
+                                                Icons.more_horiz,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          EditContractScreen(
+                                                        contract: _contracts[
+                                                            contractIndex],
+                                                      ),
+                                                    ));
+                                              },
+                                            )
                                     ],
                                   ),
                                 ),
@@ -231,46 +250,51 @@ class _MainScreenState extends State<MainScreen> {
                                                               }
                                                               return null;
                                                             },
-                                                            child: Container(
-                                                              color: _theme
-                                                                          .darkTheme ==
-                                                                      true
-                                                                  ? Colors
-                                                                      .grey[700]
-                                                                  : Colors.grey[
-                                                                      200],
-                                                              child: ListTile(
-                                                                // leading: CachedNetworkImage(
-                                                                //   imageUrl: "",
-                                                                //   placeholder: (context, url) =>
-                                                                //       const CircularProgressIndicator(),
-                                                                //   errorWidget: (context, url, error) =>
-                                                                //       const Icon(Icons.error),
-                                                                // ),
-                                                                title: Text(
-                                                                  _contracts[contractIndex]
-                                                                              .commitments[
-                                                                          commitmentIndex]
-                                                                      [
-                                                                      'commitment'],
-                                                                  style: const TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
+                                                            child: Column(
+                                                              children: [
+                                                                Container(
+                                                                  color: _theme
+                                                                              .darkTheme ==
+                                                                          true
+                                                                      ? Colors.grey[
+                                                                          700]
+                                                                      : Colors.grey[
+                                                                          200],
+                                                                  child:
+                                                                      ListTile(
+                                                                    // leading: CachedNetworkImage(
+                                                                    //   imageUrl: "",
+                                                                    //   placeholder: (context, url) =>
+                                                                    //       const CircularProgressIndicator(),
+                                                                    //   errorWidget: (context, url, error) =>
+                                                                    //       const Icon(Icons.error),
+                                                                    // ),
+                                                                    title: Text(
+                                                                      _contracts[contractIndex]
+                                                                              .commitments[commitmentIndex]
+                                                                          [
+                                                                          'commitment'],
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                    subtitle:
+                                                                        const Text(
+                                                                      'subtitle.',
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              13,
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                                subtitle:
-                                                                    const Text(
-                                                                  'subtitle.',
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          13,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                              ),
+                                                                const SizedBox(
+                                                                  height: 5,
+                                                                )
+                                                              ],
                                                             ),
                                                           );
                                                         },

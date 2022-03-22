@@ -1,6 +1,8 @@
 import 'package:commit/services/contract_service.dart';
 import 'package:flutter/material.dart';
 
+import 'main_screen.dart';
+
 class EditContractScreen extends StatefulWidget {
   final ContractService? contract;
 
@@ -59,7 +61,7 @@ class _EditContractScreenState extends State<EditContractScreen> {
                           autofocus: true,
                           validator: (String? value) {
                             return (value != null && value.length < 2)
-                                ? 'Please provide a valid commitment.'
+                                ? 'Please provide a valid contract.'
                                 : null;
                           },
                           onChanged: (val) {
@@ -70,15 +72,18 @@ class _EditContractScreenState extends State<EditContractScreen> {
                         width: 300,
                         child: ElevatedButton(
                           child: const Text(
-                            "Edit commitment",
+                            "Edit contract",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              // DataService().editContract(
-                              //     widget.contractKey, description);
-
+                              ContractService()
+                                  .editContract(widget.contract!.key, title);
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainScreen()),
+                                  (Route<dynamic> route) => false);
                             } else {
                               setState(() {
                                 loading = false;
@@ -86,6 +91,36 @@ class _EditContractScreenState extends State<EditContractScreen> {
                               });
                             }
                           },
+                        ),
+                      ),
+                      const SizedBox(height: 50),
+                      SizedBox(
+                        width: 300,
+                        child: ElevatedButton(
+                          child: const Text(
+                            "Delete contract",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () async {
+                            if (_formKeyForm.currentState!.validate()) {
+                              setState(() => loading = true);
+                              ContractService()
+                                  .deleteContract(widget.contract!.key);
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => const MainScreen()),
+                                  (Route<dynamic> route) => false);
+                            } else {
+                              setState(() {
+                                loading = false;
+                                error = 'Something went wrong.';
+                              });
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                              textStyle: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
