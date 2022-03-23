@@ -15,6 +15,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool loading = false;
   String? error;
 
+  String? username;
   String? email;
   String? password;
 
@@ -53,6 +54,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 20.0),
+                      TextFormField(
+                          decoration:
+                              const InputDecoration(hintText: "Username"),
+                          textAlign: TextAlign.left,
+                          autofocus: true,
+                          validator: (String? value) {
+                            return (value != null && value.length < 2)
+                                ? 'Please provide a valid username.'
+                                : null;
+                          },
+                          onChanged: (val) {
+                            setState(() => username = val);
+                          }),
                       TextFormField(
                           decoration: const InputDecoration(hintText: "Email"),
                           textAlign: TextAlign.left,
@@ -104,7 +118,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() => loading = true);
                               UserService()
                                   .signUpUsingEmailAndPassword(
-                                      email: email, password: password)
+                                      username: username,
+                                      email: email,
+                                      password: password)
                                   .then((result) {
                                 if (result == null) {
                                   Navigator.pushReplacement(

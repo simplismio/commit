@@ -11,11 +11,13 @@ import 'package:crypto/crypto.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
-  // final String username;
+  String? username;
+  String? email;
 
   UserService({
     this.uid,
-    // this.username,
+    this.username,
+    this.email,
   });
 
   UserService? _userFromFirebaseUser(User? user) {
@@ -23,7 +25,8 @@ class UserService extends ChangeNotifier {
       // ignore: avoid_print
       print('Firebase UID is: ${user.uid}');
     }
-    return UserService(uid: user?.uid);
+    return UserService(
+        uid: user?.uid, username: user?.displayName, email: user?.email);
   }
 
   Stream<UserService?> get user {
@@ -33,7 +36,8 @@ class UserService extends ChangeNotifier {
     return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
   }
 
-  Future signUpUsingEmailAndPassword({String? email, String? password}) async {
+  Future signUpUsingEmailAndPassword(
+      {String? username, String? email, String? password}) async {
     try {
       if (kDebugMode) {
         print('Signing up user');
@@ -43,12 +47,15 @@ class UserService extends ChangeNotifier {
           .logSignUp(signUpMethod: 'email/password');
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email!, password: password!);
+
+      final _user = FirebaseAuth.instance.currentUser;
+      _user?.updateDisplayName(username);
+      await _user?.reload();
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-  //SIGN IN METHOD
   Future signInUsingEmailAndPassword(String? email, String? password) async {
     try {
       if (kDebugMode) {

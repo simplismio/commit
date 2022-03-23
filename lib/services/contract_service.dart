@@ -31,19 +31,6 @@ class ContractService extends ChangeNotifier {
 
     final _user = FirebaseAuth.instance.currentUser;
 
-    // FirebaseFirestore.instance
-    //     .collection('contracts')
-    //     .doc('K7liGS2MU7Ad376caRWv') // <-- Document ID
-    //     .update({
-    //       'commitments': FieldValue.arrayUnion(
-    //         [
-    //           {"description": 'Co5'}
-    //         ],
-    //       )
-    //     }) // <-- Add data
-    //     .then((_) => print('New commitment added'))
-    //     .catchError((error) => print('Add failed: $error'));
-
     return FirebaseFirestore.instance
         .collection('contracts')
         .where("user_id", isEqualTo: _user?.uid)
@@ -51,7 +38,7 @@ class ContractService extends ChangeNotifier {
         .map(_contractsFromSnapshot);
   }
 
-  Future<void> addContract(_title, _commitment) {
+  Future<void> addContract(_title) {
     if (kDebugMode) {
       if (defaultTargetPlatform == TargetPlatform.android) {
         FirebaseFirestore.instance.settings = const Settings(
@@ -68,13 +55,10 @@ class ContractService extends ChangeNotifier {
 
     final _user = FirebaseAuth.instance.currentUser;
 
-    return FirebaseFirestore.instance.collection('contracts').add({
-      'user_id': _user?.uid,
-      'title': _title,
-      'commitments': FieldValue.arrayUnion([
-        {"commitment": _commitment},
-      ])
-    }).then((value) {
+    return FirebaseFirestore.instance
+        .collection('contracts')
+        .add({'user_id': _user?.uid, 'title': _title, 'commitments': []}).then(
+            (value) {
       if (kDebugMode) {
         print("Contract Added");
       }

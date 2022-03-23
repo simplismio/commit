@@ -63,21 +63,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             setState(() => title = val);
                           }),
                       const SizedBox(height: 10.0),
-                      TextFormField(
-                          decoration:
-                              const InputDecoration(hintText: "Commitment"),
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          validator: (String? value) {
-                            //print(value.length);
-                            return (value != null && value.length < 10)
-                                ? 'Please provide a valid commitment.'
-                                : null;
-                          },
-                          onChanged: (val) {
-                            setState(() => commitment = val);
-                          }),
-                      const SizedBox(height: 10.0),
                       SizedBox(
                         width: 300,
                         child: ElevatedButton(
@@ -88,7 +73,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                           onPressed: () async {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
-                              ContractService().addContract(title, commitment);
+                              ContractService().addContract(title);
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => const MainScreen()),

@@ -99,7 +99,7 @@ class _MainScreenState extends State<MainScreen> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       _toggleCommitmentsValue == false
                                           ? IconButton(
                                               icon: const Icon(
@@ -131,7 +131,10 @@ class _MainScreenState extends State<MainScreen> {
                                   children: <Widget>[
                                     _toggleCommitments[contractIndex] == false
                                         ? Container()
-                                        : _contracts.asMap().containsKey(0) ==
+                                        : _contracts[contractIndex]
+                                                    .commitments
+                                                    .asMap()
+                                                    .containsKey(0) ==
                                                 true
                                             ? Column(
                                                 children: [
@@ -328,7 +331,40 @@ class _MainScreenState extends State<MainScreen> {
                                                   const SizedBox(height: 15),
                                                 ],
                                               )
-                                            : Container(),
+                                            : Column(
+                                                children: [
+                                                  const SizedBox(
+                                                      height: 50,
+                                                      child: Center(
+                                                          child: Text(
+                                                              'You have no commitments yet. Click to add'))),
+                                                  const SizedBox(height: 5),
+                                                  SizedBox(
+                                                      child: CircleAvatar(
+                                                          radius: 20,
+                                                          backgroundColor:
+                                                              Colors.grey[500],
+                                                          child: IconButton(
+                                                            icon: const Icon(
+                                                              Icons.add,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (BuildContext
+                                                                            context) =>
+                                                                        NewCommitmentScreen(
+                                                                      contractKey:
+                                                                          _contracts[contractIndex]
+                                                                              .key,
+                                                                    ),
+                                                                  ));
+                                                            },
+                                                          ))),
+                                                  const SizedBox(height: 15),
+                                                ],
+                                              ),
                                   ],
                                 ),
                                 //subtitle:
@@ -566,8 +602,22 @@ class _MainScreenState extends State<MainScreen> {
     drawerLeft() {
       return Drawer(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 100),
+
+            Consumer<UserService>(
+              builder: (context, user, child) => Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  child: Text('Hi ${user.username!}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 30)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 50),
             Container(
               alignment: Alignment.topLeft,
               child: const Padding(
@@ -575,13 +625,12 @@ class _MainScreenState extends State<MainScreen> {
                 child: Text(
                   'Settings',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 20,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 100),
-
+            const Divider(),
             // SizedBox(
             //   height: MediaQuery.of(context).size.height * 0.3,
             //   width: MediaQuery.of(context).size.width,
@@ -608,6 +657,8 @@ class _MainScreenState extends State<MainScreen> {
             //     ],
             //   ),
             // ),
+
+            const SizedBox(height: 20),
             Consumer<ThemeService>(
               builder: (context, theme, child) => SwitchListTile(
                 title: const Text(
@@ -636,9 +687,8 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   )
                 : Container(),
-            const Divider(
-              color: Colors.white,
-            ),
+            const SizedBox(height: 15),
+            const Divider(),
             const SizedBox(height: 15),
             Row(
               children: [
