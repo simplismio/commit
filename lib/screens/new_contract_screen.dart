@@ -74,10 +74,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             if (_formKeyForm.currentState!.validate()) {
                               setState(() => loading = true);
                               ContractService().addContract(title);
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainScreen()),
-                                  (Route<dynamic> route) => false);
+                              Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;

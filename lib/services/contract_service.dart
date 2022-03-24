@@ -26,7 +26,6 @@ class ContractService extends ChangeNotifier {
     if (kDebugMode) {
       print('Loading contracts');
       EmulatorService.setupAuthEmulator();
-      EmulatorService.setupFirestoreEmulator();
     }
 
     final _user = FirebaseAuth.instance.currentUser;
@@ -39,20 +38,6 @@ class ContractService extends ChangeNotifier {
   }
 
   Future<void> addContract(_title) {
-    if (kDebugMode) {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: '10.0.2.2:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      } else {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: 'localhost:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      }
-    }
-
     final _user = FirebaseAuth.instance.currentUser;
 
     return FirebaseFirestore.instance
@@ -70,20 +55,6 @@ class ContractService extends ChangeNotifier {
   }
 
   Future<void> editContract(_contractKey, _title) {
-    if (kDebugMode) {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: '10.0.2.2:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      } else {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: 'localhost:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      }
-    }
-
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_contractKey)
@@ -95,19 +66,6 @@ class ContractService extends ChangeNotifier {
   }
 
   Future<void> deleteContract(_contractKey) {
-    if (kDebugMode) {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: '10.0.2.2:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      } else {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: 'localhost:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      }
-    }
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_contractKey)
@@ -119,20 +77,6 @@ class ContractService extends ChangeNotifier {
   }
 
   Future<void> addCommitment(_contractKey, _commitment) {
-    if (kDebugMode) {
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: '10.0.2.2:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      } else {
-        FirebaseFirestore.instance.settings = const Settings(
-            host: 'localhost:8080',
-            sslEnabled: false,
-            persistenceEnabled: false);
-      }
-    }
-
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_contractKey)
@@ -154,11 +98,6 @@ class ContractService extends ChangeNotifier {
 
   Future<void> editCommitment(
       _contractKey, _commitmentArray, _commitmentKey, _commitment) {
-    if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
-    }
-
     _commitmentArray[_commitmentKey]['commitment'] = _commitment;
 
     return FirebaseFirestore.instance
@@ -177,11 +116,6 @@ class ContractService extends ChangeNotifier {
 
   Future<void> deleteCommitment(
       _contractKey, _commitmentArray, _commitmentIndex) {
-    if (kDebugMode) {
-      FirebaseFirestore.instance.settings = const Settings(
-          host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: false);
-    }
-
     _commitmentArray.removeAt(_commitmentIndex);
 
     return FirebaseFirestore.instance

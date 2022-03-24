@@ -21,8 +21,6 @@ class _EditContractScreenState extends State<EditContractScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.contract!.title);
-
     return loading
         ? const CircularProgressIndicator()
         : Scaffold(
@@ -80,10 +78,7 @@ class _EditContractScreenState extends State<EditContractScreen> {
                               setState(() => loading = true);
                               ContractService()
                                   .editContract(widget.contract!.key, title);
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainScreen()),
-                                  (Route<dynamic> route) => false);
+                              Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;

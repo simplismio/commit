@@ -12,6 +12,7 @@ import 'utilities/local_authorization_utility.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -32,8 +33,6 @@ Future<void> main() async {
       defaultTargetPlatform == TargetPlatform.android) {
     await Firebase.initializeApp();
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-    // FirebaseFirestore.instance.settings =
-    //     const Settings(persistenceEnabled: true);
   } else {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -45,7 +44,13 @@ Future<void> main() async {
             appId: "1:236126728561:web:777f7f92d8ed6a5b7e86d0",
             measurementId: "G-8Z10Z47T7F"));
   }
-
+  if (kDebugMode) {
+    try {
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+    } catch (e) {
+      print(e);
+    }
+  }
   await FirebaseAnalytics.instance.logAppOpen();
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
 

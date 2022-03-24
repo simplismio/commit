@@ -75,10 +75,7 @@ class _NewCommitmentScreenState extends State<NewCommitmentScreen> {
                               setState(() => loading = true);
                               ContractService().addCommitment(
                                   widget.contractKey, commitment);
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => const MainScreen()),
-                                  (Route<dynamic> route) => false);
+                              Navigator.pop(context);
                             } else {
                               setState(() {
                                 loading = false;

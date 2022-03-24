@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class ThemeService extends ChangeNotifier {
   final String key = "theme";
   late bool _darkTheme;
 
-  bool get darkTheme => _darkTheme;
+  bool get darkTheme => kDebugMode ? _darkTheme : !_darkTheme;
 
   ThemeService() {
     _darkTheme = false;
