@@ -25,7 +25,7 @@ class ContractService extends ChangeNotifier {
   Stream<List<ContractService>> get contracts {
     if (kDebugMode) {
       print('Loading contracts');
-      EmulatorService.setupAuthEmulator();
+      // EmulatorService.setupAuthEmulator();
     }
 
     final _user = FirebaseAuth.instance.currentUser;

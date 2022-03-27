@@ -11,12 +11,15 @@ class EmulatorService {
     if (FirebaseFirestore.instance.settings.host == null) {
       if (defaultTargetPlatform == TargetPlatform.android) {
         FirebaseFirestore.instance.settings = const Settings(
-            host: '10.0.2.2:8080', sslEnabled: false, persistenceEnabled: true);
+            host: '10.0.2.2:8080',
+            sslEnabled: false,
+            persistenceEnabled: false);
       } else {
         FirebaseFirestore.instance.settings = const Settings(
-            host: 'localhost:8080',
-            sslEnabled: false,
-            persistenceEnabled: true);
+          host: 'localhost:8080',
+          sslEnabled: false,
+          persistenceEnabled: false,
+        );
       }
     }
   }

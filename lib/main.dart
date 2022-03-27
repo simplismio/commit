@@ -7,12 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'services/contract_service.dart';
+import 'services/emulator_service.dart';
+import 'services/language_service.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/local_authorization_utility.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -46,7 +47,9 @@ Future<void> main() async {
   }
   if (kDebugMode) {
     try {
-      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      EmulatorService.setupAuthEmulator();
+      EmulatorService.setupFirestoreEmulator();
+      // FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
     } catch (e) {
       print(e);
     }
@@ -77,6 +80,7 @@ class CommitApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
+          ChangeNotifierProvider(create: (_) => LanguageService()),
           StreamProvider<List<ContractService>>.value(
               value: ContractService().contracts,
               initialData: const [],
