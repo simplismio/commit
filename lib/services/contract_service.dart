@@ -23,11 +23,8 @@ class ContractService extends ChangeNotifier {
   Stream<List<ContractService>> get contracts {
     if (kDebugMode) {
       print('Loading contracts');
-      // EmulatorService.setupAuthEmulator();
     }
-
     final _user = FirebaseAuth.instance.currentUser;
-
     return FirebaseFirestore.instance
         .collection('contracts')
         .where("user_id", isEqualTo: _user?.uid)
@@ -35,9 +32,8 @@ class ContractService extends ChangeNotifier {
         .map(_contractsFromSnapshot);
   }
 
-  Future<void> addContract(_title) {
+  Future addContract(_title) {
     final _user = FirebaseAuth.instance.currentUser;
-
     return FirebaseFirestore.instance
         .collection('contracts')
         .add({'user_id': _user?.uid, 'title': _title, 'commitments': []}).then(
@@ -49,32 +45,45 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print("Failed to add user: $error");
       }
+      return error;
     });
   }
 
-  Future<void> editContract(_contractKey, _title) {
+  Future editContract(_contractKey, _title) {
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_contractKey)
-        .update({'title': _title})
-        // ignore: avoid_print
-        .then((value) => print("Contract updated"))
-        // ignore: avoid_print
-        .catchError((error) => print("Failed to merge data: $error"));
+        .update({'title': _title}).then((value) {
+      if (kDebugMode) {
+        print('Contract updated');
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print('Add failed: $error');
+      }
+      return error;
+    });
   }
 
-  Future<void> deleteContract(_contractKey) {
+  Future deleteContract(_contractKey) {
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_contractKey)
         .delete()
         // ignore: avoid_print
-        .then((value) => print("Contract deleted"))
-        // ignore: avoid_print
-        .catchError((error) => print("Failed to delete user: $error"));
+        .then((value) {
+      if (kDebugMode) {
+        print('Contract deleted');
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print('Add failed: $error');
+      }
+      return error;
+    });
   }
 
-  Future<void> addCommitment(_contractKey, _commitment) {
+  Future addCommitment(_contractKey, _commitment) {
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(_contractKey)
@@ -91,10 +100,11 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print('Add failed: $error');
       }
+      return error;
     });
   }
 
-  Future<void> editCommitment(
+  Future editCommitment(
       _contractKey, _commitmentArray, _commitmentKey, _commitment) {
     _commitmentArray[_commitmentKey]['commitment'] = _commitment;
 
@@ -109,11 +119,11 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print("Failed to merge data: $error");
       }
+      return error;
     });
   }
 
-  Future<void> deleteCommitment(
-      _contractKey, _commitmentArray, _commitmentIndex) {
+  Future deleteCommitment(_contractKey, _commitmentArray, _commitmentIndex) {
     _commitmentArray.removeAt(_commitmentIndex);
 
     return FirebaseFirestore.instance
@@ -127,6 +137,7 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print("Failed to merge data: $error");
       }
+      return error;
     });
   }
 }

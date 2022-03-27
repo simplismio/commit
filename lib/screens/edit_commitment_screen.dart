@@ -1,3 +1,4 @@
+import 'package:commit/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/contract_service.dart';
 import '../services/language_service.dart';
@@ -23,7 +24,6 @@ class EditCommitmentScreen extends StatefulWidget {
 class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String error = '';
 
   String? commitment;
 
@@ -59,44 +59,69 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                TextFormField(
-                    decoration:
-                        const InputDecoration(hintText: "Edit commitment"),
-                    textAlign: TextAlign.left,
-                    initialValue: widget.commitmentArray[widget.commitmentIndex]
-                        ['commitment'],
-                    autofocus: true,
-                    validator: (String? value) {
-                      return (value != null && value.length < 2)
-                          ? 'Please provide a valid commitment.'
-                          : null;
-                    },
-                    onChanged: (val) {
-                      setState(() => commitment = val);
-                    }),
+                Consumer<LanguageService>(
+                    builder: (context, language, _) => TextFormField(
+                        decoration: InputDecoration(
+                            hintText: language
+                                    .editCommitmentScreenCommitmentPlaceholder ??
+                                ''),
+                        textAlign: TextAlign.left,
+                        initialValue:
+                            widget.commitmentArray[widget.commitmentIndex]
+                                ['commitment'],
+                        autofocus: true,
+                        validator: (String? value) {
+                          return (value != null && value.length < 2)
+                              ? language
+                                  .editCommitmentScreenCommitmentErrorMessage
+                              : null;
+                        },
+                        onChanged: (val) {
+                          setState(() => commitment = val);
+                        })),
                 const SizedBox(height: 10.0),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
-                        : const Text(
-                            "Edit commitment",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        : Consumer<LanguageService>(
+                            builder: (context, language, _) => Text(
+                                language.editCommitmentScreenButtonText ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ))),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
-                        ContractService().editCommitment(
-                            widget.contractKey,
-                            widget.commitmentArray,
-                            widget.commitmentIndex,
-                            commitment);
-                        Navigator.pop(context);
+                        ContractService()
+                            .editCommitment(
+                                widget.contractKey,
+                                widget.commitmentArray,
+                                widget.commitmentIndex,
+                                commitment)
+                            .then((result) {
+                          if (result == null) {
+                            Navigator.of(context).maybePop();
+                          } else {
+                            setState(() => loading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Consumer<LanguageService>(
+                                  builder: (context, language, _) => Text(
+                                        language.genericFirebaseErrorMessage ??
+                                            '',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                              backgroundColor: Colors.grey[800],
+                            ));
+                          }
+                        });
                       } else {
                         setState(() {
                           loading = false;
-                          error = 'Something went wrong.';
                         });
                       }
                     },

@@ -16,8 +16,6 @@ class EditContractScreen extends StatefulWidget {
 class _EditContractScreenState extends State<EditContractScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String error = '';
-
   String? title;
 
   @override
@@ -52,40 +50,62 @@ class _EditContractScreenState extends State<EditContractScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                TextFormField(
-                    decoration:
-                        const InputDecoration(hintText: "Edit contract"),
-                    textAlign: TextAlign.left,
-                    initialValue: widget.contract!.title,
-                    autofocus: true,
-                    validator: (String? value) {
-                      return (value != null && value.length < 2)
-                          ? 'Please provide a valid contract.'
-                          : null;
-                    },
-                    onChanged: (val) {
-                      setState(() => title = val);
-                    }),
+                Consumer<LanguageService>(
+                    builder: (context, language, _) => TextFormField(
+                        decoration: InputDecoration(
+                            hintText: language
+                                .editContractScreenContractTitlePlaceholder),
+                        textAlign: TextAlign.left,
+                        initialValue: widget.contract!.title,
+                        autofocus: true,
+                        validator: (String? value) {
+                          return (value != null && value.length < 2)
+                              ? language
+                                  .editContractScreenContractTitleErrorMessage
+                              : null;
+                        },
+                        onChanged: (val) {
+                          setState(() => title = val);
+                        })),
                 const SizedBox(height: 10.0),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
-                        : const Text(
-                            "Edit contract",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        : Consumer<LanguageService>(
+                            builder: (context, language, _) => Text(
+                                language.editContractScreenButtonText ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ))),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
                         ContractService()
-                            .editContract(widget.contract!.key, title);
-                        Navigator.pop(context);
+                            .editContract(widget.contract!.key, title)
+                            .then((result) {
+                          if (result == null) {
+                            Navigator.of(context).maybePop();
+                          } else {
+                            setState(() => loading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Consumer<LanguageService>(
+                                  builder: (context, language, _) => Text(
+                                        language.genericFirebaseErrorMessage ??
+                                            '',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                              backgroundColor: Colors.grey[800],
+                            ));
+                          }
+                        });
                       } else {
                         setState(() {
                           loading = false;
-                          error = 'Something went wrong.';
                         });
                       }
                     },
@@ -95,10 +115,12 @@ class _EditContractScreenState extends State<EditContractScreen> {
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
-                    child: const Text(
-                      "Delete contract",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    child: Consumer<LanguageService>(
+                        builder: (context, language, _) => Text(
+                              language.editContractScreenDeleteContractButtonText ??
+                                  '',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
@@ -110,7 +132,6 @@ class _EditContractScreenState extends State<EditContractScreen> {
                       } else {
                         setState(() {
                           loading = false;
-                          error = 'Something went wrong.';
                         });
                       }
                     },

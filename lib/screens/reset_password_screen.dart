@@ -49,49 +49,59 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                TextFormField(
-                    decoration: const InputDecoration(hintText: "Email"),
-                    textAlign: TextAlign.left,
-                    autofocus: true,
-                    validator: (String? value) {
-                      //print(value.length);
-                      return (value != null && value.length < 2)
-                          ? 'Please provide a valid email.'
-                          : null;
-                    },
-                    onChanged: (val) {
-                      setState(() => email = val);
-                    }),
+                Consumer<LanguageService>(
+                    builder: (context, language, _) => TextFormField(
+                        decoration: InputDecoration(
+                            hintText:
+                                language.resetPasswordScreenEmailPlaceholder),
+                        textAlign: TextAlign.left,
+                        autofocus: true,
+                        validator: (String? value) {
+                          //print(value.length);
+                          return (value != null && value.length < 2)
+                              ? language.resetPasswordScreenEmailErrorMessage
+                              : null;
+                        },
+                        onChanged: (val) {
+                          setState(() => email = val);
+                        })),
                 const SizedBox(height: 20.0),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
-                        : const Text(
-                            "Reset password",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        : Consumer<LanguageService>(
+                            builder: (context, language, _) => Text(
+                                language.resetPasswordScreenButtonText ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ))),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
                         UserService().resetPassword(email).then((result) {
                           if (result == null) {
-                            // Navigator.pop(context);
+                            Navigator.of(context).maybePop();
                           } else {
                             setState(() => loading = false);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                result,
-                                style: const TextStyle(fontSize: 16),
-                              ),
+                              content: Consumer<LanguageService>(
+                                  builder: (context, language, _) => Text(
+                                        language.genericFirebaseErrorMessage ??
+                                            '',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                              backgroundColor: Colors.grey[800],
                             ));
                           }
                         });
                       } else {
                         setState(() {
                           loading = false;
-                          error = 'Something went wrong.';
                         });
                       }
                     },

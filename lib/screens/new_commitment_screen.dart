@@ -14,7 +14,6 @@ class NewCommitmentScreen extends StatefulWidget {
 class _NewCommitmentScreenState extends State<NewCommitmentScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String? error;
   String? commitment;
 
   @override
@@ -49,40 +48,62 @@ class _NewCommitmentScreenState extends State<NewCommitmentScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                TextFormField(
-                    decoration:
-                        const InputDecoration(hintText: "New commitment"),
-                    textAlign: TextAlign.left,
-                    autofocus: true,
-                    validator: (String? value) {
-                      //print(value.length);
-                      return (value != null && value.length < 2)
-                          ? 'Please provide a valid contract title.'
-                          : null;
-                    },
-                    onChanged: (val) {
-                      setState(() => commitment = val);
-                    }),
+                Consumer<LanguageService>(
+                    builder: (context, language, _) => TextFormField(
+                        decoration: InputDecoration(
+                            hintText: language
+                                .newCommitmentScreenCommitmentPlaceholder),
+                        textAlign: TextAlign.left,
+                        autofocus: true,
+                        validator: (String? value) {
+                          //print(value.length);
+                          return (value != null && value.length < 2)
+                              ? language
+                                  .newCommitmentScreenCommitmentErrorMessage
+                              : null;
+                        },
+                        onChanged: (val) {
+                          setState(() => commitment = val);
+                        })),
                 const SizedBox(height: 10.0),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
-                        : const Text(
-                            "Add commitment",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        : Consumer<LanguageService>(
+                            builder: (context, language, _) => Text(
+                                language.newCommitmentScreenButtonText ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ))),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
                         ContractService()
-                            .addCommitment(widget.contractKey, commitment);
-                        Navigator.pop(context);
+                            .addCommitment(widget.contractKey, commitment)
+                            .then((result) {
+                          if (result == null) {
+                            Navigator.of(context).maybePop();
+                          } else {
+                            setState(() => loading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Consumer<LanguageService>(
+                                  builder: (context, language, _) => Text(
+                                        language.genericFirebaseErrorMessage ??
+                                            '',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                              backgroundColor: Colors.grey[800],
+                            ));
+                          }
+                        });
                       } else {
                         setState(() {
                           loading = false;
-                          error = 'Something went wrong.';
                         });
                       }
                     },

@@ -176,19 +176,23 @@ class _MainScreenState extends State<MainScreen> {
                                                                 const EdgeInsets
                                                                     .all(15),
                                                             child: Row(
-                                                              children: const [
-                                                                Icon(Icons.edit,
+                                                              children: [
+                                                                const Icon(
+                                                                    Icons.edit,
                                                                     color: Colors
                                                                         .white),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                     width: 10),
-                                                                Text(
-                                                                    'Edit commitment',
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontWeight:
-                                                                            FontWeight.bold)),
+                                                                Consumer<
+                                                                        LanguageService>(
+                                                                    builder: (context, language, _) => Text(
+                                                                        language
+                                                                                .mainScreenDismissebleEditCommitmentLink ??
+                                                                            '',
+                                                                        style: const TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.bold))),
                                                               ],
                                                             ),
                                                           ),
@@ -204,21 +208,24 @@ class _MainScreenState extends State<MainScreen> {
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
                                                                       .end,
-                                                              children: const [
-                                                                Icon(
+                                                              children: [
+                                                                const Icon(
                                                                   Icons.delete,
                                                                   color: Colors
                                                                       .white,
                                                                 ),
-                                                                SizedBox(
+                                                                const SizedBox(
                                                                     width: 10),
-                                                                Text(
-                                                                    'Delete commitment',
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontWeight:
-                                                                            FontWeight.bold)),
+                                                                Consumer<
+                                                                        LanguageService>(
+                                                                    builder: (context, language, _) => Text(
+                                                                        language
+                                                                                .mainScreenDismissebleDeleteCommitmentLink ??
+                                                                            '',
+                                                                        style: const TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.bold))),
                                                               ],
                                                             ),
                                                           ),
@@ -256,10 +263,6 @@ class _MainScreenState extends State<MainScreen> {
                                                                         contractIndex]
                                                                     .commitments,
                                                                 commitmentIndex);
-                                                            if (kDebugMode) {
-                                                              print(
-                                                                  'Remove commitment');
-                                                            }
                                                             return true;
                                                           }
                                                           return null;
@@ -345,11 +348,17 @@ class _MainScreenState extends State<MainScreen> {
                                           )
                                         : Column(
                                             children: [
-                                              const SizedBox(
+                                              SizedBox(
                                                   height: 50,
                                                   child: Center(
-                                                      child: Text(
-                                                          'You have no commitments yet. Click to add'))),
+                                                      child: Consumer<
+                                                              LanguageService>(
+                                                          builder: (context,
+                                                                  language,
+                                                                  _) =>
+                                                              Text(language
+                                                                      .mainScreenNoCommitmentsErrorMessage ??
+                                                                  '')))),
                                               const SizedBox(height: 5),
                                               SizedBox(
                                                   child: CircleAvatar(
@@ -660,10 +669,13 @@ class _MainScreenState extends State<MainScreen> {
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Column(children: [
                     contracts.isEmpty
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 150,
                             child: Center(
-                                child: Text('You have no contracts yet')))
+                                child: Consumer<LanguageService>(
+                                    builder: (context, language, _) => Text(
+                                        language.mainScreenNoContractsErrorMessage ??
+                                            ''))))
                         : breakpoint > MediaQuery.of(context).size.width
                             ? mobileView()
                             : desktopView()

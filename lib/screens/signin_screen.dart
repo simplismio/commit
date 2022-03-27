@@ -18,7 +18,6 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
-  String? error;
 
   String? username;
   String? email;
@@ -46,10 +45,12 @@ class _SignInScreenState extends State<SignInScreen> {
     return ElevatedButton(
       child: loading
           ? const LinearProgressIndicator()
-          : const Text(
-              "Sign In",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+          : Consumer<LanguageService>(
+              builder: (context, language, _) =>
+                  Text(language.signInScreenButtonText ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ))),
       onPressed: () async {
         if (formKeyForm.currentState!.validate()) {
           setState(() => loading = true);
@@ -64,13 +65,14 @@ class _SignInScreenState extends State<SignInScreen> {
             } else {
               setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  result,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
+                content: Consumer<LanguageService>(
+                    builder: (context, language, _) => Text(
+                          language.genericAuthErrorMessage ?? '',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )),
                 backgroundColor: Colors.grey[800],
               ));
             }
@@ -78,7 +80,6 @@ class _SignInScreenState extends State<SignInScreen> {
         } else {
           setState(() {
             loading = false;
-            error = 'Something went wrong.';
           });
         }
       },
@@ -89,10 +90,12 @@ class _SignInScreenState extends State<SignInScreen> {
     return ElevatedButton(
       child: loading
           ? const LinearProgressIndicator()
-          : const Text(
-              "Sign Up",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+          : Consumer<LanguageService>(
+              builder: (context, language, _) =>
+                  Text(language.signUpScreenButtonText ?? '',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ))),
       onPressed: () async {
         if (formKeyForm.currentState!.validate()) {
           setState(() => loading = true);
@@ -107,13 +110,14 @@ class _SignInScreenState extends State<SignInScreen> {
                       builder: (context) => const AuthorizationUtility()));
             } else {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  result,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
+                content: Consumer<LanguageService>(
+                    builder: (context, language, _) => Text(
+                          language.genericAuthErrorMessage ?? '',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )),
                 backgroundColor: Colors.grey[800],
               ));
             }
@@ -121,7 +125,6 @@ class _SignInScreenState extends State<SignInScreen> {
         } else {
           setState(() {
             loading = false;
-            error = 'Unable to send a SMS login code.';
           });
         }
       },
@@ -138,60 +141,71 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 20.0),
               signIn == true
                   ? Container()
-                  : TextFormField(
-                      decoration: const InputDecoration(hintText: "Username"),
+                  : Consumer<LanguageService>(
+                      builder: (context, language, _) => TextFormField(
+                          decoration: InputDecoration(
+                              hintText:
+                                  language.signUpScreenUsernamePlaceholder),
+                          textAlign: TextAlign.left,
+                          autofocus: true,
+                          validator: (String? value) {
+                            return (value != null && value.length < 2)
+                                ? language.signUpScreenUsernameErrorMessage
+                                : null;
+                          },
+                          onChanged: (val) {
+                            setState(() => username = val);
+                          })),
+              const SizedBox(height: 10),
+              Consumer<LanguageService>(
+                  builder: (context, language, _) => TextFormField(
+                      decoration: InputDecoration(
+                          hintText: language.signInUpScreenEmailPlaceholder),
                       textAlign: TextAlign.left,
                       autofocus: true,
                       validator: (String? value) {
                         return (value != null && value.length < 2)
-                            ? 'Please provide a valid username.'
+                            ? language.signInUpScreenEmailErrorMessage
                             : null;
                       },
                       onChanged: (val) {
-                        setState(() => username = val);
-                      }),
-              TextFormField(
-                  decoration: const InputDecoration(hintText: "Email"),
-                  textAlign: TextAlign.left,
-                  autofocus: true,
-                  validator: (String? value) {
-                    return (value != null && value.length < 2)
-                        ? 'Please provide a valid email.'
-                        : null;
-                  },
-                  onChanged: (val) {
-                    setState(() => email = val);
-                  }),
-              TextFormField(
-                  obscureText: obscureText,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    suffixIcon: InkWell(
-                      onTap: showOrHidePasswordToggle,
-                      child: Icon(
-                        obscureText
-                            ? FontAwesomeIcons.eye
-                            : FontAwesomeIcons.eyeSlash,
-                        size: 20.0,
+                        setState(() => email = val);
+                      })),
+              const SizedBox(height: 10),
+              Consumer<LanguageService>(
+                  builder: (context, language, _) => TextFormField(
+                      obscureText: obscureText,
+                      decoration: InputDecoration(
+                        hintText: language.signInUpScreenPasswordPlaceholder,
+                        suffixIcon: InkWell(
+                          onTap: showOrHidePasswordToggle,
+                          child: Icon(
+                            obscureText
+                                ? FontAwesomeIcons.eye
+                                : FontAwesomeIcons.eyeSlash,
+                            size: 20.0,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  textAlign: TextAlign.left,
-                  autofocus: true,
-                  validator: (String? value) {
-                    return (value != null && value.length < 2)
-                        ? 'Please provide a valid password.'
-                        : null;
-                  },
-                  onChanged: (val) {
-                    setState(() => password = val);
-                  }),
+                      textAlign: TextAlign.left,
+                      autofocus: true,
+                      validator: (String? value) {
+                        return (value != null && value.length < 2)
+                            ? language.signInUpScreenPasswordErrorMessage
+                            : null;
+                      },
+                      onChanged: (val) {
+                        setState(() => password = val);
+                      })),
               const SizedBox(height: 20.0),
               signIn == true
                   ? SizedBox(
                       height: 25,
                       child: GestureDetector(
-                          child: const Text("I forgot my password"),
+                          child: Consumer<LanguageService>(
+                              builder: (context, language, _) => Text(
+                                  language.signInScreenResetPasswordLink ??
+                                      '')),
                           onTap: () {
                             Navigator.push(
                                 context,
@@ -206,22 +220,28 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: signIn == true ? signInButton() : signUpButton()),
               const SizedBox(height: 20),
               signIn == true
-                  ? SizedBox(
-                      height: 30,
-                      child: GestureDetector(
-                          child: const Text("Sign-up using email"),
-                          onTap: () {
-                            signInSignUpToggle();
-                          }),
-                    )
-                  : SizedBox(
-                      height: 30,
-                      child: GestureDetector(
-                          child: const Text("Go back to sign in"),
-                          onTap: () {
-                            signInSignUpToggle();
-                          }),
-                    ),
+                  ? Consumer<LanguageService>(
+                      builder: (context, language, _) => SizedBox(
+                            height: 30,
+                            child: GestureDetector(
+                                child: Text(
+                                    language.signInScreenSignUpUsingEmailLink ??
+                                        ''),
+                                onTap: () {
+                                  signInSignUpToggle();
+                                }),
+                          ))
+                  : Consumer<LanguageService>(
+                      builder: (context, language, _) => SizedBox(
+                            height: 30,
+                            child: GestureDetector(
+                                child: Text(
+                                    language.signInScreengoBackToSignInLink ??
+                                        ''),
+                                onTap: () {
+                                  signInSignUpToggle();
+                                }),
+                          )),
               const SizedBox(height: 10.0),
               Row(
                 children: [
