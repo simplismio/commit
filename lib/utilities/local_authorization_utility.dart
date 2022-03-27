@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../../services/local_authentication_service.dart';
 import 'authorization_utility.dart';
 

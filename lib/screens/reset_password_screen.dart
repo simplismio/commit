@@ -1,31 +1,21 @@
 import 'package:flutter/material.dart';
-import '../services/contract_service.dart';
 import '../services/language_service.dart';
+import '../services/user_service.dart';
 import 'package:provider/provider.dart';
 
-class EditCommitmentScreen extends StatefulWidget {
-  final String? contractKey;
-  // ignore: prefer_typing_uninitialized_variables
-  final commitmentArray;
-  final int? commitmentIndex;
-
-  const EditCommitmentScreen({
-    Key? key,
-    this.contractKey,
-    this.commitmentArray,
-    this.commitmentIndex,
-  }) : super(key: key);
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({Key? key}) : super(key: key);
 
   @override
-  _EditCommitmentScreenState createState() => _EditCommitmentScreenState();
+  _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
 }
 
-class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
   String error = '';
 
-  String? commitment;
+  String? email;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +35,7 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
         ),
         title: Consumer<LanguageService>(
             builder: (context, language, _) =>
-                Text(language.editCommitmentScreenAppBarTitle ?? '',
+                Text(language.resetPasswordScreenAppBarTitle ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
@@ -60,39 +50,44 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
               children: <Widget>[
                 const SizedBox(height: 30.0),
                 TextFormField(
-                    decoration:
-                        const InputDecoration(hintText: "Edit commitment"),
+                    decoration: const InputDecoration(hintText: "Email"),
                     textAlign: TextAlign.left,
-                    initialValue: widget.commitmentArray[widget.commitmentIndex]
-                        ['commitment'],
                     autofocus: true,
                     validator: (String? value) {
+                      //print(value.length);
                       return (value != null && value.length < 2)
-                          ? 'Please provide a valid commitment.'
+                          ? 'Please provide a valid email.'
                           : null;
                     },
                     onChanged: (val) {
-                      setState(() => commitment = val);
+                      setState(() => email = val);
                     }),
-                const SizedBox(height: 10.0),
+                const SizedBox(height: 20.0),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
                         : const Text(
-                            "Edit commitment",
+                            "Reset password",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
-                        ContractService().editCommitment(
-                            widget.contractKey,
-                            widget.commitmentArray,
-                            widget.commitmentIndex,
-                            commitment);
-                        Navigator.pop(context);
+                        UserService().resetPassword(email).then((result) {
+                          if (result == null) {
+                            // Navigator.pop(context);
+                          } else {
+                            setState(() => loading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                result,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ));
+                          }
+                        });
                       } else {
                         setState(() {
                           loading = false;
