@@ -49,7 +49,7 @@ Future<void> main() async {
     try {
       EmulatorService.setupAuthEmulator();
       EmulatorService.setupFirestoreEmulator();
-      // FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      EmulatorService.setupStorageEmulator();
     } catch (e) {
       print(e);
     }

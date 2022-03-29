@@ -78,6 +78,10 @@
 			<string>fbauth2</string>
 			<string>fbshareextension</string>
 		</array>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+		</array>
 		<!-- End of the Google Sign-in Section -->
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<true/>

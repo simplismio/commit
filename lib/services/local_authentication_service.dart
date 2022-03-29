@@ -32,7 +32,7 @@ class LocalAuthenticationService extends ChangeNotifier {
     bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
-          localizedReason: 'Let OS determine authentication method',
+          localizedReason: 'Please authenticate',
           useErrorDialogs: true,
           stickyAuth: true);
       if (authenticated == true) {

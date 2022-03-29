@@ -78,9 +78,7 @@ class _SignInScreenState extends State<SignInScreen> {
             }
           });
         } else {
-          setState(() {
-            loading = false;
-          });
+          setState(() => loading = false);
         }
       },
     );
@@ -109,6 +107,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   MaterialPageRoute(
                       builder: (context) => const AuthorizationUtility()));
             } else {
+              setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Consumer<LanguageService>(
                     builder: (context, language, _) => Text(
@@ -138,7 +137,6 @@ class _SignInScreenState extends State<SignInScreen> {
           key: formKeyForm,
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 20.0),
               signIn == true
                   ? Container()
                   : Consumer<LanguageService>(
@@ -218,11 +216,11 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(
                   width: 300,
                   child: signIn == true ? signInButton() : signUpButton()),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               signIn == true
                   ? Consumer<LanguageService>(
                       builder: (context, language, _) => SizedBox(
-                            height: 30,
+                            height: 18,
                             child: GestureDetector(
                                 child: Text(
                                     language.signInScreenSignUpUsingEmailLink ??
@@ -233,7 +231,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ))
                   : Consumer<LanguageService>(
                       builder: (context, language, _) => SizedBox(
-                            height: 30,
+                            height: 18,
                             child: GestureDetector(
                                 child: Text(
                                     language.signInScreengoBackToSignInLink ??
@@ -345,7 +343,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       children: [
                         const SizedBox(height: 175),
                         Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 200, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 150, 0),
                             child: Consumer<ThemeService>(
                               builder: (context, theme, child) => Container(
                                 decoration: BoxDecoration(

@@ -15,6 +15,7 @@ class LanguageService extends ChangeNotifier {
   String? editContractScreenAppBarTitle;
   String? editCommitmentScreenAppBarTitle;
   String? resetPasswordScreenAppBarTitle;
+  String? editProfileScreenAppBarTitle;
   String? signInScreenAppBarTitle;
   String? signUpScreenAppBarTitle;
   // Buttons
@@ -23,15 +24,18 @@ class LanguageService extends ChangeNotifier {
   String? editContractScreenButtonText;
   String? editCommitmentScreenButtonText;
   String? resetPasswordScreenButtonText;
+  String? editProfileScreenButtonText;
   String? editContractScreenDeleteContractButtonText;
   String? signInScreenButtonText;
   String? signUpScreenButtonText;
+  String? mainScreenSettingsLogoutButton;
   // Placeholders
   String? newContractScreenContractTitlePlaceholder;
   String? newCommitmentScreenCommitmentPlaceholder;
   String? editContractScreenContractTitlePlaceholder;
   String? editCommitmentScreenCommitmentPlaceholder;
   String? resetPasswordScreenEmailPlaceholder;
+  String? editProfileScreenUsernamePlaceholder;
   String? signUpScreenUsernamePlaceholder;
   String? signInUpScreenEmailPlaceholder;
   String? signInUpScreenPasswordPlaceholder;
@@ -41,6 +45,7 @@ class LanguageService extends ChangeNotifier {
   String? editContractScreenContractTitleErrorMessage;
   String? editCommitmentScreenCommitmentErrorMessage;
   String? resetPasswordScreenEmailErrorMessage;
+  String? editProfileScreenUsernameErrorMessage;
   String? signUpScreenUsernameErrorMessage;
   String? signInUpScreenEmailErrorMessage;
   String? signInUpScreenPasswordErrorMessage;
@@ -54,6 +59,13 @@ class LanguageService extends ChangeNotifier {
   String? signInScreengoBackToSignInLink;
   String? mainScreenDismissebleEditCommitmentLink;
   String? mainScreenDismissebleDeleteCommitmentLink;
+  String? mainScreenSettingsEditProfileLink;
+  // Labels
+  String? mainScreenSettingsLanguageLabel;
+  String? mainScreenSettingsThemeLabel;
+  String? mainScreenSettingsBiometricsLabel;
+  // Headers
+  String? mainScreenSettingsTitle;
 
   LanguageService() {
     _language = 'English';
@@ -91,6 +103,7 @@ class LanguageService extends ChangeNotifier {
         editContractScreenAppBarTitle = 'Edit contract';
         editCommitmentScreenAppBarTitle = 'Edit commitment';
         resetPasswordScreenAppBarTitle = 'Reset password';
+        editProfileScreenAppBarTitle = 'Edit profile';
         signInScreenAppBarTitle = 'Sign in';
         signUpScreenAppBarTitle = 'Sign up';
         // Buttons
@@ -99,15 +112,18 @@ class LanguageService extends ChangeNotifier {
         editContractScreenButtonText = 'Edit contract';
         editCommitmentScreenButtonText = 'Edit commitment';
         resetPasswordScreenButtonText = 'Email reset link';
+        editProfileScreenButtonText = 'Update profile';
         editContractScreenDeleteContractButtonText = 'Delete contract';
         signInScreenButtonText = 'Sign in';
         signUpScreenButtonText = 'Sign up';
+        mainScreenSettingsLogoutButton = 'Log out';
         // Placeholder
         newContractScreenContractTitlePlaceholder = 'Contract title';
         newCommitmentScreenCommitmentPlaceholder = 'Commitment';
         editContractScreenContractTitlePlaceholder = 'Contract title';
         editCommitmentScreenCommitmentPlaceholder = 'Commitment';
         resetPasswordScreenEmailPlaceholder = 'Email address';
+        editProfileScreenUsernamePlaceholder = 'Username';
         signUpScreenUsernamePlaceholder = 'Username';
         signInUpScreenEmailPlaceholder = 'Email address';
         signInUpScreenPasswordPlaceholder = 'Password';
@@ -126,6 +142,8 @@ class LanguageService extends ChangeNotifier {
         signInUpScreenEmailErrorMessage =
             'Please provide a valid email address';
         signInUpScreenPasswordErrorMessage = 'Please provide a valid password';
+        editProfileScreenUsernameErrorMessage =
+            'Please provide a valid username';
         mainScreenNoContractsErrorMessage = 'There are no contracts yet';
         mainScreenNoCommitmentsErrorMessage = 'There are no commitments yet';
         genericAuthErrorMessage = 'Email address or password is incorrect';
@@ -136,6 +154,13 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Go back to sign in';
         mainScreenDismissebleEditCommitmentLink = 'Edit commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Delete commitment';
+        mainScreenSettingsEditProfileLink = 'Edit profile';
+        // Labels
+        mainScreenSettingsLanguageLabel = 'Language';
+        mainScreenSettingsThemeLabel = 'Dark theme';
+        mainScreenSettingsBiometricsLabel = 'Biometric unlock';
+        // Headers
+        mainScreenSettingsTitle = 'Settings';
         break;
       case 'Dutch':
         // AppBar Titles
@@ -145,6 +170,7 @@ class LanguageService extends ChangeNotifier {
         editContractScreenAppBarTitle = 'Wijzig contract';
         editCommitmentScreenAppBarTitle = 'Wijzig commitment';
         resetPasswordScreenAppBarTitle = 'Wachtwoord reset';
+        editProfileScreenAppBarTitle = 'Wijzig profiel';
         signInScreenAppBarTitle = 'Log in';
         signUpScreenAppBarTitle = 'Registreer';
         // Buttons
@@ -153,15 +179,18 @@ class LanguageService extends ChangeNotifier {
         editContractScreenButtonText = 'Wijzig contract';
         editCommitmentScreenButtonText = 'Wijzig commitment';
         resetPasswordScreenButtonText = 'Email reset link';
+        editProfileScreenButtonText = 'Profiel bijwerken';
         editContractScreenDeleteContractButtonText = 'Verwijder contract';
         signInScreenButtonText = 'Log In';
         signUpScreenButtonText = 'Registreer';
+        mainScreenSettingsLogoutButton = 'Uitloggen';
         // Placeholders
         newContractScreenContractTitlePlaceholder = 'Contract Titel';
         newCommitmentScreenCommitmentPlaceholder = 'Commitment';
         editContractScreenContractTitlePlaceholder = 'Contract Titel';
         editCommitmentScreenCommitmentPlaceholder = 'Commitment';
         resetPasswordScreenEmailPlaceholder = 'Email';
+        editProfileScreenUsernamePlaceholder = 'Gebruikersnaam';
         signUpScreenUsernamePlaceholder = 'Gebruikersnaam';
         signInUpScreenEmailPlaceholder = 'Email';
         signInUpScreenPasswordPlaceholder = 'Wachtwoord';
@@ -182,6 +211,8 @@ class LanguageService extends ChangeNotifier {
             'Het ingegeven email adres is incorrect';
         signInUpScreenPasswordErrorMessage =
             'Het ingegeven wachtwoord is incorrect';
+        editProfileScreenUsernameErrorMessage =
+            'De ingegeven gebruikersnaam is incorrect';
         mainScreenNoContractsErrorMessage =
             'Er zijn nog geen contracten opgesteld';
         mainScreenNoCommitmentsErrorMessage =
@@ -195,6 +226,13 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Ga terug naar log in';
         mainScreenDismissebleEditCommitmentLink = 'Wijzig commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Verwijder commitment';
+        mainScreenSettingsEditProfileLink = 'Wijzig profiel';
+        // Labels
+        mainScreenSettingsLanguageLabel = 'Taal';
+        mainScreenSettingsThemeLabel = 'Donker theme';
+        mainScreenSettingsBiometricsLabel = 'Unlock met biometrie';
+        // Headers
+        mainScreenSettingsTitle = 'Instellingen';
         break;
       default:
         // AppBar Titles
@@ -204,6 +242,7 @@ class LanguageService extends ChangeNotifier {
         editContractScreenAppBarTitle = 'Edit contract';
         editCommitmentScreenAppBarTitle = 'Edit commitment';
         resetPasswordScreenAppBarTitle = 'Reset password';
+        editProfileScreenAppBarTitle = 'Edit profile';
         editContractScreenDeleteContractButtonText = 'Delete contract';
         signInScreenAppBarTitle = 'Sign in';
         signUpScreenAppBarTitle = 'Sign up';
@@ -213,14 +252,17 @@ class LanguageService extends ChangeNotifier {
         editContractScreenButtonText = 'Edit contract';
         editCommitmentScreenButtonText = 'Edit commitment';
         resetPasswordScreenButtonText = 'Email reset link';
+        editProfileScreenButtonText = 'Update profile';
         signInScreenButtonText = 'Sign in';
         signUpScreenButtonText = 'Sign up';
+        mainScreenSettingsLogoutButton = 'Log out';
         // Placeholder
         newContractScreenContractTitlePlaceholder = 'Contract title';
         newCommitmentScreenCommitmentPlaceholder = 'Commitment';
         editContractScreenContractTitlePlaceholder = 'Contract title';
         editCommitmentScreenCommitmentPlaceholder = 'Commitment';
         resetPasswordScreenEmailPlaceholder = 'Email address';
+        editProfileScreenUsernamePlaceholder = 'Username';
         signUpScreenUsernamePlaceholder = 'Username';
         signInUpScreenEmailPlaceholder = 'Email address';
         signInUpScreenPasswordPlaceholder = 'Password';
@@ -239,6 +281,8 @@ class LanguageService extends ChangeNotifier {
         signInUpScreenEmailErrorMessage =
             'Please provide a valid email address';
         signInUpScreenPasswordErrorMessage = 'Please provide a valid password';
+        editProfileScreenUsernameErrorMessage =
+            'Please provide a valid username';
         mainScreenNoContractsErrorMessage = 'There are no contracts yet';
         mainScreenNoCommitmentsErrorMessage = 'There are no commitments yet';
         genericAuthErrorMessage = 'Email address or password is incorrect';
@@ -249,6 +293,13 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Go back to sign in';
         mainScreenDismissebleEditCommitmentLink = 'Edit commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Delete commitment';
+        mainScreenSettingsEditProfileLink = 'Edit profile';
+        // Labels
+        mainScreenSettingsLanguageLabel = 'Language';
+        mainScreenSettingsThemeLabel = 'Dark theme';
+        mainScreenSettingsBiometricsLabel = 'Biometric unlock';
+        // Headers
+        mainScreenSettingsTitle = 'Settings';
     }
   }
 }

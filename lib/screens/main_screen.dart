@@ -9,8 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'edit_commitment_screen.dart';
 import 'edit_contract_screen.dart';
+import 'edit_profile.dart';
 import 'new_contract_screen.dart';
 import 'new_commitment_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -57,13 +59,6 @@ class _MainScreenState extends State<MainScreen> {
                               ? Colors.grey[800]
                               : Colors.grey[300],
                           child: ListTile(
-                            // leading: CachedNetworkImage(
-                            //   imageUrl: "",
-                            //   placeholder: (context, url) =>
-                            //       const CircularProgressIndicator(),
-                            //   errorWidget: (context, url, error) =>
-                            //       const Icon(Icons.error),
-                            // ),
                             title: Padding(
                               padding: const EdgeInsets.fromLTRB(2, 10, 2, 10),
                               child: Column(
@@ -73,14 +68,13 @@ class _MainScreenState extends State<MainScreen> {
                                       Text(
                                         contracts[contractIndex].title,
                                         style: const TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       const Spacer(),
                                       IconButton(
-                                        icon: const Icon(
-                                          Icons.more_horiz,
-                                        ),
+                                        icon: const FaIcon(
+                                            FontAwesomeIcons.ellipsis),
                                         onPressed: () {
                                           Navigator.push(
                                               context,
@@ -96,9 +90,9 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                       toggledCommitmentsValue == false
                                           ? IconButton(
-                                              icon: const Icon(
-                                                Icons.chevron_right,
-                                              ),
+                                              icon: const FaIcon(
+                                                  FontAwesomeIcons
+                                                      .chevronRight),
                                               onPressed: () {
                                                 setState(() {
                                                   toggleCommitments(
@@ -107,9 +101,8 @@ class _MainScreenState extends State<MainScreen> {
                                               },
                                             )
                                           : IconButton(
-                                              icon: const Icon(
-                                                Icons.expand_more,
-                                              ),
+                                              icon: const FaIcon(
+                                                  FontAwesomeIcons.chevronDown),
                                               onPressed: () {
                                                 setState(() {
                                                   toggleCommitments(
@@ -119,26 +112,6 @@ class _MainScreenState extends State<MainScreen> {
                                             )
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 5, 0, 0),
-                                        child: Chip(
-                                            avatar: CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.grey.shade800,
-                                              child: Text(
-                                                  contracts[contractIndex]
-                                                      .commitments
-                                                      .length
-                                                      .toString()),
-                                            ),
-                                            label: const Text('commitments')),
-                                      ),
-                                      const Spacer()
-                                    ],
-                                  )
                                 ],
                               ),
                             ),
@@ -177,8 +150,9 @@ class _MainScreenState extends State<MainScreen> {
                                                                     .all(15),
                                                             child: Row(
                                                               children: [
-                                                                const Icon(
-                                                                    Icons.edit,
+                                                                const FaIcon(
+                                                                    FontAwesomeIcons
+                                                                        .penToSquare,
                                                                     color: Colors
                                                                         .white),
                                                                 const SizedBox(
@@ -192,7 +166,8 @@ class _MainScreenState extends State<MainScreen> {
                                                                         style: const TextStyle(
                                                                             color:
                                                                                 Colors.white,
-                                                                            fontWeight: FontWeight.bold))),
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15))),
                                                               ],
                                                             ),
                                                           ),
@@ -209,8 +184,9 @@ class _MainScreenState extends State<MainScreen> {
                                                                   MainAxisAlignment
                                                                       .end,
                                                               children: [
-                                                                const Icon(
-                                                                  Icons.delete,
+                                                                const FaIcon(
+                                                                  FontAwesomeIcons
+                                                                      .trash,
                                                                   color: Colors
                                                                       .white,
                                                                 ),
@@ -225,7 +201,8 @@ class _MainScreenState extends State<MainScreen> {
                                                                         style: const TextStyle(
                                                                             color:
                                                                                 Colors.white,
-                                                                            fontWeight: FontWeight.bold))),
+                                                                            fontWeight: FontWeight.bold,
+                                                                            fontSize: 15))),
                                                               ],
                                                             ),
                                                           ),
@@ -296,7 +273,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                               [
                                                                               'commitment'],
                                                                           style: const TextStyle(
-                                                                              fontSize: 14,
+                                                                              fontSize: 16,
                                                                               fontWeight: FontWeight.bold),
                                                                         ),
                                                                         subtitle:
@@ -439,67 +416,53 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 100),
-
-            Consumer<UserService>(
-              builder: (context, user, child) => Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  child: Text('Hi ${user.username!}',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 30)),
+            const SizedBox(height: 50),
+            SizedBox(
+              child: Center(
+                child: const CircleAvatar(
+                  radius: 50,
+                  child: Icon(Icons.person, size: 60, color: Colors.grey),
+                ),
+              ),
+            ),
+            Center(
+              child: Consumer<UserService>(
+                builder: (context, user, child) => Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(user.username ?? '',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30)),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 50),
             Container(
               alignment: Alignment.topLeft,
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                child: Text(
-                  'Settings',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                child: Consumer<LanguageService>(
+                    builder: (context, language, child) => Text(
+                          language.mainScreenSettingsTitle ?? '',
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        )),
               ),
             ),
             const Divider(),
-            // SizedBox(
-            //   height: MediaQuery.of(context).size.height * 0.3,
-            //   width: MediaQuery.of(context).size.width,
-            //   child: Stack(
-            //     children: const [
-            //       Positioned(
-            //         top: 30.0,
-            //         left: 90.0,
-            //         child: CircleAvatar(
-            //           radius: 50,
-            //           child: Icon(Icons.person, size: 60, color: Colors.grey),
-            //         ),
-            //       ),
-            //       Positioned(
-            //         child: Text(
-            //           'Username',
-            //           style: TextStyle(
-            //             fontSize: 30,
-            //           ),
-            //         ),
-            //         top: 150,
-            //         left: 60,
-            //       ),
-            //     ],
-            //   ),
-            // ),
             const SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: Row(
                 children: [
-                  const Text('Language',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Consumer<LanguageService>(
+                      builder: (context, language, child) => Text(
+                          language.mainScreenSettingsLanguageLabel ?? '',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15))),
                   const Spacer(),
                   Consumer<LanguageService>(
                       builder: (context, language, child) =>
@@ -528,10 +491,11 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 5),
             Consumer<ThemeService>(
               builder: (context, theme, child) => SwitchListTile(
-                title: const Text(
-                  "Dark Mode",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                title: Consumer<LanguageService>(
+                    builder: (context, language, child) => Text(
+                          language.mainScreenSettingsThemeLabel ?? '',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        )),
                 onChanged: (value) {
                   theme.toggleTheme();
                 },
@@ -543,10 +507,13 @@ class _MainScreenState extends State<MainScreen> {
                 ? Consumer<LocalAuthenticationService>(
                     builder: (context, localAuthentication, child) =>
                         SwitchListTile(
-                      title: const Text(
-                        "Biometric Unlock",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      title: Consumer<LanguageService>(
+                          builder: (context, language, child) => Text(
+                                language.mainScreenSettingsBiometricsLabel ??
+                                    '',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              )),
                       onChanged: (value) {
                         localAuthentication.toggleBiometrics();
                       },
@@ -564,11 +531,14 @@ class _MainScreenState extends State<MainScreen> {
                   child: SizedBox(
                     width: 100,
                     child: ElevatedButton(
-                      child: const Text(
-                        "Log out",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
+                      style: ElevatedButton.styleFrom(primary: Colors.red),
+                      child: Consumer<LanguageService>(
+                          builder: (context, language, child) => Text(
+                                language.mainScreenSettingsLogoutButton ?? '',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )),
                       onPressed: () async {
                         setState(() => loading = true);
                         UserService().signOut().then((result) {
@@ -579,6 +549,35 @@ class _MainScreenState extends State<MainScreen> {
                                   builder: (BuildContext context) =>
                                       const AuthorizationUtility()));
                         });
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
+                  child: SizedBox(
+                    width: 140,
+                    child: ElevatedButton(
+                      child: Consumer<LanguageService>(
+                          builder: (context, language, child) => Text(
+                                language.mainScreenSettingsEditProfileLink ??
+                                    '',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                      onPressed: () async {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Consumer<UserService>(
+                                        builder: (context, user, child) =>
+                                            EditProfileScreen(
+                                                currentAvatarLink: null,
+                                                currentUserUid: user.uid,
+                                                currentUsername:
+                                                    user.username))));
                       },
                     ),
                   ),
