@@ -69,9 +69,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     builder: (context, language, _) => Text(
                           language.genericAuthErrorMessage ?? '',
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
                         )),
                 backgroundColor: Colors.grey[800],
               ));
@@ -122,9 +123,7 @@ class _SignInScreenState extends State<SignInScreen> {
             }
           });
         } else {
-          setState(() {
-            loading = false;
-          });
+          setState(() => loading = false);
         }
       },
     );

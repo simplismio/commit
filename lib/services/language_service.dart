@@ -36,6 +36,7 @@ class LanguageService extends ChangeNotifier {
   String? editCommitmentScreenCommitmentPlaceholder;
   String? resetPasswordScreenEmailPlaceholder;
   String? editProfileScreenUsernamePlaceholder;
+  String? editProfileScreenEmailPlaceholder;
   String? signUpScreenUsernamePlaceholder;
   String? signInUpScreenEmailPlaceholder;
   String? signInUpScreenPasswordPlaceholder;
@@ -124,6 +125,7 @@ class LanguageService extends ChangeNotifier {
         editCommitmentScreenCommitmentPlaceholder = 'Commitment';
         resetPasswordScreenEmailPlaceholder = 'Email address';
         editProfileScreenUsernamePlaceholder = 'Username';
+        editProfileScreenEmailPlaceholder = 'Email';
         signUpScreenUsernamePlaceholder = 'Username';
         signInUpScreenEmailPlaceholder = 'Email address';
         signInUpScreenPasswordPlaceholder = 'Password';
@@ -191,6 +193,7 @@ class LanguageService extends ChangeNotifier {
         editCommitmentScreenCommitmentPlaceholder = 'Commitment';
         resetPasswordScreenEmailPlaceholder = 'Email';
         editProfileScreenUsernamePlaceholder = 'Gebruikersnaam';
+        editProfileScreenEmailPlaceholder = 'Email';
         signUpScreenUsernamePlaceholder = 'Gebruikersnaam';
         signInUpScreenEmailPlaceholder = 'Email';
         signInUpScreenPasswordPlaceholder = 'Wachtwoord';
@@ -263,6 +266,7 @@ class LanguageService extends ChangeNotifier {
         editCommitmentScreenCommitmentPlaceholder = 'Commitment';
         resetPasswordScreenEmailPlaceholder = 'Email address';
         editProfileScreenUsernamePlaceholder = 'Username';
+        editProfileScreenEmailPlaceholder = 'Email';
         signUpScreenUsernamePlaceholder = 'Username';
         signInUpScreenEmailPlaceholder = 'Email address';
         signInUpScreenPasswordPlaceholder = 'Password';

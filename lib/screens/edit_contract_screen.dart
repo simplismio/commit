@@ -2,7 +2,7 @@ import 'package:commit/services/contract_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/language_service.dart';
-import 'main_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditContractScreen extends StatefulWidget {
   final ContractService? contract;
@@ -25,8 +25,8 @@ class _EditContractScreenState extends State<EditContractScreen> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(
-                Icons.chevron_left,
+              icon: const FaIcon(
+                FontAwesomeIcons.chevronLeft,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -104,9 +104,7 @@ class _EditContractScreenState extends State<EditContractScreen> {
                           }
                         });
                       } else {
-                        setState(() {
-                          loading = false;
-                        });
+                        setState(() => loading = false);
                       }
                     },
                   ),
@@ -119,20 +117,36 @@ class _EditContractScreenState extends State<EditContractScreen> {
                         builder: (context, language, _) => Text(
                               language.editContractScreenDeleteContractButtonText ??
                                   '',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             )),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
-                        ContractService().deleteContract(widget.contract!.key);
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const MainScreen()),
-                            (Route<dynamic> route) => false);
-                      } else {
-                        setState(() {
-                          loading = false;
+                        ContractService()
+                            .deleteContract(widget.contract!.key)
+                            .then((result) {
+                          if (result == null) {
+                            Navigator.of(context).maybePop();
+                          } else {
+                            setState(() => loading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Consumer<LanguageService>(
+                                  builder: (context, language, _) => Text(
+                                        language.genericFirebaseErrorMessage ??
+                                            '',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      )),
+                              backgroundColor: Colors.grey[800],
+                            ));
+                          }
                         });
+                      } else {
+                        setState(() => loading = false);
                       }
                     },
                     style: ElevatedButton.styleFrom(

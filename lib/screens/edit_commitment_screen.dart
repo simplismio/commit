@@ -1,8 +1,8 @@
-import 'package:commit/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/contract_service.dart';
 import '../services/language_service.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditCommitmentScreen extends StatefulWidget {
   final String? contractKey;
@@ -34,8 +34,8 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(
-                Icons.chevron_left,
+              icon: const FaIcon(
+                FontAwesomeIcons.chevronLeft,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -111,18 +111,17 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
                                         language.genericFirebaseErrorMessage ??
                                             '',
                                         style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       )),
                               backgroundColor: Colors.grey[800],
                             ));
                           }
                         });
                       } else {
-                        setState(() {
-                          loading = false;
-                        });
+                        setState(() => loading = false);
                       }
                     },
                   ),

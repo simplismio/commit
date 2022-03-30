@@ -3,6 +3,7 @@ import '../services/contract_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
 import '../../services/theme_service.dart';
+import '../services/media_service.dart';
 import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -302,9 +303,9 @@ class _MainScreenState extends State<MainScreen> {
                                                       backgroundColor:
                                                           Colors.grey[500],
                                                       child: IconButton(
-                                                        icon: const Icon(
-                                                          Icons.add,
-                                                        ),
+                                                        icon: const FaIcon(
+                                                            FontAwesomeIcons
+                                                                .plus),
                                                         onPressed: () {
                                                           Navigator.push(
                                                               context,
@@ -343,8 +344,8 @@ class _MainScreenState extends State<MainScreen> {
                                                       backgroundColor:
                                                           Colors.grey[500],
                                                       child: IconButton(
-                                                        icon: const Icon(
-                                                          Icons.add,
+                                                        icon: const FaIcon(
+                                                          FontAwesomeIcons.plus,
                                                         ),
                                                         onPressed: () {
                                                           Navigator.push(
@@ -417,14 +418,20 @@ class _MainScreenState extends State<MainScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 50),
-            SizedBox(
-              child: Center(
-                child: const CircleAvatar(
-                  radius: 50,
-                  child: Icon(Icons.person, size: 60, color: Colors.grey),
-                ),
-              ),
-            ),
+            Consumer<UserService>(
+                builder: (context, user, child) => SizedBox(
+                      child: Center(
+                        child: user.profilePhoto != null
+                            ? CircleAvatar(
+                                radius: 50,
+                                child: Image.network(user.profilePhoto ?? ''))
+                            : const CircleAvatar(
+                                radius: 50,
+                                child: FaIcon(FontAwesomeIcons.user,
+                                    size: 60, color: Colors.grey),
+                              ),
+                      ),
+                    )),
             Center(
               child: Consumer<UserService>(
                 builder: (context, user, child) => Padding(
@@ -574,10 +581,11 @@ class _MainScreenState extends State<MainScreen> {
                                     Consumer<UserService>(
                                         builder: (context, user, child) =>
                                             EditProfileScreen(
-                                                currentAvatarLink: null,
-                                                currentUserUid: user.uid,
-                                                currentUsername:
-                                                    user.username))));
+                                              currentAvatarLink: null,
+                                              currentUserUid: user.uid,
+                                              currentUsername: user.username,
+                                              currentUserEmail: user.email,
+                                            ))));
                       },
                     ),
                   ),
@@ -630,8 +638,8 @@ class _MainScreenState extends State<MainScreen> {
               leading: Builder(
                 builder: (context) {
                   return IconButton(
-                    icon: const Icon(
-                      Icons.menu_rounded,
+                    icon: const FaIcon(
+                      FontAwesomeIcons.bars,
                     ),
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
@@ -651,9 +659,7 @@ class _MainScreenState extends State<MainScreen> {
                 Builder(
                   builder: (context) {
                     return IconButton(
-                      icon: const Icon(
-                        Icons.notifications,
-                      ),
+                      icon: const FaIcon(FontAwesomeIcons.bell),
                       onPressed: () {
                         Scaffold.of(context).openEndDrawer();
                       },
@@ -692,8 +698,8 @@ class _MainScreenState extends State<MainScreen> {
                         builder: (BuildContext context) =>
                             const NewContractScreen()));
               },
-              child: const Icon(
-                Icons.add,
+              child: const FaIcon(
+                FontAwesomeIcons.plus,
                 size: 29,
               ),
               tooltip: 'New Contract',

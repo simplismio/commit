@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/language_service.dart';
 import '../services/user_service.dart';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({Key? key}) : super(key: key);
@@ -24,8 +25,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(
-                Icons.chevron_left,
+              icon: const FaIcon(
+                FontAwesomeIcons.chevronLeft,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -91,18 +92,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                         language.genericFirebaseErrorMessage ??
                                             '',
                                         style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       )),
                               backgroundColor: Colors.grey[800],
                             ));
                           }
                         });
                       } else {
-                        setState(() {
-                          loading = false;
-                        });
+                        setState(() => loading = false);
                       }
                     },
                   ),

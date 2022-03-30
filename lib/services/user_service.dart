@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:random_string/random_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, ChangeNotifier;
 import 'dart:convert';
@@ -8,14 +10,17 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'emulator_service.dart';
 import 'package:crypto/crypto.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
+  String? profilePhoto;
   String? username;
   String? email;
 
   UserService({
     this.uid,
+    this.profilePhoto,
     this.username,
     this.email,
   });
@@ -26,7 +31,10 @@ class UserService extends ChangeNotifier {
       print('Firebase UID is: ${user.uid}');
     }
     return UserService(
-        uid: user?.uid, username: user?.displayName, email: user?.email);
+        uid: user?.uid,
+        profilePhoto: user?.photoURL,
+        username: user?.displayName,
+        email: user?.email);
   }
 
   Stream<UserService?> get user {
@@ -87,7 +95,6 @@ class UserService extends ChangeNotifier {
   Future signOut() async {
     try {
       if (kDebugMode) {
-        EmulatorService.setupAuthEmulator();
         print('Signing out user');
       }
       await FirebaseAuth.instance.signOut();
@@ -169,5 +176,34 @@ class UserService extends ChangeNotifier {
       EmulatorService.setupAuthEmulator();
     }
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+  }
+
+  Future updateUserProfile(_newProfilePhotoPath, _username, _email) async {
+    final Reference storageReference = FirebaseStorage.instanceFor()
+        .ref()
+        .child('profilePhoto/' + randomAlphaNumeric(30));
+
+    String? _photoUrl;
+
+    final UploadTask uploadTask =
+        storageReference.putFile(_newProfilePhotoPath);
+    if (await uploadTask != null) {
+      _photoUrl = await storageReference.getDownloadURL();
+    }
+
+    try {
+      if (kDebugMode) {
+        print('Updating the user profile');
+      }
+      final _user = FirebaseAuth.instance.currentUser;
+      await _user?.updatePhotoURL(_photoUrl);
+      await _user?.updateDisplayName(_username);
+      await _user?.updateEmail(_email);
+      await _user?.reload();
+
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
   }
 }

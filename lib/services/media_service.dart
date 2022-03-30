@@ -1,13 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class MediaService with ChangeNotifier {
-  static displayPickImageDialog() async {
+  File? newProfilePhotoUrl;
+
+  previewNewProfilePhoto() async {
     try {
-      final XFile? pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      print(pickedFile);
-    } catch (e) {}
+      final XFile? pickedFile = await ImagePicker()
+          .pickImage(source: ImageSource.camera, maxHeight: 480, maxWidth: 640);
+      newProfilePhotoUrl = File(pickedFile!.path);
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
 }
