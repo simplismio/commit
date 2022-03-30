@@ -3,7 +3,7 @@ import '../services/contract_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
 import '../../services/theme_service.dart';
-import '../services/media_service.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -422,9 +422,23 @@ class _MainScreenState extends State<MainScreen> {
                 builder: (context, user, child) => SizedBox(
                       child: Center(
                         child: user.profilePhoto != null
-                            ? CircleAvatar(
+                            ? CircularProfileAvatar(
+                                user.profilePhoto ?? '',
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                placeHolder: (context, url) => const SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(),
+                                ),
                                 radius: 50,
-                                child: Image.network(user.profilePhoto ?? ''))
+                                borderWidth: 2,
+                                borderColor: Colors.grey,
+                                elevation: 10,
+                                backgroundColor: Colors.transparent,
+                                imageFit: BoxFit.fill,
+                                cacheImage: true,
+                              )
                             : const CircleAvatar(
                                 radius: 50,
                                 child: FaIcon(FontAwesomeIcons.user,
@@ -440,27 +454,43 @@ class _MainScreenState extends State<MainScreen> {
                     alignment: Alignment.center,
                     child: Text(user.username ?? '',
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30)),
+                            fontWeight: FontWeight.bold, fontSize: 25)),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 50),
-            Container(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                child: Consumer<LanguageService>(
-                    builder: (context, language, child) => Text(
-                          language.mainScreenSettingsTitle ?? '',
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
-                        )),
-              ),
-            ),
-            const Divider(),
-            const SizedBox(height: 15),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
+                child: Row(
+                  children: [
+                    Consumer<LanguageService>(
+                        builder: (context, language, child) => Text(
+                            language.mainScreenSettingEditProfileLabel ?? '',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15))),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Consumer<UserService>(
+                                        builder: (context, user, child) =>
+                                            EditProfileScreen(
+                                              currentAvatarLink:
+                                                  user.profilePhoto,
+                                              currentUserUid: user.uid,
+                                              currentUsername: user.username,
+                                              currentUserEmail: user.email,
+                                            ))));
+                      },
+                    ),
+                  ],
+                )),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: Row(
@@ -528,69 +558,32 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   )
                 : Container(),
-            const SizedBox(height: 15),
-            const Divider(),
-            const SizedBox(height: 15),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
-                  child: SizedBox(
-                    width: 100,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.red),
-                      child: Consumer<LanguageService>(
-                          builder: (context, language, child) => Text(
-                                language.mainScreenSettingsLogoutButton ?? '',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                      onPressed: () async {
-                        setState(() => loading = true);
-                        UserService().signOut().then((result) {
-                          setState(() => loading = false);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const AuthorizationUtility()));
-                        });
-                      },
-                    ),
-                  ),
+            const SizedBox(height: 75),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
+              child: SizedBox(
+                width: 100,
+                child: ElevatedButton(
+                  child: Consumer<LanguageService>(
+                      builder: (context, language, child) => Text(
+                            language.mainScreenSettingsLogoutButton ?? '',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          )),
+                  onPressed: () async {
+                    setState(() => loading = true);
+                    UserService().signOut().then((result) {
+                      setState(() => loading = false);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const AuthorizationUtility()));
+                    });
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
-                  child: SizedBox(
-                    width: 140,
-                    child: ElevatedButton(
-                      child: Consumer<LanguageService>(
-                          builder: (context, language, child) => Text(
-                                language.mainScreenSettingsEditProfileLink ??
-                                    '',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                      onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    Consumer<UserService>(
-                                        builder: (context, user, child) =>
-                                            EditProfileScreen(
-                                              currentAvatarLink: null,
-                                              currentUserUid: user.uid,
-                                              currentUsername: user.username,
-                                              currentUserEmail: user.email,
-                                            ))));
-                      },
-                    ),
-                  ),
-                )
-              ],
+              ),
             ),
           ],
         ),

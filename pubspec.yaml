@@ -61,8 +61,8 @@ dev_dependencies:
   firebase_performance: ^0.8.0+7
   crypto: ^3.0.1
   image_picker: ^0.8.4+11
-  path_provider: ^2.0.9
   random_string: ^2.3.1
+  circular_profile_avatar: ^2.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

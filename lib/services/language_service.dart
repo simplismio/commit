@@ -60,13 +60,11 @@ class LanguageService extends ChangeNotifier {
   String? signInScreengoBackToSignInLink;
   String? mainScreenDismissebleEditCommitmentLink;
   String? mainScreenDismissebleDeleteCommitmentLink;
-  String? mainScreenSettingsEditProfileLink;
   // Labels
+  String? mainScreenSettingEditProfileLabel;
   String? mainScreenSettingsLanguageLabel;
   String? mainScreenSettingsThemeLabel;
   String? mainScreenSettingsBiometricsLabel;
-  // Headers
-  String? mainScreenSettingsTitle;
 
   LanguageService() {
     _language = 'English';
@@ -156,13 +154,11 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Go back to sign in';
         mainScreenDismissebleEditCommitmentLink = 'Edit commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Delete commitment';
-        mainScreenSettingsEditProfileLink = 'Edit profile';
         // Labels
+        mainScreenSettingEditProfileLabel = 'Edit profile';
         mainScreenSettingsLanguageLabel = 'Language';
         mainScreenSettingsThemeLabel = 'Dark theme';
         mainScreenSettingsBiometricsLabel = 'Biometric unlock';
-        // Headers
-        mainScreenSettingsTitle = 'Settings';
         break;
       case 'Dutch':
         // AppBar Titles
@@ -229,13 +225,11 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Ga terug naar log in';
         mainScreenDismissebleEditCommitmentLink = 'Wijzig commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Verwijder commitment';
-        mainScreenSettingsEditProfileLink = 'Wijzig profiel';
         // Labels
+        mainScreenSettingEditProfileLabel = 'Wijzig profiel';
         mainScreenSettingsLanguageLabel = 'Taal';
         mainScreenSettingsThemeLabel = 'Donker theme';
         mainScreenSettingsBiometricsLabel = 'Unlock met biometrie';
-        // Headers
-        mainScreenSettingsTitle = 'Instellingen';
         break;
       default:
         // AppBar Titles
@@ -297,13 +291,11 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Go back to sign in';
         mainScreenDismissebleEditCommitmentLink = 'Edit commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Delete commitment';
-        mainScreenSettingsEditProfileLink = 'Edit profile';
         // Labels
+        mainScreenSettingEditProfileLabel = 'Edit profile';
         mainScreenSettingsLanguageLabel = 'Language';
         mainScreenSettingsThemeLabel = 'Dark theme';
         mainScreenSettingsBiometricsLabel = 'Biometric unlock';
-        // Headers
-        mainScreenSettingsTitle = 'Settings';
     }
   }
 }

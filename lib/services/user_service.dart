@@ -120,9 +120,6 @@ class UserService extends ChangeNotifier {
     );
 
     // Once signed in, return the UserCredential
-    if (kDebugMode) {
-      EmulatorService.setupAuthEmulator();
-    }
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
@@ -134,9 +131,6 @@ class UserService extends ChangeNotifier {
       }
       final OAuthCredential credential =
           FacebookAuthProvider.credential(result.accessToken!.token);
-      if (kDebugMode) {
-        EmulatorService.setupAuthEmulator();
-      }
       return await FirebaseAuth.instance.signInWithCredential(credential);
     }
     return null;
@@ -172,23 +166,23 @@ class UserService extends ChangeNotifier {
       idToken: appleCredential.identityToken,
       rawNonce: rawNonce,
     );
-    if (kDebugMode) {
-      EmulatorService.setupAuthEmulator();
-    }
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 
-  Future updateUserProfile(_newProfilePhotoPath, _username, _email) async {
-    final Reference storageReference = FirebaseStorage.instanceFor()
-        .ref()
-        .child('profilePhoto/' + randomAlphaNumeric(30));
+  Future updateUserProfile(
+      File? newProfilePhotoPath, String? username, String? email) async {
+    dynamic photoUrl;
 
-    String? _photoUrl;
+    if (newProfilePhotoPath != null) {
+      final Reference storageReference = FirebaseStorage.instanceFor()
+          .ref()
+          .child('profilePhoto/' + randomAlphaNumeric(30));
 
-    final UploadTask uploadTask =
-        storageReference.putFile(_newProfilePhotoPath);
-    if (await uploadTask != null) {
-      _photoUrl = await storageReference.getDownloadURL();
+      final UploadTask uploadTask =
+          storageReference.putFile(newProfilePhotoPath);
+      if (await uploadTask != null) {
+        photoUrl = await storageReference.getDownloadURL();
+      }
     }
 
     try {
@@ -196,14 +190,16 @@ class UserService extends ChangeNotifier {
         print('Updating the user profile');
       }
       final _user = FirebaseAuth.instance.currentUser;
-      await _user?.updatePhotoURL(_photoUrl);
-      await _user?.updateDisplayName(_username);
-      await _user?.updateEmail(_email);
-      await _user?.reload();
 
+      if (newProfilePhotoPath != null) {
+        await _user?.updatePhotoURL(photoUrl);
+      }
+      await _user?.updateDisplayName(username);
+      await _user?.updateEmail(email!);
+      await _user?.reload();
       return null;
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+    } catch (e) {
+      return e;
     }
   }
 }
