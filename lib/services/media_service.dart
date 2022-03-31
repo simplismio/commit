@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MediaService with ChangeNotifier {
-  File? newProfilePhotoUrl;
+  File? newAvatarUrl;
 
   previewNewProfilePhoto(_source) async {
     try {
@@ -12,10 +12,12 @@ class MediaService with ChangeNotifier {
               _source == 'camera' ? ImageSource.camera : ImageSource.gallery,
           maxHeight: 480,
           maxWidth: 640);
-      newProfilePhotoUrl = File(pickedFile!.path);
+      newAvatarUrl = File(pickedFile!.path);
       notifyListeners();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }

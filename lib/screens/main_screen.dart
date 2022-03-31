@@ -417,13 +417,13 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 75),
             Consumer<UserService>(
                 builder: (context, user, child) => SizedBox(
                       child: Center(
-                        child: user.profilePhoto != null
+                        child: user.avatar != null
                             ? CircularProfileAvatar(
-                                user.profilePhoto ?? '',
+                                user.avatar ?? '',
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.error),
                                 placeHolder: (context, url) => const SizedBox(
@@ -480,8 +480,7 @@ class _MainScreenState extends State<MainScreen> {
                                     Consumer<UserService>(
                                         builder: (context, user, child) =>
                                             EditProfileScreen(
-                                              currentAvatarLink:
-                                                  user.profilePhoto,
+                                              currentAvatarLink: user.avatar,
                                               currentUserUid: user.uid,
                                               currentUsername: user.username,
                                               currentUserEmail: user.email,

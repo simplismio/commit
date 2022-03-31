@@ -14,13 +14,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
-  String? profilePhoto;
+  String? avatar;
   String? username;
   String? email;
 
   UserService({
     this.uid,
-    this.profilePhoto,
+    this.avatar,
     this.username,
     this.email,
   });
@@ -32,7 +32,7 @@ class UserService extends ChangeNotifier {
     }
     return UserService(
         uid: user?.uid,
-        profilePhoto: user?.photoURL,
+        avatar: user?.photoURL,
         username: user?.displayName,
         email: user?.email);
   }
@@ -169,19 +169,18 @@ class UserService extends ChangeNotifier {
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 
-  Future updateUserProfile(
-      File? newProfilePhotoPath, String? username, String? email) async {
-    dynamic photoUrl;
+  Future updateUserProfile(String? currentAvatarUrl, File? newAvatarPath,
+      String? username, String? email) async {
+    dynamic avatarUrl;
 
-    if (newProfilePhotoPath != null) {
+    if (newAvatarPath != null) {
       final Reference storageReference = FirebaseStorage.instanceFor()
           .ref()
-          .child('profilePhoto/' + randomAlphaNumeric(30));
+          .child('avatars/' + randomAlphaNumeric(30));
 
-      final UploadTask uploadTask =
-          storageReference.putFile(newProfilePhotoPath);
+      final UploadTask uploadTask = storageReference.putFile(newAvatarPath);
       if (await uploadTask != null) {
-        photoUrl = await storageReference.getDownloadURL();
+        avatarUrl = await storageReference.getDownloadURL();
       }
     }
 
@@ -191,8 +190,8 @@ class UserService extends ChangeNotifier {
       }
       final _user = FirebaseAuth.instance.currentUser;
 
-      if (newProfilePhotoPath != null) {
-        await _user?.updatePhotoURL(photoUrl);
+      if (newAvatarPath != null) {
+        await _user?.updatePhotoURL(avatarUrl);
       }
       await _user?.updateDisplayName(username);
       await _user?.updateEmail(email!);

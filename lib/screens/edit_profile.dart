@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,11 +8,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/user_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final currentAvatarLink;
+  // ignore: prefer_typing_uninitialized_variables
   final currentUserUid;
+  // ignore: prefer_typing_uninitialized_variables
   final currentUsername;
+  // ignore: prefer_typing_uninitialized_variables
   final currentUserEmail;
-  EditProfileScreen(
+  const EditProfileScreen(
       {Key? key,
       this.currentAvatarLink,
       this.currentUserUid,
@@ -34,6 +37,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.currentAvatarLink);
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -67,9 +71,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 10.0),
                   Center(
                     child: Consumer<MediaService>(
-                        builder: (context, media, child) => Column(
+                        builder: (context, media, _) => Column(
                               children: [
-                                widget.currentAvatarLink != null
+                                widget.currentAvatarLink == null
                                     ? GestureDetector(
                                         onTap: () {
                                           ScaffoldMessenger.of(context)
@@ -105,11 +109,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           ));
                                           //media.previewNewProfilePhoto('camera');
                                         },
-                                        child: media.newProfilePhotoUrl != null
+                                        child: media.newAvatarUrl == null
                                             ? CircularProfileAvatar(
                                                 '',
-                                                child: getImageFile(
-                                                    media.newProfilePhotoUrl),
+                                                child: const CircleAvatar(
+                                                    radius: 50,
+                                                    child: FaIcon(
+                                                        FontAwesomeIcons.user,
+                                                        size: 60,
+                                                        color: Colors.grey)),
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         const Icon(Icons.error),
@@ -130,7 +138,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 cacheImage: true,
                                               )
                                             : CircularProfileAvatar(
-                                                widget.currentAvatarLink ?? '',
+                                                '',
+                                                child: getImageFile(
+                                                    media.newAvatarUrl),
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         const Icon(Icons.error),
@@ -150,52 +160,86 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 imageFit: BoxFit.fill,
                                                 cacheImage: true,
                                               ))
-                                    : Positioned(
-                                        top: 20.0,
-                                        left: 95.0,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Row(
-                                                children: [
-                                                  const Spacer(),
-                                                  IconButton(
-                                                    icon: const FaIcon(
-                                                      FontAwesomeIcons.camera,
-                                                    ),
-                                                    onPressed: () {
-                                                      media
-                                                          .previewNewProfilePhoto(
-                                                              'camera');
-                                                    },
+                                    : GestureDetector(
+                                        onTap: () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Row(
+                                              children: [
+                                                const Spacer(),
+                                                IconButton(
+                                                  icon: const FaIcon(
+                                                    FontAwesomeIcons.camera,
                                                   ),
-                                                  const Spacer(),
-                                                  IconButton(
-                                                    icon: const FaIcon(
-                                                      FontAwesomeIcons
-                                                          .photoFilm,
-                                                    ),
-                                                    onPressed: () {
-                                                      media
-                                                          .previewNewProfilePhoto(
-                                                              'gallery');
-                                                    },
+                                                  onPressed: () {
+                                                    media
+                                                        .previewNewProfilePhoto(
+                                                            'camera');
+                                                  },
+                                                ),
+                                                const Spacer(),
+                                                IconButton(
+                                                  icon: const FaIcon(
+                                                    FontAwesomeIcons.photoFilm,
                                                   ),
-                                                  const Spacer()
-                                                ],
-                                              ),
-                                              backgroundColor: Colors.grey[800],
-                                            ));
-                                          },
-                                          child: const CircleAvatar(
-                                              radius: 50,
-                                              child: FaIcon(
-                                                  FontAwesomeIcons.user,
-                                                  size: 60,
-                                                  color: Colors.grey)),
-                                        ),
-                                      ),
+                                                  onPressed: () {
+                                                    media
+                                                        .previewNewProfilePhoto(
+                                                            'gallery');
+                                                  },
+                                                ),
+                                                const Spacer()
+                                              ],
+                                            ),
+                                            backgroundColor: Colors.grey[800],
+                                          ));
+                                          //media.previewNewProfilePhoto('camera');
+                                        },
+                                        child: media.newAvatarUrl != null
+                                            ? CircularProfileAvatar(
+                                                '',
+                                                child: getImageFile(
+                                                    media.newAvatarUrl),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                                placeHolder: (context, url) =>
+                                                    const SizedBox(
+                                                  width: 50,
+                                                  height: 50,
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                                radius: 50,
+                                                borderWidth: 2,
+                                                borderColor: Colors.grey,
+                                                elevation: 10,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                imageFit: BoxFit.fill,
+                                                cacheImage: true,
+                                              )
+                                            : CircularProfileAvatar(
+                                                widget.currentAvatarLink,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        const Icon(Icons.error),
+                                                placeHolder: (context, url) =>
+                                                    const SizedBox(
+                                                  width: 50,
+                                                  height: 50,
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                                radius: 50,
+                                                borderWidth: 2,
+                                                borderColor: Colors.grey,
+                                                elevation: 10,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                imageFit: BoxFit.fill,
+                                                cacheImage: true,
+                                              ))
                               ],
                             )),
                   ),
@@ -215,7 +259,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           },
                           onChanged: (val) {
                             setState(() => username = val);
-                            print(username);
                           })),
                   const SizedBox(height: 20.0),
                   Consumer<LanguageService>(
@@ -262,12 +305,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                                   UserService()
                                       .updateUserProfile(
-                                          media.newProfilePhotoUrl,
+                                          widget.currentAvatarLink,
+                                          media.newAvatarUrl,
                                           username,
                                           email)
                                       .then((result) {
                                     if (result == null) {
-                                      media.newProfilePhotoUrl = null;
+                                      media.newAvatarUrl = null;
                                       Navigator.of(context).maybePop();
                                     } else {
                                       setState(() => loading = false);
