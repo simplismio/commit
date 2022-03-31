@@ -37,7 +37,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.currentAvatarLink);
     return Scaffold(
       appBar: AppBar(
         leading: Builder(

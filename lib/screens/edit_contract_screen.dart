@@ -82,6 +82,12 @@ class _EditContractScreenState extends State<EditContractScreen> {
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
+
+                        // ignore: prefer_conditional_assignment
+                        if (title == null) {
+                          title = widget.contract!.title;
+                        }
+
                         ContractService()
                             .editContract(widget.contract!.key, title)
                             .then((result) {
@@ -123,6 +129,7 @@ class _EditContractScreenState extends State<EditContractScreen> {
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
+
                         ContractService()
                             .deleteContract(widget.contract!.key)
                             .then((result) {

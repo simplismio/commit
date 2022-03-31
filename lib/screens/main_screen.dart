@@ -253,21 +253,41 @@ class _MainScreenState extends State<MainScreen> {
                                                                         theme,
                                                                         child) =>
                                                                     Container(
-                                                                      color: theme.darkTheme ==
-                                                                              true
-                                                                          ? Colors.grey[
-                                                                              700]
-                                                                          : Colors
-                                                                              .grey[200],
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        color: theme.darkTheme ==
+                                                                                true
+                                                                            ? Colors.grey[700]
+                                                                            : Colors.grey[200],
+                                                                        boxShadow: const [
+                                                                          BoxShadow(
+                                                                              color: Colors.transparent,
+                                                                              spreadRadius: 3),
+                                                                        ],
+                                                                      ),
                                                                       child:
                                                                           ListTile(
-                                                                        // leading: CachedNetworkImage(
-                                                                        //   imageUrl: "",
-                                                                        //   placeholder: (context, url) =>
-                                                                        //       const CircularProgressIndicator(),
-                                                                        //   errorWidget: (context, url, error) =>
-                                                                        //       const Icon(Icons.error),
-                                                                        // ),
+                                                                        leading: Consumer<
+                                                                                UserService>(
+                                                                            builder: (context, user, child) =>
+                                                                                CircularProfileAvatar(
+                                                                                  user.avatar!,
+                                                                                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                                                  placeHolder: (context, url) => const SizedBox(
+                                                                                    width: 20,
+                                                                                    height: 20,
+                                                                                    child: CircularProgressIndicator(),
+                                                                                  ),
+                                                                                  radius: 20,
+                                                                                  borderWidth: 2,
+                                                                                  borderColor: Colors.grey,
+                                                                                  elevation: 10,
+                                                                                  backgroundColor: Colors.transparent,
+                                                                                  imageFit: BoxFit.fill,
+                                                                                  cacheImage: true,
+                                                                                )),
                                                                         title:
                                                                             Text(
                                                                           contracts[contractIndex].commitments[commitmentIndex]
@@ -414,177 +434,180 @@ class _MainScreenState extends State<MainScreen> {
 
     drawerLeft() {
       return Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 75),
-            Consumer<UserService>(
-                builder: (context, user, child) => SizedBox(
-                      child: Center(
-                        child: user.avatar != null
-                            ? CircularProfileAvatar(
-                                user.avatar ?? '',
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                placeHolder: (context, url) => const SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 75),
+              Consumer<UserService>(
+                  builder: (context, user, child) => SizedBox(
+                        child: Center(
+                          child: user.avatar != null
+                              ? CircularProfileAvatar(
+                                  user.avatar ?? '',
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                  placeHolder: (context, url) => const SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  radius: 50,
+                                  borderWidth: 2,
+                                  borderColor: Colors.grey,
+                                  elevation: 10,
+                                  backgroundColor: Colors.transparent,
+                                  imageFit: BoxFit.fill,
+                                  cacheImage: true,
+                                )
+                              : const CircleAvatar(
+                                  radius: 50,
+                                  child: FaIcon(FontAwesomeIcons.user,
+                                      size: 60, color: Colors.grey),
                                 ),
-                                radius: 50,
-                                borderWidth: 2,
-                                borderColor: Colors.grey,
-                                elevation: 10,
-                                backgroundColor: Colors.transparent,
-                                imageFit: BoxFit.fill,
-                                cacheImage: true,
-                              )
-                            : const CircleAvatar(
-                                radius: 50,
-                                child: FaIcon(FontAwesomeIcons.user,
-                                    size: 60, color: Colors.grey),
-                              ),
-                      ),
-                    )),
-            Center(
-              child: Consumer<UserService>(
-                builder: (context, user, child) => Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text(user.username ?? '',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25)),
+                        ),
+                      )),
+              Center(
+                child: Consumer<UserService>(
+                  builder: (context, user, child) => Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(user.username ?? '',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25)),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 50),
-            Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
+              const SizedBox(height: 50),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
+                  child: Row(
+                    children: [
+                      Consumer<LanguageService>(
+                          builder: (context, language, child) => Text(
+                              language.mainScreenSettingEditProfileLabel ?? '',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15))),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.chevron_right),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      Consumer<UserService>(
+                                          builder: (context, user, child) =>
+                                              EditProfileScreen(
+                                                currentAvatarLink: user.avatar,
+                                                currentUserUid: user.uid,
+                                                currentUsername: user.username,
+                                                currentUserEmail: user.email,
+                                              ))));
+                        },
+                      ),
+                    ],
+                  )),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Row(
                   children: [
                     Consumer<LanguageService>(
                         builder: (context, language, child) => Text(
-                            language.mainScreenSettingEditProfileLabel ?? '',
+                            language.mainScreenSettingsLanguageLabel ?? '',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15))),
                     const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.chevron_right),
-                      onPressed: () {
+                    Consumer<LanguageService>(
+                        builder: (context, language, child) =>
+                            DropdownButton<String>(
+                              value: language.language,
+                              icon: const Icon(Icons.expand_more),
+                              iconSize: 24,
+                              elevation: 16,
+                              underline: Container(
+                                height: 2,
+                              ),
+                              onChanged: (String? newValue) {
+                                language.setLanguage(newValue);
+                              },
+                              items: LanguageService.languages
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            )),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 5),
+              Consumer<ThemeService>(
+                builder: (context, theme, child) => SwitchListTile(
+                  title: Consumer<LanguageService>(
+                      builder: (context, language, child) => Text(
+                            language.mainScreenSettingsThemeLabel ?? '',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                  onChanged: (value) {
+                    theme.toggleTheme();
+                  },
+                  value: theme.darkTheme,
+                ),
+              ),
+              defaultTargetPlatform == TargetPlatform.iOS ||
+                      defaultTargetPlatform == TargetPlatform.android
+                  ? Consumer<LocalAuthenticationService>(
+                      builder: (context, localAuthentication, child) =>
+                          SwitchListTile(
+                        title: Consumer<LanguageService>(
+                            builder: (context, language, child) => Text(
+                                  language.mainScreenSettingsBiometricsLabel ??
+                                      '',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                )),
+                        onChanged: (value) {
+                          localAuthentication.toggleBiometrics();
+                        },
+                        value: localAuthentication.biometrics,
+                      ),
+                    )
+                  : Container(),
+              const SizedBox(height: 75),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
+                child: SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                    child: Consumer<LanguageService>(
+                        builder: (context, language, child) => Text(
+                              language.mainScreenSettingsLogoutButton ?? '',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                    onPressed: () async {
+                      setState(() => loading = true);
+                      UserService().signOut().then((result) {
+                        setState(() => loading = false);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    Consumer<UserService>(
-                                        builder: (context, user, child) =>
-                                            EditProfileScreen(
-                                              currentAvatarLink: user.avatar,
-                                              currentUserUid: user.uid,
-                                              currentUsername: user.username,
-                                              currentUserEmail: user.email,
-                                            ))));
-                      },
-                    ),
-                  ],
-                )),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-              child: Row(
-                children: [
-                  Consumer<LanguageService>(
-                      builder: (context, language, child) => Text(
-                          language.mainScreenSettingsLanguageLabel ?? '',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15))),
-                  const Spacer(),
-                  Consumer<LanguageService>(
-                      builder: (context, language, child) =>
-                          DropdownButton<String>(
-                            value: language.language,
-                            icon: const Icon(Icons.expand_more),
-                            iconSize: 24,
-                            elevation: 16,
-                            underline: Container(
-                              height: 2,
-                            ),
-                            onChanged: (String? newValue) {
-                              language.setLanguage(newValue);
-                            },
-                            items: LanguageService.languages
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          )),
-                ],
-              ),
-            ),
-            const SizedBox(height: 5),
-            Consumer<ThemeService>(
-              builder: (context, theme, child) => SwitchListTile(
-                title: Consumer<LanguageService>(
-                    builder: (context, language, child) => Text(
-                          language.mainScreenSettingsThemeLabel ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                onChanged: (value) {
-                  theme.toggleTheme();
-                },
-                value: theme.darkTheme,
-              ),
-            ),
-            defaultTargetPlatform == TargetPlatform.iOS ||
-                    defaultTargetPlatform == TargetPlatform.android
-                ? Consumer<LocalAuthenticationService>(
-                    builder: (context, localAuthentication, child) =>
-                        SwitchListTile(
-                      title: Consumer<LanguageService>(
-                          builder: (context, language, child) => Text(
-                                language.mainScreenSettingsBiometricsLabel ??
-                                    '',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )),
-                      onChanged: (value) {
-                        localAuthentication.toggleBiometrics();
-                      },
-                      value: localAuthentication.biometrics,
-                    ),
-                  )
-                : Container(),
-            const SizedBox(height: 75),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
-              child: SizedBox(
-                width: 100,
-                child: ElevatedButton(
-                  child: Consumer<LanguageService>(
-                      builder: (context, language, child) => Text(
-                            language.mainScreenSettingsLogoutButton ?? '',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )),
-                  onPressed: () async {
-                    setState(() => loading = true);
-                    UserService().signOut().then((result) {
-                      setState(() => loading = false);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const AuthorizationUtility()));
-                    });
-                  },
+                                    const AuthorizationUtility()));
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }

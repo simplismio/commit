@@ -173,14 +173,28 @@ class UserService extends ChangeNotifier {
       String? username, String? email) async {
     dynamic avatarUrl;
 
-    if (newAvatarPath != null) {
-      final Reference storageReference = FirebaseStorage.instanceFor()
-          .ref()
-          .child('avatars/' + randomAlphaNumeric(30));
+    try {
+      if (newAvatarPath != null) {
+        final Reference storageReference = FirebaseStorage.instanceFor()
+            .ref()
+            .child('avatars/' + randomAlphaNumeric(30));
 
-      final UploadTask uploadTask = storageReference.putFile(newAvatarPath);
-      if (await uploadTask != null) {
-        avatarUrl = await storageReference.getDownloadURL();
+        final UploadTask uploadTask = storageReference.putFile(newAvatarPath);
+        // ignore: unnecessary_null_comparison
+        if (await uploadTask != null) {
+          avatarUrl = await storageReference.getDownloadURL();
+        }
+
+        List<String> split1 = currentAvatarUrl!.split("avatars%2F");
+        List<String> split2 = split1[1].split("?alt=");
+        FirebaseStorage.instanceFor()
+            .ref()
+            .child('avatars/' + split2[0])
+            .delete();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
       }
     }
 
@@ -198,6 +212,9 @@ class UserService extends ChangeNotifier {
       await _user?.reload();
       return null;
     } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
       return e;
     }
   }

@@ -94,6 +94,14 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
+
+                        // ignore: prefer_conditional_assignment
+                        if (commitment == null) {
+                          commitment =
+                              widget.commitmentArray[widget.commitmentIndex]
+                                  ['commitment'];
+                        }
+
                         ContractService()
                             .editCommitment(
                                 widget.contractKey,
