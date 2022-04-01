@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:random_string/random_string.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show kDebugMode, ChangeNotifier;
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -11,6 +12,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'emulator_service.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
 class UserService extends ChangeNotifier {
   String? uid;
@@ -169,32 +172,43 @@ class UserService extends ChangeNotifier {
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 
-  Future updateUserProfile(String? currentAvatarUrl, File? newAvatarPath,
-      String? username, String? email) async {
+  Future updateUserProfile(
+      String? currentAvatarUrl,
+      File? newAvatarUrlMobile,
+      Future<Uint8List> newAvatarUrlWebData,
+      String? username,
+      String? email) async {
     dynamic avatarUrl;
+    String path = 'avatars/' + randomAlphaNumeric(30);
 
-    try {
-      if (newAvatarPath != null) {
-        final Reference storageReference = FirebaseStorage.instanceFor()
-            .ref()
-            .child('avatars/' + randomAlphaNumeric(30));
-
-        final UploadTask uploadTask = storageReference.putFile(newAvatarPath);
-        // ignore: unnecessary_null_comparison
-        if (await uploadTask != null) {
-          avatarUrl = await storageReference.getDownloadURL();
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.android) {
+      try {
+        await firebase_storage.FirebaseStorage.instance
+            .ref(path)
+            .putFile(newAvatarUrlMobile!);
+        avatarUrl = await firebase_storage.FirebaseStorage.instance
+            .ref(path)
+            .getDownloadURL();
+      } on firebase_core.FirebaseException catch (e) {
+        if (kDebugMode) {
+          print(e.message);
         }
-
-        List<String> split1 = currentAvatarUrl!.split("avatars%2F");
-        List<String> split2 = split1[1].split("?alt=");
-        FirebaseStorage.instanceFor()
-            .ref()
-            .child('avatars/' + split2[0])
-            .delete();
+        return e.message;
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
+    } else {
+      Uint8List newAvatarUrlWebList = await newAvatarUrlWebData;
+      try {
+        await firebase_storage.FirebaseStorage.instance.ref(path).putData(
+            newAvatarUrlWebList, SettableMetadata(contentType: 'image/jpeg'));
+        avatarUrl = await firebase_storage.FirebaseStorage.instance
+            .ref(path)
+            .getDownloadURL();
+      } on firebase_core.FirebaseException catch (e) {
+        if (kDebugMode) {
+          print(e.message);
+        }
+        return e.message;
       }
     }
 
@@ -204,12 +218,29 @@ class UserService extends ChangeNotifier {
       }
       final _user = FirebaseAuth.instance.currentUser;
 
-      if (newAvatarPath != null) {
+      if (newAvatarUrlMobile != null || newAvatarUrlWebData != null) {
         await _user?.updatePhotoURL(avatarUrl);
       }
       await _user?.updateDisplayName(username);
       await _user?.updateEmail(email!);
       await _user?.reload();
+
+      print(currentAvatarUrl);
+
+      try {
+        List<String> split1 = currentAvatarUrl!.split("avatars%2F");
+        List<String> split2 = split1[1].split("?alt=");
+        await firebase_storage.FirebaseStorage.instanceFor()
+            .ref()
+            .child('avatars/' + split2[0])
+            .delete();
+      } on firebase_core.FirebaseException catch (e) {
+        if (kDebugMode) {
+          print(e.message);
+        }
+        return e.message;
+      }
+
       return null;
     } catch (e) {
       if (kDebugMode) {
