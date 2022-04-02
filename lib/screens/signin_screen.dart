@@ -1,10 +1,10 @@
+import 'package:commit/utilities/authorization_utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../services/user_service.dart';
 import '../services/language_service.dart';
 import '../services/theme_service.dart';
-import '../utilities/authorization_utility.dart';
 import 'reset_password_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +61,9 @@ class _SignInScreenState extends State<SignInScreen> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AuthorizationUtility()));
+                    builder: (BuildContext context) =>
+                        const AuthorizationUtility(),
+                  ));
             } else {
               setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -103,10 +105,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   username: username, email: email, password: password)
               .then((result) {
             if (result == null) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AuthorizationUtility()));
+              if (mounted) {
+                Navigator.pop(context); // Navigator.push(
+
+              }
             } else {
               setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -114,9 +116,10 @@ class _SignInScreenState extends State<SignInScreen> {
                     builder: (context, language, _) => Text(
                           language.genericAuthErrorMessage ?? '',
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
                         )),
                 backgroundColor: Colors.grey[800],
               ));

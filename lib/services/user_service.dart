@@ -11,9 +11,9 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'emulator_service.dart';
 import 'package:crypto/crypto.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
@@ -29,9 +29,11 @@ class UserService extends ChangeNotifier {
   });
 
   UserService? _userFromFirebaseUser(User? user) {
-    if (kDebugMode && user != null) {
+    if (user != null) {
       // ignore: avoid_print
-      print('Firebase UID is: ${user.uid}');
+      if (kDebugMode) {
+        print('Firebase UID is: ${user.uid}');
+      }
     }
     return UserService(
         uid: user?.uid,
@@ -40,11 +42,28 @@ class UserService extends ChangeNotifier {
         email: user?.email);
   }
 
+  List<UserService> _usersFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return UserService(
+          uid: doc.id,
+          avatar: doc['photoURL'],
+          username: doc['displayName'],
+          email: doc['email']);
+    }).toList();
+  }
+
   Stream<UserService?> get user {
-    if (kDebugMode) {
-      EmulatorService.setupAuthEmulator();
-    }
     return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
+  }
+
+  Stream<List<UserService>> get users {
+    if (kDebugMode) {
+      print('Loading user list');
+    }
+    return FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .map(_usersFromSnapshot);
   }
 
   Future signUpUsingEmailAndPassword(
@@ -52,7 +71,6 @@ class UserService extends ChangeNotifier {
     try {
       if (kDebugMode) {
         print('Signing up user');
-        EmulatorService.setupAuthEmulator();
       }
       await FirebaseAnalytics.instance
           .logSignUp(signUpMethod: 'email/password');
@@ -60,10 +78,25 @@ class UserService extends ChangeNotifier {
           .createUserWithEmailAndPassword(email: email!, password: password!);
 
       final _user = FirebaseAuth.instance.currentUser;
-      _user?.updateDisplayName(username);
+      await _user?.updateDisplayName(username);
       await _user?.reload();
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+
+      await FirebaseFirestore.instance.collection('users').doc(_user?.uid).set({
+        'username': username,
+        'email': _user?.email,
+        'avatar': ''
+      }).then((value) {
+        if (kDebugMode) {
+          print("User added to users table");
+        }
+      }).catchError((error) {
+        if (kDebugMode) {
+          print("Failed to add user: $error");
+        }
+        return error;
+      });
+    } on FirebaseAuthException catch (error) {
+      return error.message;
     }
   }
 
@@ -77,8 +110,8 @@ class UserService extends ChangeNotifier {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email!, password: password!);
       return null;
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+    } on FirebaseAuthException catch (error) {
+      return error.message;
     }
   }
 
@@ -90,8 +123,8 @@ class UserService extends ChangeNotifier {
       }
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email!);
       return null;
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+    } on FirebaseAuthException catch (error) {
+      return error.message;
     }
   }
 
@@ -103,8 +136,8 @@ class UserService extends ChangeNotifier {
       await FirebaseAuth.instance.signOut();
 
       return null;
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+    } on FirebaseAuthException catch (error) {
+      return error.message;
     }
   }
 
@@ -190,25 +223,26 @@ class UserService extends ChangeNotifier {
         avatarUrl = await firebase_storage.FirebaseStorage.instance
             .ref(path)
             .getDownloadURL();
-      } on firebase_core.FirebaseException catch (e) {
+      } on firebase_core.FirebaseException catch (error) {
         if (kDebugMode) {
-          print(e.message);
+          print(error.message);
         }
-        return e.message;
+        return error.message;
       }
     } else {
       Uint8List newAvatarUrlWebList = await newAvatarUrlWebData;
       try {
         await firebase_storage.FirebaseStorage.instance.ref(path).putData(
-            newAvatarUrlWebList, SettableMetadata(contentType: 'image/jpeg'));
+            newAvatarUrlWebList,
+            firebase_storage.SettableMetadata(contentType: 'image/jpeg'));
         avatarUrl = await firebase_storage.FirebaseStorage.instance
             .ref(path)
             .getDownloadURL();
-      } on firebase_core.FirebaseException catch (e) {
+      } on firebase_core.FirebaseException catch (error) {
         if (kDebugMode) {
-          print(e.message);
+          print(error.message);
         }
-        return e.message;
+        return error.message;
       }
     }
 
@@ -225,28 +259,42 @@ class UserService extends ChangeNotifier {
       await _user?.updateEmail(email!);
       await _user?.reload();
 
-      print(currentAvatarUrl);
-
-      try {
-        List<String> split1 = currentAvatarUrl!.split("avatars%2F");
-        List<String> split2 = split1[1].split("?alt=");
-        await firebase_storage.FirebaseStorage.instanceFor()
-            .ref()
-            .child('avatars/' + split2[0])
-            .delete();
-      } on firebase_core.FirebaseException catch (e) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_user?.uid)
+          .update({
+        'username': username,
+        'email': email,
+        'avatar': avatarUrl
+      }).then((value) async {
         if (kDebugMode) {
-          print(e.message);
+          print("User updated in the users table");
         }
-        return e.message;
-      }
-
-      return null;
-    } catch (e) {
+        try {
+          List<String> split1 = currentAvatarUrl!.split("avatars%2F");
+          List<String> split2 = split1[1].split("?alt=");
+          await firebase_storage.FirebaseStorage.instanceFor()
+              .ref()
+              .child('avatars/' + split2[0])
+              .delete();
+        } on firebase_core.FirebaseException catch (error) {
+          if (kDebugMode) {
+            print(error.message);
+          }
+          //return error.message;
+        }
+        return null;
+      }).catchError((error) {
+        if (kDebugMode) {
+          print("Failed to update user: $error");
+        }
+        //return error;
+      });
+    } catch (error) {
       if (kDebugMode) {
-        print(e);
+        print(error);
       }
-      return e;
+      return error;
     }
   }
 }

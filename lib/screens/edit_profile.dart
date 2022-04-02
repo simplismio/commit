@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../services/language_service.dart';
 import '../services/media_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../services/user_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -372,7 +371,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     if (result == null) {
                                       media.newAvatarUrlMobile = null;
                                       media.newAvatarUrlWeb = null;
-                                      Navigator.of(context).maybePop();
+                                      if (mounted) {
+                                        Navigator.of(context).maybePop();
+                                      }
                                     } else {
                                       setState(() => loading = false);
                                       ScaffoldMessenger.of(context)

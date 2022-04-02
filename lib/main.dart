@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'services/analytics_service.dart';
 import 'services/contract_service.dart';
 import 'services/emulator_service.dart';
 import 'services/language_service.dart';
@@ -55,8 +56,11 @@ Future<void> main() async {
       print(e);
     }
   }
-  await FirebaseAnalytics.instance.logAppOpen();
-  await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+
+  if (AnalyticsService().analytics == true) {
+    await FirebaseAnalytics.instance.logAppOpen();
+    await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+  }
 
   runZonedGuarded<Future<void>>(() async {
     runApp(StreamProvider<UserService?>.value(
@@ -83,6 +87,7 @@ class CommitApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
           ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => MediaService()),
+          ChangeNotifierProvider(create: (_) => AnalyticsService()),
           StreamProvider<List<ContractService>>.value(
               value: ContractService().contracts,
               initialData: const [],
@@ -101,10 +106,12 @@ class CommitApp extends StatelessWidget {
           if (defaultTargetPlatform == TargetPlatform.iOS ||
               defaultTargetPlatform == TargetPlatform.android) {
             return MaterialApp(
-                navigatorObservers: [
-                  FirebaseAnalyticsObserver(
-                      analytics: FirebaseAnalytics.instance),
-                ],
+                navigatorObservers: AnalyticsService().analytics == true
+                    ? [
+                        FirebaseAnalyticsObserver(
+                            analytics: FirebaseAnalytics.instance),
+                      ]
+                    : [],
                 theme: theme.darkTheme == true ? dark : light,
                 home: Scaffold(body: Consumer<LocalAuthenticationService>(
                     builder: (context,
@@ -121,10 +128,12 @@ class CommitApp extends StatelessWidget {
                 })));
           } else {
             return MaterialApp(
-                navigatorObservers: [
-                  FirebaseAnalyticsObserver(
-                      analytics: FirebaseAnalytics.instance),
-                ],
+                navigatorObservers: AnalyticsService().analytics == true
+                    ? [
+                        FirebaseAnalyticsObserver(
+                            analytics: FirebaseAnalytics.instance),
+                      ]
+                    : [],
                 theme: theme.darkTheme == true ? dark : light,
                 home: const Scaffold(body: AuthorizationUtility()));
           }

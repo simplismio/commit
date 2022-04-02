@@ -1,9 +1,11 @@
 import 'package:commit/services/language_service.dart';
+import '../services/analytics_service.dart';
 import '../services/contract_service.dart';
 import '../../services/user_service.dart';
 import '../../services/local_authentication_service.dart';
 import '../../services/theme_service.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import '../services/push_notification_service.dart';
 import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +13,10 @@ import 'package:flutter/foundation.dart';
 import 'edit_commitment_screen.dart';
 import 'edit_contract_screen.dart';
 import 'edit_profile.dart';
-import 'new_contract_screen.dart';
 import 'new_commitment_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'new_contract_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -25,12 +28,27 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
+    final firebaseMessaging = PushNotificationService();
+    firebaseMessaging.setNotifications();
+
+    firebaseMessaging.streamCtlr.stream.listen(_changeData);
+    firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
+    firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+
     super.initState();
 
     for (var i = 0; i < 100; i++) {
       toggledCommitments[i] = false;
     }
   }
+
+  _changeData(String msg) => setState(() => notificationData = msg);
+  _changeBody(String msg) => setState(() => notificationBody = msg);
+  _changeTitle(String msg) => setState(() => notificationTitle = msg);
+
+  String notificationTitle = 'No Title';
+  String notificationBody = 'No Body';
+  String notificationData = 'No Data';
 
   bool loading = false;
   final double breakpoint = 600;
@@ -47,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     List contracts = Provider.of<List<ContractService>>(context, listen: true);
+    //List users = Provider.of<List<UserService>>(context);
 
     contractBlock(contractIndex) {
       return Column(
@@ -579,11 +598,25 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     )
                   : Container(),
+              const SizedBox(height: 5),
+              Consumer<AnalyticsService>(
+                builder: (context, analytics, child) => SwitchListTile(
+                  title: Consumer<LanguageService>(
+                      builder: (context, language, child) => Text(
+                            language.mainScreenSettingsAnalyticsLabel ?? '',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                  onChanged: (value) {
+                    analytics.toggleAnalytics();
+                  },
+                  value: analytics.analytics,
+                ),
+              ),
               const SizedBox(height: 75),
               Padding(
                 padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
                 child: SizedBox(
-                  width: 100,
+                  width: 120,
                   child: ElevatedButton(
                     child: Consumer<LanguageService>(
                         builder: (context, language, child) => Text(
@@ -619,23 +652,34 @@ class _MainScreenState extends State<MainScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                children: const [
-                  SizedBox(height: 50),
-                  Text(
+                children: [
+                  const SizedBox(height: 50),
+                  const Text(
                     'Notifications',
                     style: TextStyle(
                       fontSize: 30,
                     ),
                   ),
-                  SizedBox(height: 50),
-                  Card(
-                    child: Text(
-                      'Notification',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
+                  const SizedBox(height: 50),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          notificationTitle,
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Text(
+                          notificationBody,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        Text(
+                          notificationData,
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

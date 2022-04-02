@@ -65,6 +65,7 @@ class LanguageService extends ChangeNotifier {
   String? mainScreenSettingsLanguageLabel;
   String? mainScreenSettingsThemeLabel;
   String? mainScreenSettingsBiometricsLabel;
+  String? mainScreenSettingsAnalyticsLabel;
 
   LanguageService() {
     _language = 'English';
@@ -159,6 +160,7 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsLanguageLabel = 'Language';
         mainScreenSettingsThemeLabel = 'Dark theme';
         mainScreenSettingsBiometricsLabel = 'Biometric unlock';
+        mainScreenSettingsAnalyticsLabel = 'Share anonymous analytics';
         break;
       case 'Dutch':
         // AppBar Titles
@@ -230,6 +232,8 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsLanguageLabel = 'Taal';
         mainScreenSettingsThemeLabel = 'Donker theme';
         mainScreenSettingsBiometricsLabel = 'Unlock met biometrie';
+        mainScreenSettingsAnalyticsLabel = 'Deel anonieme gebruiksgegevens ';
+
         break;
       default:
         // AppBar Titles
@@ -296,6 +300,7 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsLanguageLabel = 'Language';
         mainScreenSettingsThemeLabel = 'Dark theme';
         mainScreenSettingsBiometricsLabel = 'Biometric unlock';
+        mainScreenSettingsAnalyticsLabel = 'Share anonymous analytics';
     }
   }
 }

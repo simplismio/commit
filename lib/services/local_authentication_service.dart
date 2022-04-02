@@ -20,10 +20,10 @@ class LocalAuthenticationService extends ChangeNotifier {
       } else {
         return false;
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (error) {
       canCheckBiometrics = false;
       if (kDebugMode) {
-        print(e);
+        print(error);
       }
     }
   }
@@ -40,9 +40,9 @@ class LocalAuthenticationService extends ChangeNotifier {
       } else {
         return false;
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (error) {
       if (kDebugMode) {
-        print(e);
+        print(error);
       }
       return;
     }
@@ -60,7 +60,7 @@ class LocalAuthenticationService extends ChangeNotifier {
 
   _loadFromPrefs() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _biometrics = _pref.getBool(key) ?? true;
+    _biometrics = _pref.getBool(key) ?? false;
     notifyListeners();
   }
 

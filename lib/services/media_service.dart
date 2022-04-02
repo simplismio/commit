@@ -20,9 +20,9 @@ class MediaService with ChangeNotifier {
       newAvatarUrlWebData = pickedFile.readAsBytes();
 
       notifyListeners();
-    } catch (e) {
+    } catch (error) {
       if (kDebugMode) {
-        print(e);
+        print(error);
       }
     }
   }
