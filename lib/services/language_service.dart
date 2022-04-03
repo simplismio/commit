@@ -1,3 +1,6 @@
+import 'dart:ui' as ui;
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -79,16 +82,46 @@ class LanguageService extends ChangeNotifier {
     _saveToPrefs();
   }
 
+  defaultLanguage() {
+    String? systemLanguage;
+    String? defaultLanguage;
+
+    if (kIsWeb) {
+      Locale webLocale = ui.window.locale;
+      String webLocaleAsString = webLocale.toString();
+      List<String> split = webLocaleAsString.split("_");
+      systemLanguage = split[0];
+    } else {
+      systemLanguage = Platform.localeName;
+    }
+
+    if (kDebugMode) {
+      print('Setting system language as default: $systemLanguage');
+    }
+
+    switch (systemLanguage) {
+      case 'en':
+        defaultLanguage = 'English';
+        break;
+      case 'nl':
+        defaultLanguage = 'Dutch';
+        break;
+      default:
+        defaultLanguage = 'English';
+    }
+    return defaultLanguage;
+  }
+
   _loadFromPrefs() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _language = _pref.getString(key) ?? 'English';
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    _language = preference.getString(key) ?? defaultLanguage();
     _switchLanguage(_language);
     notifyListeners();
   }
 
   _saveToPrefs() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    await _pref.setString(key, _language);
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    await preference.setString(key, _language);
     _switchLanguage(_language);
     notifyListeners();
   }
@@ -233,7 +266,6 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsThemeLabel = 'Donker theme';
         mainScreenSettingsBiometricsLabel = 'Unlock met biometrie';
         mainScreenSettingsAnalyticsLabel = 'Deel anonieme gebruiksgegevens ';
-
         break;
       default:
         // AppBar Titles

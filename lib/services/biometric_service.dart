@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalAuthenticationService extends ChangeNotifier {
+class BiometricService extends ChangeNotifier {
   final LocalAuthentication auth = LocalAuthentication();
 
   final String key = "biometrics";
@@ -48,7 +48,7 @@ class LocalAuthenticationService extends ChangeNotifier {
     }
   }
 
-  LocalAuthenticationService() {
+  BiometricService() {
     _biometrics = false;
     _loadFromPrefs();
   }
@@ -59,14 +59,14 @@ class LocalAuthenticationService extends ChangeNotifier {
   }
 
   _loadFromPrefs() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    _biometrics = _pref.getBool(key) ?? false;
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    _biometrics = preference.getBool(key) ?? false;
     notifyListeners();
   }
 
   _saveToPrefs() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
-    await _pref.setBool(key, _biometrics);
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    await preference.setBool(key, _biometrics);
     notifyListeners();
   }
 }

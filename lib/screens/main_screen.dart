@@ -2,7 +2,7 @@ import 'package:commit/services/language_service.dart';
 import '../services/analytics_service.dart';
 import '../services/contract_service.dart';
 import '../../services/user_service.dart';
-import '../../services/local_authentication_service.dart';
+import '../services/biometric_service.dart';
 import '../../services/theme_service.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import '../services/push_notification_service.dart';
@@ -581,7 +581,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               defaultTargetPlatform == TargetPlatform.iOS ||
                       defaultTargetPlatform == TargetPlatform.android
-                  ? Consumer<LocalAuthenticationService>(
+                  ? Consumer<BiometricService>(
                       builder: (context, localAuthentication, child) =>
                           SwitchListTile(
                         title: Consumer<LanguageService>(

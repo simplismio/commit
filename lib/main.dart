@@ -1,6 +1,6 @@
 import './services/user_service.dart';
 import './services/theme_service.dart';
-import './services/local_authentication_service.dart';
+import 'services/biometric_service.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +12,7 @@ import 'services/emulator_service.dart';
 import 'services/language_service.dart';
 import 'services/media_service.dart';
 import 'utilities/authorization_utility.dart';
-import 'utilities/local_authorization_utility.dart';
+import 'utilities/biometric_utility.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
@@ -84,7 +84,7 @@ class CommitApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
-          ChangeNotifierProvider(create: (_) => LocalAuthenticationService()),
+          ChangeNotifierProvider(create: (_) => BiometricService()),
           ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => MediaService()),
           ChangeNotifierProvider(create: (_) => AnalyticsService()),
@@ -113,15 +113,14 @@ class CommitApp extends StatelessWidget {
                       ]
                     : [],
                 theme: theme.darkTheme == true ? dark : light,
-                home: Scaffold(body: Consumer<LocalAuthenticationService>(
-                    builder: (context,
-                        LocalAuthenticationService localAuthentication, child) {
+                home: Scaffold(body: Consumer<BiometricService>(builder:
+                    (context, BiometricService localAuthentication, child) {
                   if (kDebugMode) {
                     print('Starting app, local user authentication status: ' +
                         localAuthentication.biometrics.toString());
                   }
                   if (localAuthentication.biometrics == true) {
-                    return const LocalAuthorizationUtility();
+                    return const BiometricUtility();
                   } else {
                     return const AuthorizationUtility();
                   }

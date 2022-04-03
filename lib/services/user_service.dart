@@ -9,6 +9,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'analytics_service.dart';
 import 'emulator_service.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -72,8 +73,10 @@ class UserService extends ChangeNotifier {
       if (kDebugMode) {
         print('Signing up user');
       }
-      await FirebaseAnalytics.instance
-          .logSignUp(signUpMethod: 'email/password');
+      if (AnalyticsService().analytics == true) {
+        await FirebaseAnalytics.instance
+            .logSignUp(signUpMethod: 'email/password');
+      }
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email!, password: password!);
 
@@ -106,7 +109,9 @@ class UserService extends ChangeNotifier {
         print('Signing in user');
         EmulatorService.setupAuthEmulator();
       }
-      await FirebaseAnalytics.instance.logLogin();
+      if (AnalyticsService().analytics == true) {
+        await FirebaseAnalytics.instance.logLogin();
+      }
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email!, password: password!);
       return null;
