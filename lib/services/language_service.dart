@@ -55,6 +55,7 @@ class LanguageService extends ChangeNotifier {
   String? signInUpScreenPasswordErrorMessage;
   String? mainScreenNoContractsErrorMessage;
   String? mainScreenNoCommitmentsErrorMessage;
+  String? mainScreenNoNotificationsErrorMessage;
   String? genericAuthErrorMessage;
   String? genericFirebaseErrorMessage;
   // Links
@@ -63,12 +64,15 @@ class LanguageService extends ChangeNotifier {
   String? signInScreengoBackToSignInLink;
   String? mainScreenDismissebleEditCommitmentLink;
   String? mainScreenDismissebleDeleteCommitmentLink;
+  String? mainScreenDismissebleMarkNotificationReadLink;
   // Labels
   String? mainScreenSettingEditProfileLabel;
   String? mainScreenSettingsLanguageLabel;
   String? mainScreenSettingsThemeLabel;
   String? mainScreenSettingsBiometricsLabel;
   String? mainScreenSettingsAnalyticsLabel;
+  // Headers
+  String? mainScreenNotificationHeader;
 
   LanguageService() {
     _language = 'English';
@@ -92,7 +96,9 @@ class LanguageService extends ChangeNotifier {
       List<String> split = webLocaleAsString.split("_");
       systemLanguage = split[0];
     } else {
-      systemLanguage = Platform.localeName;
+      String systemLocale = Platform.localeName;
+      List<String> split = systemLocale.split("_");
+      systemLanguage = split[0];
     }
 
     if (kDebugMode) {
@@ -180,6 +186,8 @@ class LanguageService extends ChangeNotifier {
             'Please provide a valid username';
         mainScreenNoContractsErrorMessage = 'There are no contracts yet';
         mainScreenNoCommitmentsErrorMessage = 'There are no commitments yet';
+        mainScreenNoNotificationsErrorMessage =
+            'There are no notifications yet';
         genericAuthErrorMessage = 'Email address or password is incorrect';
         genericFirebaseErrorMessage = 'Something went wrong. Please try again';
         // Links
@@ -188,12 +196,15 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Go back to sign in';
         mainScreenDismissebleEditCommitmentLink = 'Edit commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Delete commitment';
+        mainScreenDismissebleMarkNotificationReadLink = 'Mark as read';
         // Labels
         mainScreenSettingEditProfileLabel = 'Edit profile';
         mainScreenSettingsLanguageLabel = 'Language';
         mainScreenSettingsThemeLabel = 'Dark theme';
         mainScreenSettingsBiometricsLabel = 'Biometric unlock';
         mainScreenSettingsAnalyticsLabel = 'Share anonymous analytics';
+        // Header
+        mainScreenNotificationHeader = 'Notifications';
         break;
       case 'Dutch':
         // AppBar Titles
@@ -251,6 +262,7 @@ class LanguageService extends ChangeNotifier {
             'Er zijn nog geen contracten opgesteld';
         mainScreenNoCommitmentsErrorMessage =
             'Er zijn nog geen commitments gemaakt';
+        mainScreenNoNotificationsErrorMessage = 'Er zijn nog geen notificaties';
         genericAuthErrorMessage = 'Email adres of wachtwoord is incorrect';
         genericFirebaseErrorMessage =
             'Er is iets verkeerd gegaan. Probeert u het s.v.p. opnieuw';
@@ -260,12 +272,15 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Ga terug naar log in';
         mainScreenDismissebleEditCommitmentLink = 'Wijzig commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Verwijder commitment';
+        mainScreenDismissebleMarkNotificationReadLink = 'Markeren als gelezen';
         // Labels
         mainScreenSettingEditProfileLabel = 'Wijzig profiel';
         mainScreenSettingsLanguageLabel = 'Taal';
         mainScreenSettingsThemeLabel = 'Donker theme';
         mainScreenSettingsBiometricsLabel = 'Unlock met biometrie';
         mainScreenSettingsAnalyticsLabel = 'Deel anonieme gebruiksgegevens ';
+        // Header
+        mainScreenNotificationHeader = 'Notificaties';
         break;
       default:
         // AppBar Titles
@@ -319,6 +334,8 @@ class LanguageService extends ChangeNotifier {
             'Please provide a valid username';
         mainScreenNoContractsErrorMessage = 'There are no contracts yet';
         mainScreenNoCommitmentsErrorMessage = 'There are no commitments yet';
+        mainScreenNoNotificationsErrorMessage =
+            'There are no notifications yet';
         genericAuthErrorMessage = 'Email address or password is incorrect';
         genericFirebaseErrorMessage = 'Something went wrong. Please try again';
         // Links
@@ -327,12 +344,15 @@ class LanguageService extends ChangeNotifier {
         signInScreengoBackToSignInLink = 'Go back to sign in';
         mainScreenDismissebleEditCommitmentLink = 'Edit commitment';
         mainScreenDismissebleDeleteCommitmentLink = 'Delete commitment';
+        mainScreenDismissebleMarkNotificationReadLink = 'Mark as read';
         // Labels
         mainScreenSettingEditProfileLabel = 'Edit profile';
         mainScreenSettingsLanguageLabel = 'Language';
         mainScreenSettingsThemeLabel = 'Dark theme';
         mainScreenSettingsBiometricsLabel = 'Biometric unlock';
         mainScreenSettingsAnalyticsLabel = 'Share anonymous analytics';
+        // Header
+        mainScreenNotificationHeader = 'Notifications';
     }
   }
 }

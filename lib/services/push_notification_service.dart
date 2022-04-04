@@ -1,54 +1,116 @@
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  final _user = FirebaseAuth.instance.currentUser;
 
-  if (message.data.containsKey('data')) {
-    // Handle data message
-    final data = message.data['data'];
-  }
-
-  if (message.data.containsKey('notification')) {
-    // Handle notification message
-    final notification = message.data['notification'];
-  }
-  // Or do other work.
+  await FirebaseFirestore.instance.collection('notifications').add({
+    'user_id': _user?.uid,
+    'title': message.notification!.title!,
+    'body': message.notification!.body!,
+    'read': false
+  }).then((value) {
+    if (kDebugMode) {
+      print("Notification added");
+    }
+  }).catchError((error) {
+    if (kDebugMode) {
+      print("Failed to add notification: $error");
+    }
+    //return error;
+  });
 }
 
-class PushNotificationService {
+class PushNotificationService extends ChangeNotifier {
   final _firebaseMessaging = FirebaseMessaging.instance;
 
-  final streamCtlr = StreamController<String>.broadcast();
-  final titleCtlr = StreamController<String>.broadcast();
-  final bodyCtlr = StreamController<String>.broadcast();
+  final String? key;
+  final String? title;
 
-  setNotifications() {
-    FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
-    FirebaseMessaging.onMessage.listen(
-      (message) async {
-        if (message.data.containsKey('data')) {
-          // Handle data message
-          streamCtlr.sink.add(message.data['data']);
-        }
-        if (message.data.containsKey('notification')) {
-          // Handle notification message
-          streamCtlr.sink.add(message.data['notification']);
-        }
-        // Or do other work.
-        titleCtlr.sink.add(message.notification!.title!);
-        bodyCtlr.sink.add(message.notification!.body!);
-      },
-    );
-    // With this token you can test it easily on your phone
-    final token =
-        _firebaseMessaging.getToken().then((value) => print('Token: $value'));
+  PushNotificationService({this.key, this.title});
+
+  List<PushNotificationService> _pushNotificationsFromSnapshot(
+      QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return PushNotificationService(
+        key: doc.id,
+        title: doc['title'],
+      );
+    }).toList();
   }
 
-  dispose() {
-    streamCtlr.close();
-    bodyCtlr.close();
-    titleCtlr.close();
+  Stream<List<PushNotificationService>> get notifications {
+    if (kDebugMode) {
+      print('Loading notifications');
+    }
+    final _user = FirebaseAuth.instance.currentUser;
+    return FirebaseFirestore.instance
+        .collection('notifications')
+        .where("user_id", isEqualTo: _user?.uid)
+        .snapshots()
+        .map(_pushNotificationsFromSnapshot);
+  }
+
+  setNotifications() async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+
+    FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
+    final _user = FirebaseAuth.instance.currentUser;
+
+    FirebaseMessaging.onMessage.listen(
+      (message) async {
+        await FirebaseFirestore.instance.collection('notifications').add({
+          'user_id': _user?.uid,
+          'title': message.notification!.title!,
+          'body': message.notification!.body!,
+          'read': false
+        }).then((value) {
+          if (kDebugMode) {
+            print("Notification added");
+          }
+        }).catchError((error) {
+          if (kDebugMode) {
+            print("Failed to add notification: $error");
+          }
+          //return error;
+        });
+      },
+    );
+    if (kDebugMode) {
+      _firebaseMessaging.getToken().then((value) {
+        if (kDebugMode) {
+          print('Token: $value');
+        }
+      });
+    }
+  }
+
+  Future markNotificationAsRead(notificationKey) async {
+    return FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(notificationKey)
+        .update({'read': true}).then((value) {
+      if (kDebugMode) {
+        print("Notification updated");
+      }
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("Failed to merge data: $error");
+      }
+      return error;
+    });
   }
 }

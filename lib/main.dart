@@ -11,6 +11,7 @@ import 'services/contract_service.dart';
 import 'services/emulator_service.dart';
 import 'services/language_service.dart';
 import 'services/media_service.dart';
+import 'services/push_notification_service.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/biometric_utility.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -52,6 +53,7 @@ Future<void> main() async {
       EmulatorService.setupAuthEmulator();
       EmulatorService.setupFirestoreEmulator();
       EmulatorService.setupStorageEmulator();
+      EmulatorService.setupFunctionsEmulator();
     } catch (e) {
       print(e);
     }
@@ -87,9 +89,19 @@ class CommitApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => BiometricService()),
           ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => MediaService()),
+          ChangeNotifierProvider(create: (_) => PushNotificationService()),
           ChangeNotifierProvider(create: (_) => AnalyticsService()),
           StreamProvider<List<ContractService>>.value(
               value: ContractService().contracts,
+              initialData: const [],
+              catchError: (BuildContext context, e) {
+                if (kDebugMode) {
+                  print("Error:$e");
+                }
+                return [];
+              }),
+          StreamProvider<List<PushNotificationService>>.value(
+              value: PushNotificationService().notifications,
               initialData: const [],
               catchError: (BuildContext context, e) {
                 if (kDebugMode) {

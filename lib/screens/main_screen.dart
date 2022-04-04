@@ -15,6 +15,7 @@ import 'edit_contract_screen.dart';
 import 'edit_profile.dart';
 import 'new_commitment_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:badges/badges.dart';
 
 import 'new_contract_screen.dart';
 
@@ -31,24 +32,12 @@ class _MainScreenState extends State<MainScreen> {
     final firebaseMessaging = PushNotificationService();
     firebaseMessaging.setNotifications();
 
-    firebaseMessaging.streamCtlr.stream.listen(_changeData);
-    firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
-    firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
-
     super.initState();
 
     for (var i = 0; i < 100; i++) {
       toggledCommitments[i] = false;
     }
   }
-
-  _changeData(String msg) => setState(() => notificationData = msg);
-  _changeBody(String msg) => setState(() => notificationBody = msg);
-  _changeTitle(String msg) => setState(() => notificationTitle = msg);
-
-  String notificationTitle = 'No Title';
-  String notificationBody = 'No Body';
-  String notificationData = 'No Data';
 
   bool loading = false;
   final double breakpoint = 600;
@@ -65,6 +54,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     List contracts = Provider.of<List<ContractService>>(context, listen: true);
+    List notifications =
+        Provider.of<List<PushNotificationService>>(context, listen: true);
+
     //List users = Provider.of<List<UserService>>(context);
 
     contractBlock(contractIndex) {
@@ -647,46 +639,109 @@ class _MainScreenState extends State<MainScreen> {
 
     drawerRight() {
       return Drawer(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
               child: Column(
-                children: [
-                  const SizedBox(height: 50),
-                  const Text(
-                    'Notifications',
-                    style: TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          notificationTitle,
-                          style: Theme.of(context).textTheme.headline4,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 100, 8, 8),
+              child: Consumer<LanguageService>(
+                  builder: (context, language, child) => Text(
+                      language.mainScreenNotificationHeader ?? '',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18)))),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: notifications.isEmpty
+                ? SizedBox(
+                    height: 150,
+                    child: Center(
+                        child: Consumer<LanguageService>(
+                            builder: (context, language, _) => Text(language
+                                    .mainScreenNoNotificationsErrorMessage ??
+                                ''))))
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: notifications.length,
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (BuildContext context, int notificationIndex) {
+                      return Dismissible(
+                        key: ValueKey<int>(notificationIndex),
+                        background: Container(
+                          color: Colors.red,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Row(
+                              children: [
+                                const FaIcon(FontAwesomeIcons.envelopeOpen,
+                                    color: Colors.white),
+                                const SizedBox(width: 10),
+                                Consumer<LanguageService>(
+                                    builder: (context, language, _) => Text(
+                                        language.mainScreenDismissebleMarkNotificationReadLink ??
+                                            '',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15))),
+                              ],
+                            ),
+                          ),
                         ),
-                        Text(
-                          notificationBody,
-                          style: Theme.of(context).textTheme.headline6,
+                        secondaryBackground: Container(
+                          color: Colors.red,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                const FaIcon(
+                                  FontAwesomeIcons.envelopeOpen,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 10),
+                                Consumer<LanguageService>(
+                                    builder: (context, language, _) => Text(
+                                        language.mainScreenDismissebleMarkNotificationReadLink ??
+                                            '',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15))),
+                              ],
+                            ),
+                          ),
                         ),
-                        Text(
-                          notificationData,
-                          style: Theme.of(context).textTheme.headline6,
+                        confirmDismiss: (direction) async {
+                          if (direction == DismissDirection.startToEnd) {
+                            PushNotificationService().markNotificationAsRead(
+                                notifications[notificationIndex].key);
+                            return true;
+                          } else if (direction == DismissDirection.endToStart) {
+                            PushNotificationService().markNotificationAsRead(
+                                notifications[notificationIndex].key);
+                            return true;
+                          }
+                          return null;
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Text(
+                                notifications[notificationIndex].title ?? ''),
+                            subtitle: Text(
+                                notifications[notificationIndex].body ?? ''),
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
+                      );
+                    },
+                    scrollDirection: Axis.vertical),
+          )
+        ],
+      )));
     }
+
+// Consumer<ThemeService>(
+//                     builder: (context, theme, child) =>
 
     return loading
         ? const CircularProgressIndicator(
@@ -717,12 +772,23 @@ class _MainScreenState extends State<MainScreen> {
               actions: [
                 Builder(
                   builder: (context) {
-                    return IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.bell),
-                      onPressed: () {
-                        Scaffold.of(context).openEndDrawer();
-                      },
-                    );
+                    return notifications.isNotEmpty
+                        ? Badge(
+                            badgeContent: Text(notifications.length.toString()),
+                            position: BadgePosition.topEnd(top: 5, end: 5),
+                            child: IconButton(
+                              icon: const FaIcon(FontAwesomeIcons.bell),
+                              onPressed: () {
+                                Scaffold.of(context).openEndDrawer();
+                              },
+                            ),
+                          )
+                        : IconButton(
+                            icon: const FaIcon(FontAwesomeIcons.bell),
+                            onPressed: () {
+                              Scaffold.of(context).openEndDrawer();
+                            },
+                          );
                   },
                 ),
               ],

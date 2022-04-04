@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class EmulatorService {
-  static bool testingOnRealDevice = false;
-  static String localIP = '192.168.100.8';
+  static bool testingOnRealDevice = true;
+  static String localIP = '192.168.60.121';
 
   static void setupAuthEmulator() {
     if (testingOnRealDevice == true) {
@@ -54,6 +55,14 @@ class EmulatorService {
       }
     } else {
       FirebaseStorage.instance.useStorageEmulator('0.0.0.0', 9199);
+    }
+  }
+
+  static void setupFunctionsEmulator() {
+    if (testingOnRealDevice == true) {
+      FirebaseFunctions.instance.useFunctionsEmulator(localIP, 3001);
+    } else {
+      FirebaseFunctions.instance.useFunctionsEmulator('localhost', 3001);
     }
   }
 }
