@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'notification_service.dart';
+
 class ContractService extends ChangeNotifier {
   final String? key;
   final String? title;
@@ -34,6 +36,7 @@ class ContractService extends ChangeNotifier {
 
   Future addContract(_title) {
     final _user = FirebaseAuth.instance.currentUser;
+
     return FirebaseFirestore.instance
         .collection('contracts')
         .add({'user_id': _user?.uid, 'title': _title, 'commitments': []}).then(
@@ -44,6 +47,26 @@ class ContractService extends ChangeNotifier {
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to add user: $error");
+      }
+      return error;
+    });
+  }
+
+  Future activateContract(contractKey) {
+    final _user = FirebaseAuth.instance.currentUser;
+
+    return FirebaseFirestore.instance
+        .collection('contracts')
+        .doc(contractKey)
+        .update({'state': 'active'}).then((value) {
+      if (kDebugMode) {
+        print('Contract updated');
+      }
+      NotificationService().sendNotification(
+          'title', 'body', contractKey, 'activateContractNotification');
+    }).catchError((error) {
+      if (kDebugMode) {
+        print('Add failed: $error');
       }
       return error;
     });
@@ -83,13 +106,13 @@ class ContractService extends ChangeNotifier {
     });
   }
 
-  Future addCommitment(_contractKey, _commitment) {
+  Future addCommitment(contractKey, commitment) {
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractKey)
+        .doc(contractKey)
         .update({
       'commitments': FieldValue.arrayUnion([
-        {"commitment": _commitment},
+        {"commitment": commitment},
       ])
     }) // <-- Add data
         .then((value) {

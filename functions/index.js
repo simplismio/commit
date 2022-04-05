@@ -6,21 +6,18 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-exports.sendNotification = functions.https.onCall((data, context) => {
+exports.activateContractNotification = functions.https.onCall((title, data) => {
   const payload = {
     notification: {
-      title: "The title of the notification",
-      body: data["your_param_sent_from_the_client"],
+      title: title,
+      body: data["body"],
     },
   };
   admin
     .messaging()
     .sendToTopic("AllPushNotifications", payload)
     .then((value) => {
-            console.log(value);
-                        console.log(context);
-
-
+    console.log(value);
       console.info("function executed succesfully");
       return { msg: "function executed succesfully" };
     })

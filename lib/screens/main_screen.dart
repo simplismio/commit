@@ -5,7 +5,7 @@ import '../../services/user_service.dart';
 import '../services/biometric_service.dart';
 import '../../services/theme_service.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
-import '../services/push_notification_service.dart';
+import '../services/notification_service.dart';
 import '../utilities/authorization_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +29,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
-    final firebaseMessaging = PushNotificationService();
+    final firebaseMessaging = NotificationService();
     firebaseMessaging.setNotifications();
 
     super.initState();
@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     List contracts = Provider.of<List<ContractService>>(context, listen: true);
     List notifications =
-        Provider.of<List<PushNotificationService>>(context, listen: true);
+        Provider.of<List<NotificationService>>(context, listen: true);
 
     //List users = Provider.of<List<UserService>>(context);
 
@@ -714,11 +714,11 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {
-                            PushNotificationService().markNotificationAsRead(
+                            NotificationService().markNotificationAsRead(
                                 notifications[notificationIndex].key);
                             return true;
                           } else if (direction == DismissDirection.endToStart) {
-                            PushNotificationService().markNotificationAsRead(
+                            NotificationService().markNotificationAsRead(
                                 notifications[notificationIndex].key);
                             return true;
                           }
@@ -800,7 +800,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: Column(children: [
                     contracts.isEmpty
                         ? SizedBox(
-                            height: 150,
+                            height: 175,
                             child: Center(
                                 child: Consumer<LanguageService>(
                                     builder: (context, language, _) => Text(

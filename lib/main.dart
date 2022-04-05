@@ -11,7 +11,7 @@ import 'services/contract_service.dart';
 import 'services/emulator_service.dart';
 import 'services/language_service.dart';
 import 'services/media_service.dart';
-import 'services/push_notification_service.dart';
+import 'services/notification_service.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/biometric_utility.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -89,7 +89,7 @@ class CommitApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => BiometricService()),
           ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => MediaService()),
-          ChangeNotifierProvider(create: (_) => PushNotificationService()),
+          ChangeNotifierProvider(create: (_) => NotificationService()),
           ChangeNotifierProvider(create: (_) => AnalyticsService()),
           StreamProvider<List<ContractService>>.value(
               value: ContractService().contracts,
@@ -100,8 +100,8 @@ class CommitApp extends StatelessWidget {
                 }
                 return [];
               }),
-          StreamProvider<List<PushNotificationService>>.value(
-              value: PushNotificationService().notifications,
+          StreamProvider<List<NotificationService>>.value(
+              value: NotificationService().notifications,
               initialData: const [],
               catchError: (BuildContext context, e) {
                 if (kDebugMode) {

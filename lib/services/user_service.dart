@@ -17,8 +17,6 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
-
 class UserService extends ChangeNotifier {
   String? uid;
   String? avatar;
@@ -95,15 +93,7 @@ class UserService extends ChangeNotifier {
         if (kDebugMode) {
           print("User added to users table");
         }
-
-        FirebaseMessaging.instance.subscribeToTopic("AllPushNotifications");
-
-        FirebaseFunctions.instanceFor()
-            .httpsCallable("sendNotification",
-                options:
-                    HttpsCallableOptions(timeout: const Duration(seconds: 30)))
-            .call({"your_param_sent_from_the_client": 'test'});
-        ;
+        //TODO: Send welcome email
       }).catchError((error) {
         if (kDebugMode) {
           print("Failed to add user: $error");
