@@ -16,7 +16,7 @@ import 'edit_profile.dart';
 import 'new_commitment_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:badges/badges.dart';
-
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'new_contract_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -29,9 +29,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
-    final firebaseMessaging = NotificationService();
-    firebaseMessaging.setNotifications();
-
     super.initState();
 
     for (var i = 0; i < 100; i++) {
@@ -369,6 +366,78 @@ class _MainScreenState extends State<MainScreen> {
                                                                       .mainScreenNoCommitmentsErrorMessage ??
                                                                   '')))),
                                               const SizedBox(height: 5),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        15.0, 0, 0, 0),
+                                                child: SizedBox(
+                                                  width: 120,
+                                                  child:
+                                                      Consumer<LanguageService>(
+                                                          builder: (context,
+                                                                  language,
+                                                                  child) =>
+                                                              ElevatedButton(
+                                                                child:
+                                                                    const Text(
+                                                                  'Activate contract',
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                onPressed:
+                                                                    () async {
+                                                                  setState(() =>
+                                                                      loading =
+                                                                          true);
+                                                                  ContractService()
+                                                                      .activateContract(
+                                                                          language
+                                                                              .activateContractNotificationTitle,
+                                                                          language
+                                                                              .activateContractNotificationBody,
+                                                                          contracts[contractIndex]
+                                                                              .key)
+                                                                      .then(
+                                                                          (result) {
+                                                                    // FirebaseCrashlytics
+                                                                    //     .instance
+                                                                    //     .crash();
+
+                                                                    print(
+                                                                        result);
+                                                                    if (result !=
+                                                                        null) {
+                                                                      setState(() =>
+                                                                          loading =
+                                                                              false);
+                                                                      ScaffoldMessenger.of(
+                                                                              context)
+                                                                          .showSnackBar(
+                                                                              SnackBar(
+                                                                        content: Consumer<
+                                                                                LanguageService>(
+                                                                            builder: (context, language, _) =>
+                                                                                Text(
+                                                                                  language.genericFirebaseErrorMessage ?? '',
+                                                                                  style: const TextStyle(
+                                                                                    color: Colors.white,
+                                                                                    fontSize: 16,
+                                                                                  ),
+                                                                                  textAlign: TextAlign.center,
+                                                                                )),
+                                                                        backgroundColor:
+                                                                            Colors.grey[800],
+                                                                      ));
+                                                                    }
+                                                                  });
+                                                                },
+                                                              )),
+                                                ),
+                                              ),
                                               SizedBox(
                                                   child: CircleAvatar(
                                                       radius: 20,
@@ -725,11 +794,14 @@ class _MainScreenState extends State<MainScreen> {
                           return null;
                         },
                         child: Card(
-                          child: ListTile(
-                            title: Text(
-                                notifications[notificationIndex].title ?? ''),
-                            subtitle: Text(
-                                notifications[notificationIndex].body ?? ''),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: ListTile(
+                              title: Text(
+                                  notifications[notificationIndex].title ?? ''),
+                              subtitle: Text(
+                                  notifications[notificationIndex].body ?? ''),
+                            ),
                           ),
                         ),
                       );
@@ -743,96 +815,91 @@ class _MainScreenState extends State<MainScreen> {
 // Consumer<ThemeService>(
 //                     builder: (context, theme, child) =>
 
-    return loading
-        ? const CircularProgressIndicator(
-            strokeWidth: 10,
-          )
-        : Scaffold(
-            appBar: AppBar(
-              leading: Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const FaIcon(
-                      FontAwesomeIcons.bars,
-                    ),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
+    return Scaffold(
+      appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const FaIcon(
+                FontAwesomeIcons.bars,
               ),
-              title: Consumer<LanguageService>(
-                  builder: (context, language, _) =>
-                      Text(language.mainScreenAppBarTitle ?? '',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ))),
-              centerTitle: true,
-              elevation: 0,
-              actions: [
-                Builder(
-                  builder: (context) {
-                    return notifications.isNotEmpty
-                        ? Badge(
-                            badgeContent: Text(notifications.length.toString()),
-                            position: BadgePosition.topEnd(top: 5, end: 5),
-                            child: IconButton(
-                              icon: const FaIcon(FontAwesomeIcons.bell),
-                              onPressed: () {
-                                Scaffold.of(context).openEndDrawer();
-                              },
-                            ),
-                          )
-                        : IconButton(
-                            icon: const FaIcon(FontAwesomeIcons.bell),
-                            onPressed: () {
-                              Scaffold.of(context).openEndDrawer();
-                            },
-                          );
-                  },
-                ),
-              ],
-            ),
-            body: Scrollbar(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: Column(children: [
-                    contracts.isEmpty
-                        ? SizedBox(
-                            height: 175,
-                            child: Center(
-                                child: Consumer<LanguageService>(
-                                    builder: (context, language, _) => Text(
-                                        language.mainScreenNoContractsErrorMessage ??
-                                            ''))))
-                        : breakpoint > MediaQuery.of(context).size.width
-                            ? mobileView()
-                            : desktopView()
-                  ]),
-                ),
-              ),
-            ),
-            drawer: drawerLeft(),
-            endDrawer: drawerRight(),
-            floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const NewContractScreen()));
+                Scaffold.of(context).openDrawer();
               },
-              child: const FaIcon(
-                FontAwesomeIcons.plus,
-                size: 29,
-              ),
-              tooltip: 'New Contract',
-              elevation: 5,
-              splashColor: Colors.grey,
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-          );
+            );
+          },
+        ),
+        title: Consumer<LanguageService>(
+            builder: (context, language, _) =>
+                Text(language.mainScreenAppBarTitle ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ))),
+        centerTitle: true,
+        elevation: 0,
+        actions: [
+          Builder(
+            builder: (context) {
+              return notifications.isNotEmpty
+                  ? Badge(
+                      badgeContent: Text(notifications.length.toString()),
+                      position: BadgePosition.topEnd(top: 5, end: 5),
+                      child: IconButton(
+                        icon: const FaIcon(FontAwesomeIcons.bell),
+                        onPressed: () {
+                          Scaffold.of(context).openEndDrawer();
+                        },
+                      ),
+                    )
+                  : IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.bell),
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                    );
+            },
+          ),
+        ],
+      ),
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: Column(children: [
+              contracts.isEmpty
+                  ? SizedBox(
+                      height: 175,
+                      child: Center(
+                          child: Consumer<LanguageService>(
+                              builder: (context, language, _) => Text(
+                                  language.mainScreenNoContractsErrorMessage ??
+                                      ''))))
+                  : breakpoint > MediaQuery.of(context).size.width
+                      ? mobileView()
+                      : desktopView()
+            ]),
+          ),
+        ),
+      ),
+      drawer: drawerLeft(),
+      endDrawer: drawerRight(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      const NewContractScreen()));
+        },
+        child: const FaIcon(
+          FontAwesomeIcons.plus,
+          size: 29,
+        ),
+        tooltip: 'New Contract',
+        elevation: 5,
+        splashColor: Colors.grey,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }
 }

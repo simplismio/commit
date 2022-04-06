@@ -4,26 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:http/http.dart' as http;
 
-Future<void> onBackgroundMessage(RemoteMessage message) async {
-  final _user = FirebaseAuth.instance.currentUser;
-
-  await FirebaseFirestore.instance.collection('notifications').add({
-    'user_id': _user?.uid,
-    'title': message.notification!.title!,
-    'body': message.notification!.body!,
-    'read': false
-  }).then((value) {
-    if (kDebugMode) {
-      print("Notification added");
-    }
-  }).catchError((error) {
-    if (kDebugMode) {
-      print("Failed to add notification: $error");
-    }
-    //return error;
-  });
-}
+Future<void> onBackgroundMessage(RemoteMessage message) async {}
 
 class NotificationService extends ChangeNotifier {
   final _firebaseMessaging = FirebaseMessaging.instance;
@@ -57,7 +40,7 @@ class NotificationService extends ChangeNotifier {
         .map(_notificationsFromSnapshot);
   }
 
-  setNotifications() async {
+  initialize() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -68,10 +51,11 @@ class NotificationService extends ChangeNotifier {
       sound: true,
     );
 
-    print('User granted permission: ${settings.authorizationStatus}');
+    if (kDebugMode) {
+      print('User granted permission: ${settings.authorizationStatus}');
+    }
 
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
-    final _user = FirebaseAuth.instance.currentUser;
 
     FirebaseMessaging.onMessage.listen(
       (message) async {
@@ -87,22 +71,18 @@ class NotificationService extends ChangeNotifier {
         }
       });
     }
-    String? token = await _firebaseMessaging.getToken(
-      vapidKey:
-          "BAG5adkrh-YOeQUTWaibQbfhH8MTckignRFvm5cyZohcRL-p04RymWoUJguPx2bkOsmcz654FutHq_GHilz4q8g",
-    );
   }
 
   Future sendNotification(title, body, topic, function) async {
-    final _user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
 
     // Step 1: save the notification in Firestore
-    return FirebaseFirestore.instance.collection('notifications').add({
-      'user_id': _user?.uid,
-      'title': 'Test',
-      'body': 'Body',
+    await FirebaseFirestore.instance.collection('notifications').add({
+      'user_id': user?.uid,
+      'title': title,
+      'body': body,
       'read': false
-    }).then((value) {
+    }).then((value) async {
       if (kDebugMode) {
         print("Notification added");
       }
@@ -117,18 +97,29 @@ class NotificationService extends ChangeNotifier {
 
       if (kIsWeb) {
         // subscribe to push notification for web
+        String? token = await _firebaseMessaging.getToken(
+          vapidKey:
+              "BAG5adkrh-YOeQUTWaibQbfhH8MTckignRFvm5cyZohcRL-p04RymWoUJguPx2bkOsmcz654FutHq_GHilz4q8g",
+        );
+
+        FirebaseFunctions.instanceFor()
+            .httpsCallable('subscribeTokenToTopicWeb',
+                options:
+                    HttpsCallableOptions(timeout: const Duration(seconds: 30)))
+            .call({'token': token, 'topic': topic});
       }
       // Step 3: send the push notification
       FirebaseFunctions.instanceFor()
           .httpsCallable(function,
               options:
                   HttpsCallableOptions(timeout: const Duration(seconds: 30)))
-          .call({'title': '', 'body': 'test'});
+          .call({'title': title, 'body': body, 'topic': topic});
+      return null;
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to add notification: $error");
       }
-      //return error;
+      return error;
     });
   }
 

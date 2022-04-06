@@ -37,10 +37,12 @@ class ContractService extends ChangeNotifier {
   Future addContract(_title) {
     final _user = FirebaseAuth.instance.currentUser;
 
-    return FirebaseFirestore.instance
-        .collection('contracts')
-        .add({'user_id': _user?.uid, 'title': _title, 'commitments': []}).then(
-            (value) {
+    return FirebaseFirestore.instance.collection('contracts').add({
+      'user_id': _user?.uid,
+      'title': _title,
+      'active': false,
+      'commitments': []
+    }).then((value) {
       if (kDebugMode) {
         print("Contract Added");
       }
@@ -52,21 +54,20 @@ class ContractService extends ChangeNotifier {
     });
   }
 
-  Future activateContract(contractKey) {
-    final _user = FirebaseAuth.instance.currentUser;
-
+  Future activateContract(title, body, contractKey) async {
     return FirebaseFirestore.instance
         .collection('contracts')
         .doc(contractKey)
-        .update({'state': 'active'}).then((value) {
+        .update({'activated': true}).then((value) async {
       if (kDebugMode) {
         print('Contract updated');
       }
-      NotificationService().sendNotification(
-          'title', 'body', contractKey, 'activateContractNotification');
+      await NotificationService().sendNotification(
+          title, body, contractKey, 'activateContractNotification');
+      return null;
     }).catchError((error) {
       if (kDebugMode) {
-        print('Add failed: $error');
+        print('Activation contract failed: $error');
       }
       return error;
     });

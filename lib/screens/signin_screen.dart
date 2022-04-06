@@ -107,7 +107,6 @@ class _SignInScreenState extends State<SignInScreen> {
             if (result == null) {
               if (mounted) {
                 Navigator.pop(context); // Navigator.push(
-
               }
             } else {
               setState(() => loading = false);

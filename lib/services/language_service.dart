@@ -73,6 +73,10 @@ class LanguageService extends ChangeNotifier {
   String? mainScreenSettingsAnalyticsLabel;
   // Headers
   String? mainScreenNotificationHeader;
+  // Push notifications titles
+  String? activateContractNotificationTitle;
+  // Push notifications bodies
+  String? activateContractNotificationBody;
 
   LanguageService() {
     _language = 'English';
@@ -205,6 +209,11 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsAnalyticsLabel = 'Share anonymous analytics';
         // Header
         mainScreenNotificationHeader = 'Notifications';
+        // Push notifications titles
+        activateContractNotificationTitle = 'Contract activated';
+        // Push notifications bodies
+        activateContractNotificationBody =
+            'Click to add commitment to the contract';
         break;
       case 'Dutch':
         // AppBar Titles
@@ -281,6 +290,11 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsAnalyticsLabel = 'Deel anonieme gebruiksgegevens ';
         // Header
         mainScreenNotificationHeader = 'Notificaties';
+        // Push notifications titles
+        activateContractNotificationTitle = 'Contract geactiveerd';
+        // Push notifications bodies
+        activateContractNotificationBody =
+            'Klik om commitments aan het contract toe te voegen';
         break;
       default:
         // AppBar Titles
@@ -353,6 +367,11 @@ class LanguageService extends ChangeNotifier {
         mainScreenSettingsAnalyticsLabel = 'Share anonymous analytics';
         // Header
         mainScreenNotificationHeader = 'Notifications';
+        // Push notifications titles
+        activateContractNotificationTitle = 'Contract activated';
+        // Push notifications bodies
+        activateContractNotificationBody =
+            'Click to add commitment to the contract';
     }
   }
 }

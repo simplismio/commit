@@ -48,6 +48,14 @@ Future<void> main() async {
             appId: "1:236126728561:web:777f7f92d8ed6a5b7e86d0",
             measurementId: "G-8Z10Z47T7F"));
   }
+
+  NotificationService().initialize();
+
+  if (AnalyticsService().analytics == true) {
+    await FirebaseAnalytics.instance.logAppOpen();
+    await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+  }
+
   if (kDebugMode) {
     try {
       EmulatorService.setupAuthEmulator();
@@ -57,11 +65,6 @@ Future<void> main() async {
     } catch (e) {
       print(e);
     }
-  }
-
-  if (AnalyticsService().analytics == true) {
-    await FirebaseAnalytics.instance.logAppOpen();
-    await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   }
 
   runZonedGuarded<Future<void>>(() async {

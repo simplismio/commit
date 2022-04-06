@@ -28,3 +28,15 @@ exports.activateContractNotification = functions.https.onCall((data) => {
     });
 
 });
+
+exports.subscribeTokenToTopicWeb = functions.https.onCall((data) => {
+
+  admin.messaging()
+    .subscribeToTopic(data["token"], data["topic"])
+    .then(function (response) {
+      console.log("Successfully subscribed to topic:", response);
+    })
+    .catch(function (error) {
+      console.log("Error subscribing to topic:", error);
+    });
+});

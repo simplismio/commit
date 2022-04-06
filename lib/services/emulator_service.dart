@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class EmulatorService {
-  static bool testingOnRealDevice = true;
+  static bool testingOnRealDevice = false;
   static String localIP = '192.168.60.121';
 
   static void setupAuthEmulator() {

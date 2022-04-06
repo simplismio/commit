@@ -15,7 +15,6 @@ import 'package:crypto/crypto.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
@@ -85,7 +84,10 @@ class UserService extends ChangeNotifier {
       await _user?.updateDisplayName(username);
       await _user?.reload();
 
-      await FirebaseFirestore.instance.collection('users').doc(_user?.uid).set({
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(_user?.uid)
+          .set({
         'username': username,
         'email': _user?.email,
         'avatar': ''
@@ -93,6 +95,7 @@ class UserService extends ChangeNotifier {
         if (kDebugMode) {
           print("User added to users table");
         }
+        return null;
         //TODO: Send welcome email
       }).catchError((error) {
         if (kDebugMode) {
