@@ -1,4 +1,4 @@
-import 'package:commit/services/language_service.dart';
+import '../services/language_service.dart';
 import '../services/analytics_service.dart';
 import '../services/contract_service.dart';
 import '../../services/user_service.dart';
@@ -16,7 +16,6 @@ import 'edit_profile.dart';
 import 'new_commitment_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:badges/badges.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'new_contract_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -53,6 +52,7 @@ class _MainScreenState extends State<MainScreen> {
     List contracts = Provider.of<List<ContractService>>(context, listen: true);
     List notifications =
         Provider.of<List<NotificationService>>(context, listen: true);
+    UserService? user = Provider.of<UserService?>(context, listen: false);
 
     //List users = Provider.of<List<UserService>>(context);
 

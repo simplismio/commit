@@ -3,6 +3,7 @@ import '../services/contract_service.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/language_service.dart';
+import '../services/user_service.dart';
 
 class NewContractScreen extends StatefulWidget {
   const NewContractScreen({Key? key}) : super(key: key);
@@ -19,6 +20,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //List<UserService> users = Provider.of<List<UserService>>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: Builder(

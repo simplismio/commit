@@ -7,17 +7,24 @@ import 'notification_service.dart';
 class ContractService extends ChangeNotifier {
   final String? key;
   final String? title;
-  final String? userId;
+  final String? ownerUserId;
+  final List? participants;
   final List? commitments;
 
-  ContractService({this.key, this.title, this.userId, this.commitments});
+  ContractService(
+      {this.key,
+      this.title,
+      this.ownerUserId,
+      this.participants,
+      this.commitments});
 
   List<ContractService> _contractsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return ContractService(
           key: doc.id,
           title: doc['title'],
-          userId: doc['user_id'],
+          ownerUserId: doc['owner_user_id'],
+          participants: doc['participants'],
           commitments: doc['commitments']);
     }).toList();
   }
@@ -26,29 +33,29 @@ class ContractService extends ChangeNotifier {
     if (kDebugMode) {
       print('Loading contracts');
     }
-    final _user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
     return FirebaseFirestore.instance
         .collection('contracts')
-        .where("user_id", isEqualTo: _user?.uid)
+        .where('participants', arrayContains: user?.uid)
         .snapshots()
         .map(_contractsFromSnapshot);
   }
 
   Future addContract(_title) {
-    final _user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
 
     return FirebaseFirestore.instance.collection('contracts').add({
-      'user_id': _user?.uid,
+      'owner_user_id': user?.uid,
       'title': _title,
-      'active': false,
+      'participants': [user?.uid, 'email'],
       'commitments': []
     }).then((value) {
       if (kDebugMode) {
-        print("Contract Added");
+        print("Contract added");
       }
     }).catchError((error) {
       if (kDebugMode) {
-        print("Failed to add user: $error");
+        print("Error: $error");
       }
       return error;
     });
@@ -67,7 +74,7 @@ class ContractService extends ChangeNotifier {
       return null;
     }).catchError((error) {
       if (kDebugMode) {
-        print('Activation contract failed: $error');
+        print('Error: $error');
       }
       return error;
     });
@@ -83,7 +90,7 @@ class ContractService extends ChangeNotifier {
       }
     }).catchError((error) {
       if (kDebugMode) {
-        print('Add failed: $error');
+        print('Error: $error');
       }
       return error;
     });
@@ -101,7 +108,7 @@ class ContractService extends ChangeNotifier {
       }
     }).catchError((error) {
       if (kDebugMode) {
-        print('Add failed: $error');
+        print('Error: $error');
       }
       return error;
     });
@@ -122,7 +129,7 @@ class ContractService extends ChangeNotifier {
       }
     }).catchError((error) {
       if (kDebugMode) {
-        print('Add failed: $error');
+        print('Error: $error');
       }
       return error;
     });
