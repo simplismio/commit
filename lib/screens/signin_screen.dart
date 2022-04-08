@@ -88,47 +88,51 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   signUpButton() {
-    return ElevatedButton(
-      child: loading
-          ? const LinearProgressIndicator()
-          : Consumer<LanguageService>(
-              builder: (context, language, _) =>
-                  Text(language.signUpScreenButtonText ?? '',
+    return Consumer<LanguageService>(
+        builder: (context, language, _) => ElevatedButton(
+              child: loading
+                  ? const LinearProgressIndicator()
+                  : Text(language.signUpScreenButtonText ?? '',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                      ))),
-      onPressed: () async {
-        if (formKeyForm.currentState!.validate()) {
-          setState(() => loading = true);
-          UserService()
-              .signUpUsingEmailAndPassword(
-                  username: username, email: email, password: password)
-              .then((result) {
-            if (result == null) {
-              if (mounted) {
-                Navigator.pop(context); // Navigator.push(
-              }
-            } else {
-              setState(() => loading = false);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Consumer<LanguageService>(
-                    builder: (context, language, _) => Text(
-                          language.genericAuthErrorMessage ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        )),
-                backgroundColor: Colors.grey[800],
-              ));
-            }
-          });
-        } else {
-          setState(() => loading = false);
-        }
-      },
-    );
+                      )),
+              onPressed: () async {
+                if (formKeyForm.currentState!.validate()) {
+                  setState(() => loading = true);
+                  UserService()
+                      .signUpUsingEmailAndPassword(
+                          username,
+                          email,
+                          password,
+                          language.welcomeEmailTitle,
+                          language.welcomeEmailBody,
+                          language.welcomeEmailSignature)
+                      .then((result) {
+                    if (result == null) {
+                      if (mounted) {
+                        Navigator.pop(context); // Navigator.push(
+                      }
+                    } else {
+                      setState(() => loading = false);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Consumer<LanguageService>(
+                            builder: (context, language, _) => Text(
+                                  language.genericAuthErrorMessage ?? '',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )),
+                        backgroundColor: Colors.grey[800],
+                      ));
+                    }
+                  });
+                } else {
+                  setState(() => loading = false);
+                }
+              },
+            ));
   }
 
   signInForm() {

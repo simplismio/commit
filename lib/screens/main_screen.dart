@@ -13,10 +13,10 @@ import 'package:flutter/foundation.dart';
 import 'edit_commitment_screen.dart';
 import 'edit_contract_screen.dart';
 import 'edit_profile.dart';
-import 'new_commitment_screen.dart';
+import 'add_commitment_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:badges/badges.dart';
-import 'new_contract_screen.dart';
+import 'add_contract_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -52,8 +52,7 @@ class _MainScreenState extends State<MainScreen> {
     List contracts = Provider.of<List<ContractService>>(context, listen: true);
     List notifications =
         Provider.of<List<NotificationService>>(context, listen: true);
-    UserService? user = Provider.of<UserService?>(context, listen: false);
-
+    //UserService? user = Provider.of<UserService?>(context, listen: false);
     //List users = Provider.of<List<UserService>>(context);
 
     contractBlock(contractIndex) {
@@ -340,7 +339,7 @@ class _MainScreenState extends State<MainScreen> {
                                                               MaterialPageRoute(
                                                                 builder: (BuildContext
                                                                         context) =>
-                                                                    NewCommitmentScreen(
+                                                                    AddCommitmentScreen(
                                                                   contractKey:
                                                                       contracts[
                                                                               contractIndex]
@@ -366,78 +365,6 @@ class _MainScreenState extends State<MainScreen> {
                                                                       .mainScreenNoCommitmentsErrorMessage ??
                                                                   '')))),
                                               const SizedBox(height: 5),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        15.0, 0, 0, 0),
-                                                child: SizedBox(
-                                                  width: 120,
-                                                  child:
-                                                      Consumer<LanguageService>(
-                                                          builder: (context,
-                                                                  language,
-                                                                  child) =>
-                                                              ElevatedButton(
-                                                                child:
-                                                                    const Text(
-                                                                  'Activate contract',
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                                onPressed:
-                                                                    () async {
-                                                                  setState(() =>
-                                                                      loading =
-                                                                          true);
-                                                                  ContractService()
-                                                                      .activateContract(
-                                                                          language
-                                                                              .activateContractNotificationTitle,
-                                                                          language
-                                                                              .activateContractNotificationBody,
-                                                                          contracts[contractIndex]
-                                                                              .key)
-                                                                      .then(
-                                                                          (result) {
-                                                                    // FirebaseCrashlytics
-                                                                    //     .instance
-                                                                    //     .crash();
-
-                                                                    print(
-                                                                        result);
-                                                                    if (result !=
-                                                                        null) {
-                                                                      setState(() =>
-                                                                          loading =
-                                                                              false);
-                                                                      ScaffoldMessenger.of(
-                                                                              context)
-                                                                          .showSnackBar(
-                                                                              SnackBar(
-                                                                        content: Consumer<
-                                                                                LanguageService>(
-                                                                            builder: (context, language, _) =>
-                                                                                Text(
-                                                                                  language.genericFirebaseErrorMessage ?? '',
-                                                                                  style: const TextStyle(
-                                                                                    color: Colors.white,
-                                                                                    fontSize: 16,
-                                                                                  ),
-                                                                                  textAlign: TextAlign.center,
-                                                                                )),
-                                                                        backgroundColor:
-                                                                            Colors.grey[800],
-                                                                      ));
-                                                                    }
-                                                                  });
-                                                                },
-                                                              )),
-                                                ),
-                                              ),
                                               SizedBox(
                                                   child: CircleAvatar(
                                                       radius: 20,
@@ -453,7 +380,7 @@ class _MainScreenState extends State<MainScreen> {
                                                               MaterialPageRoute(
                                                                 builder: (BuildContext
                                                                         context) =>
-                                                                    NewCommitmentScreen(
+                                                                    AddCommitmentScreen(
                                                                   contractKey:
                                                                       contracts[
                                                                               contractIndex]
@@ -889,7 +816,7 @@ class _MainScreenState extends State<MainScreen> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      const NewContractScreen()));
+                      const AddContractScreen()));
         },
         child: const FaIcon(
           FontAwesomeIcons.plus,

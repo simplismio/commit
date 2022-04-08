@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'notification_service.dart';
+//import 'notification_service.dart';
 
 class ContractService extends ChangeNotifier {
   final String? key;
@@ -53,28 +52,12 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print("Contract added");
       }
+      // await NotificationService().sendNotification(
+      //     title, body, contractKey, 'addContractNotification');
+      // return null;
     }).catchError((error) {
       if (kDebugMode) {
         print("Error: $error");
-      }
-      return error;
-    });
-  }
-
-  Future activateContract(title, body, contractKey) async {
-    return FirebaseFirestore.instance
-        .collection('contracts')
-        .doc(contractKey)
-        .update({'activated': true}).then((value) async {
-      if (kDebugMode) {
-        print('Contract updated');
-      }
-      await NotificationService().sendNotification(
-          title, body, contractKey, 'activateContractNotification');
-      return null;
-    }).catchError((error) {
-      if (kDebugMode) {
-        print('Error: $error');
       }
       return error;
     });
@@ -88,6 +71,9 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print('Contract updated');
       }
+      // await NotificationService().sendNotification(
+      //     title, body, contractKey, 'editContractNotification');
+      // return null;
     }).catchError((error) {
       if (kDebugMode) {
         print('Error: $error');
@@ -106,6 +92,9 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print('Contract deleted');
       }
+      // await NotificationService().sendNotification(
+      //     title, body, contractKey, 'deleteContractNotification');
+      // return null;
     }).catchError((error) {
       if (kDebugMode) {
         print('Error: $error');
@@ -127,6 +116,9 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print('New commitment added');
       }
+      // await NotificationService().sendNotification(
+      //     title, body, contractKey, 'addCommitmentNotification');
+      // return null;
     }).catchError((error) {
       if (kDebugMode) {
         print('Error: $error');
@@ -146,6 +138,9 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print("Commitment updated");
       }
+      // await NotificationService().sendNotification(
+      //     title, body, contractKey, 'editCommitmentNotification');
+      // return null;
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to merge data: $error");
@@ -164,6 +159,9 @@ class ContractService extends ChangeNotifier {
       if (kDebugMode) {
         print("Commitment deleted");
       }
+      // await NotificationService().sendNotification(
+      //     title, body, contractKey, 'deleteCommitmentNotification');
+      // return null;
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to merge data: $error");

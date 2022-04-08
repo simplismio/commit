@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:http/http.dart' as http;
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {}
 
@@ -73,7 +72,7 @@ class NotificationService extends ChangeNotifier {
     }
   }
 
-  Future sendNotification(title, body, topic, function) async {
+  Future sendPushNotification(title, body, topic, function) async {
     final user = FirebaseAuth.instance.currentUser;
 
     // Step 1: save the notification in Firestore

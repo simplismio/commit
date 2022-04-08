@@ -10,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'analytics_service.dart';
+import 'email_service.dart';
 import 'emulator_service.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -31,7 +32,6 @@ class UserService extends ChangeNotifier {
 
   UserService? _userFromFirebaseUser(User? user) {
     if (user != null) {
-      // ignore: avoid_print
       if (kDebugMode) {
         print('Firebase UID is: ${user.uid}');
       }
@@ -67,8 +67,8 @@ class UserService extends ChangeNotifier {
         .map(_usersFromSnapshot);
   }
 
-  Future signUpUsingEmailAndPassword(
-      {String? username, String? email, String? password}) async {
+  Future signUpUsingEmailAndPassword(String? username, String? email,
+      String? password, title, body, signature) async {
     try {
       if (kDebugMode) {
         print('Signing up user');
@@ -91,12 +91,15 @@ class UserService extends ChangeNotifier {
         'username': username,
         'email': _user?.email,
         'avatar': ''
-      }).then((value) {
+      }).then((value) async {
         if (kDebugMode) {
           print("User added to users table");
         }
+
+        await EmailService().sendEmail(
+            'sendWelcomeEmail', email, username, title, body, signature);
+
         return null;
-        //TODO: Send welcome email
       }).catchError((error) {
         if (kDebugMode) {
           print("Failed to add user: $error");

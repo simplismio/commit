@@ -77,6 +77,12 @@ class LanguageService extends ChangeNotifier {
   String? activateContractNotificationTitle;
   // Push notifications bodies
   String? activateContractNotificationBody;
+  // Email titles
+  String? welcomeEmailTitle;
+  // Email bodies
+  String? welcomeEmailBody;
+  // Email signatures
+  String? welcomeEmailSignature;
 
   LanguageService() {
     _language = 'English';
@@ -214,6 +220,12 @@ class LanguageService extends ChangeNotifier {
         // Push notifications bodies
         activateContractNotificationBody =
             'Click to add commitment to the contract';
+        // Email titles
+        welcomeEmailTitle = 'Welcome to Commit';
+        // Email bodies
+        welcomeEmailBody = 'You have made the right decision to commit';
+        // Email signatures
+        welcomeEmailSignature = 'Team Commit';
         break;
       case 'Dutch':
         // AppBar Titles
@@ -295,6 +307,13 @@ class LanguageService extends ChangeNotifier {
         // Push notifications bodies
         activateContractNotificationBody =
             'Klik om commitments aan het contract toe te voegen';
+        // Email titles
+        welcomeEmailTitle = 'Welkom bij Commit';
+        // Email bodies
+        welcomeEmailBody =
+            'Je hebt het juiste besluit genomen om je te commiteren';
+        // Email signatures
+        welcomeEmailSignature = 'Team Commit';
         break;
       default:
         // AppBar Titles
@@ -372,6 +391,12 @@ class LanguageService extends ChangeNotifier {
         // Push notifications bodies
         activateContractNotificationBody =
             'Click to add commitment to the contract';
+        // Email titles
+        welcomeEmailTitle = 'Welcome to Commit';
+        // Email bodies
+        welcomeEmailBody = 'You have made the right decision to commit';
+        // Email signatures
+        welcomeEmailSignature = 'Team Commit';
     }
   }
 }
