@@ -100,13 +100,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 if (formKeyForm.currentState!.validate()) {
                   setState(() => loading = true);
                   UserService()
-                      .signUpUsingEmailAndPassword(
-                          username,
-                          email,
-                          password,
-                          language.welcomeEmailTitle,
-                          language.welcomeEmailBody,
-                          language.welcomeEmailSignature)
+                      .signUpUsingEmailAndPassword(username, email, password,
+                          language.welcomeEmailTitle, language.welcomeEmailBody)
                       .then((result) {
                     if (result == null) {
                       if (mounted) {

@@ -43,23 +43,19 @@ class UserService extends ChangeNotifier {
         email: user?.email);
   }
 
-  List<UserService> _usersFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      return UserService(
-          uid: doc.id,
-          avatar: doc['photoURL'],
-          username: doc['displayName'],
-          email: doc['email']);
-    }).toList();
-  }
-
   Stream<UserService?> get user {
     return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
   }
 
+  List<UserService> _usersFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return UserService(uid: doc.id, username: doc['username']);
+    }).toList();
+  }
+
   Stream<List<UserService>> get users {
     if (kDebugMode) {
-      print('Loading user list');
+      print('Loading contracts');
     }
     return FirebaseFirestore.instance
         .collection('users')
@@ -67,8 +63,8 @@ class UserService extends ChangeNotifier {
         .map(_usersFromSnapshot);
   }
 
-  Future signUpUsingEmailAndPassword(String? username, String? email,
-      String? password, title, body, signature) async {
+  Future signUpUsingEmailAndPassword(
+      String? username, String? email, String? password, title, body) async {
     try {
       if (kDebugMode) {
         print('Signing up user');
@@ -96,8 +92,8 @@ class UserService extends ChangeNotifier {
           print("User added to users table");
         }
 
-        await EmailService().sendEmail(
-            'sendWelcomeEmail', email, username, title, body, signature);
+        await EmailService()
+            .sendEmail('sendWelcomeEmail', email, username, title, body);
 
         return null;
       }).catchError((error) {

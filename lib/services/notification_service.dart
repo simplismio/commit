@@ -13,6 +13,7 @@ class NotificationService extends ChangeNotifier {
   final String? key;
   final String? title;
   final String? body;
+  static String? notificationPermission;
 
   NotificationService({this.key, this.title, this.body});
 
@@ -54,6 +55,7 @@ class NotificationService extends ChangeNotifier {
       print('User granted permission: ${settings.authorizationStatus}');
     }
 
+    notificationPermission = settings.authorizationStatus.toString();
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
 
     FirebaseMessaging.onMessage.listen(

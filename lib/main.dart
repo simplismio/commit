@@ -112,6 +112,15 @@ class CommitApp extends StatelessWidget {
                 }
                 return [];
               }),
+          StreamProvider<List<UserService>>.value(
+              value: UserService().users,
+              initialData: const [],
+              catchError: (BuildContext context, e) {
+                if (kDebugMode) {
+                  print("Error:$e");
+                }
+                return [];
+              }),
         ],
         child: Consumer<ThemeService>(
             builder: (context, ThemeService theme, child) {

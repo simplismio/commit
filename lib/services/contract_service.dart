@@ -40,13 +40,13 @@ class ContractService extends ChangeNotifier {
         .map(_contractsFromSnapshot);
   }
 
-  Future addContract(_title) {
+  Future addContract(title, participants) {
     final user = FirebaseAuth.instance.currentUser;
 
     return FirebaseFirestore.instance.collection('contracts').add({
       'owner_user_id': user?.uid,
-      'title': _title,
-      'participants': [user?.uid, 'email'],
+      'title': title,
+      'participants': participants,
       'commitments': []
     }).then((value) {
       if (kDebugMode) {

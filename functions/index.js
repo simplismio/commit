@@ -40,7 +40,6 @@ readHTMLFile(path.resolve(__dirname, "./templates/welcome.html"), function(error
     var replacements = {
       username: data["username"],
       body: data["body"],
-      signature: data["signature"]
     };
     var htmlToSend = template(replacements);
     var mailOptions = {
