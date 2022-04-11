@@ -1,22 +1,23 @@
-import '../services/language_service.dart';
-import '../services/analytics_service.dart';
-import '../services/contract_service.dart';
-import '../../services/user_service.dart';
-import '../services/biometric_service.dart';
-import '../../services/theme_service.dart';
+import 'package:badges/badges.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/theme_service.dart';
+import '../../services/user_service.dart';
+import '../services/analytics_service.dart';
+import '../services/biometric_service.dart';
+import '../services/contract_service.dart';
+import '../services/language_service.dart';
 import '../services/notification_service.dart';
 import '../utilities/authorization_utility.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart';
+import 'add_commitment_screen.dart';
+import 'add_contract_screen.dart';
 import 'edit_commitment_screen.dart';
 import 'edit_contract_screen.dart';
 import 'edit_profile.dart';
-import 'add_commitment_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:badges/badges.dart';
-import 'add_contract_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -62,339 +63,340 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               Expanded(
                 child: Consumer<ThemeService>(
-                    builder: (context, theme, child) => Container(
-                          color: theme.darkTheme == true
-                              ? Colors.grey[800]
-                              : Colors.grey[300],
-                          child: ListTile(
-                            title: Padding(
-                              padding: const EdgeInsets.fromLTRB(2, 10, 2, 10),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        contracts[contractIndex].title,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Spacer(),
-                                      IconButton(
-                                        icon: const FaIcon(
-                                            FontAwesomeIcons.ellipsis),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        EditContractScreen(
-                                                  contract:
-                                                      contracts[contractIndex],
-                                                ),
-                                              ));
-                                        },
-                                      ),
-                                      toggledCommitmentsValue == false
-                                          ? IconButton(
-                                              icon: const FaIcon(
-                                                  FontAwesomeIcons
-                                                      .chevronRight),
-                                              onPressed: () {
-                                                setState(() {
-                                                  toggleCommitments(
-                                                      contractIndex);
-                                                });
-                                              },
-                                            )
-                                          : IconButton(
-                                              icon: const FaIcon(
-                                                  FontAwesomeIcons.chevronDown),
-                                              onPressed: () {
-                                                setState(() {
-                                                  toggleCommitments(
-                                                      contractIndex);
-                                                });
-                                              },
-                                            )
-                                    ],
-                                  ),
-                                ],
+                    builder: (context, theme, child) => Padding(
+                          padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
+                          child: Container(
+                            color: theme.darkTheme == true
+                                ? Colors.grey[800]
+                                : Colors.grey[300],
+                            child: ListTile(
+                              title: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(2, 10, 2, 10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          contracts[contractIndex].title,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const Spacer(),
+                                        IconButton(
+                                          icon: const FaIcon(
+                                              FontAwesomeIcons.ellipsis),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          EditContractScreen(
+                                                    contract: contracts[
+                                                        contractIndex],
+                                                  ),
+                                                ));
+                                          },
+                                        ),
+                                        toggledCommitments[contractIndex] ==
+                                                false
+                                            ? IconButton(
+                                                icon: const FaIcon(
+                                                    FontAwesomeIcons
+                                                        .chevronRight),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    toggleCommitments(
+                                                        contractIndex);
+                                                  });
+                                                },
+                                              )
+                                            : IconButton(
+                                                icon: const FaIcon(
+                                                    FontAwesomeIcons
+                                                        .chevronDown),
+                                                onPressed: () async {
+                                                  await NotificationService()
+                                                      .subscribeToTopic(
+                                                          contracts[
+                                                                  contractIndex]
+                                                              .key);
+                                                  setState(() {
+                                                    toggleCommitments(
+                                                        contractIndex);
+                                                  });
+                                                },
+                                              )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            subtitle: Column(
-                              children: <Widget>[
-                                toggledCommitments[contractIndex] == false
-                                    ? Container()
-                                    : contracts[contractIndex]
-                                                .commitments
-                                                .asMap()
-                                                .containsKey(0) ==
-                                            true
-                                        ? Column(
-                                            children: [
-                                              SizedBox(
-                                                child: ListView.builder(
-                                                    shrinkWrap: true,
-                                                    physics:
-                                                        const ClampingScrollPhysics(),
-                                                    itemCount:
-                                                        contracts[contractIndex]
-                                                            .commitments
-                                                            .length,
-                                                    itemBuilder: (BuildContext
-                                                            context,
-                                                        int commitmentIndex) {
-                                                      // return Text(commitmentList[index].description);
-                                                      return Dismissible(
-                                                        key: ValueKey<int>(
-                                                            commitmentIndex),
-                                                        background: Container(
-                                                          color: Colors.blue,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(15),
-                                                            child: Row(
-                                                              children: [
-                                                                const FaIcon(
+                              subtitle: Column(
+                                children: <Widget>[
+                                  toggledCommitments[contractIndex] == false
+                                      ? Container()
+                                      : contracts[contractIndex]
+                                                  .commitments
+                                                  .asMap()
+                                                  .containsKey(0) ==
+                                              true
+                                          ? Column(
+                                              children: [
+                                                SizedBox(
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics:
+                                                          const ClampingScrollPhysics(),
+                                                      itemCount: contracts[
+                                                              contractIndex]
+                                                          .commitments
+                                                          .length,
+                                                      itemBuilder: (BuildContext
+                                                              context,
+                                                          int commitmentIndex) {
+                                                        // return Text(commitmentList[index].description);
+                                                        return Dismissible(
+                                                          key: ValueKey<int>(
+                                                              commitmentIndex),
+                                                          background: Container(
+                                                            color: Colors.blue,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(15),
+                                                              child: Row(
+                                                                children: [
+                                                                  const FaIcon(
+                                                                      FontAwesomeIcons
+                                                                          .penToSquare,
+                                                                      color: Colors
+                                                                          .white),
+                                                                  const SizedBox(
+                                                                      width:
+                                                                          10),
+                                                                  Consumer<
+                                                                          LanguageService>(
+                                                                      builder: (context, language, _) => Text(
+                                                                          language.mainScreenDismissebleEditCommitmentLink ??
+                                                                              '',
+                                                                          style: const TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 15))),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          secondaryBackground:
+                                                              Container(
+                                                            color: Colors.red,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(15),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .end,
+                                                                children: [
+                                                                  const FaIcon(
                                                                     FontAwesomeIcons
-                                                                        .penToSquare,
+                                                                        .trash,
                                                                     color: Colors
-                                                                        .white),
-                                                                const SizedBox(
-                                                                    width: 10),
-                                                                Consumer<
-                                                                        LanguageService>(
-                                                                    builder: (context, language, _) => Text(
-                                                                        language
-                                                                                .mainScreenDismissebleEditCommitmentLink ??
-                                                                            '',
-                                                                        style: const TextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 15))),
-                                                              ],
+                                                                        .white,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      width:
+                                                                          10),
+                                                                  Consumer<
+                                                                          LanguageService>(
+                                                                      builder: (context, language, _) => Text(
+                                                                          language.mainScreenDismissebleDeleteCommitmentLink ??
+                                                                              '',
+                                                                          style: const TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              fontSize: 15))),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        secondaryBackground:
-                                                            Container(
-                                                          color: Colors.red,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(15),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .end,
-                                                              children: [
-                                                                const FaIcon(
-                                                                  FontAwesomeIcons
-                                                                      .trash,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                const SizedBox(
-                                                                    width: 10),
-                                                                Consumer<
-                                                                        LanguageService>(
-                                                                    builder: (context, language, _) => Text(
-                                                                        language
-                                                                                .mainScreenDismissebleDeleteCommitmentLink ??
-                                                                            '',
-                                                                        style: const TextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontWeight: FontWeight.bold,
-                                                                            fontSize: 15))),
-                                                              ],
-                                                            ),
+                                                          confirmDismiss:
+                                                              (direction) async {
+                                                            if (direction ==
+                                                                DismissDirection
+                                                                    .startToEnd) {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (BuildContext
+                                                                            context) =>
+                                                                        EditCommitmentScreen(
+                                                                      contractKey:
+                                                                          contracts[contractIndex]
+                                                                              .key,
+                                                                      commitmentArray:
+                                                                          contracts[contractIndex]
+                                                                              .commitments,
+                                                                      commitmentIndex:
+                                                                          commitmentIndex,
+                                                                    ),
+                                                                  ));
+                                                              return false;
+                                                            } else if (direction ==
+                                                                DismissDirection
+                                                                    .endToStart) {
+                                                              ContractService().deleteCommitment(
+                                                                  contracts[
+                                                                          contractIndex]
+                                                                      .key,
+                                                                  contracts[
+                                                                          contractIndex]
+                                                                      .commitments,
+                                                                  commitmentIndex);
+                                                              return true;
+                                                            }
+                                                            return null;
+                                                          },
+                                                          child: Column(
+                                                            children: [
+                                                              Consumer<
+                                                                      ThemeService>(
+                                                                  builder: (context,
+                                                                          theme,
+                                                                          child) =>
+                                                                      Container(
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
+                                                                          color: theme.darkTheme == true
+                                                                              ? Colors.grey[700]
+                                                                              : Colors.grey[200],
+                                                                          boxShadow: const [
+                                                                            BoxShadow(
+                                                                                color: Colors.transparent,
+                                                                                spreadRadius: 3),
+                                                                          ],
+                                                                        ),
+                                                                        child:
+                                                                            ListTile(
+                                                                          leading: Consumer<UserService>(
+                                                                              builder: (context, user, child) => CircularProfileAvatar(
+                                                                                    user.avatar!,
+                                                                                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                                                                                    placeHolder: (context, url) => const SizedBox(
+                                                                                      width: 20,
+                                                                                      height: 20,
+                                                                                      child: CircularProgressIndicator(),
+                                                                                    ),
+                                                                                    radius: 20,
+                                                                                    borderWidth: 2,
+                                                                                    borderColor: Colors.grey,
+                                                                                    elevation: 10,
+                                                                                    backgroundColor: Colors.transparent,
+                                                                                    imageFit: BoxFit.fill,
+                                                                                    cacheImage: true,
+                                                                                  )),
+                                                                          title:
+                                                                              Text(
+                                                                            contracts[contractIndex].commitments[commitmentIndex]['commitment'],
+                                                                            style:
+                                                                                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          subtitle:
+                                                                              const Text(
+                                                                            'subtitle.',
+                                                                            style:
+                                                                                TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                        ),
+                                                                      )),
+                                                              const SizedBox(
+                                                                height: 5,
+                                                              )
+                                                            ],
                                                           ),
-                                                        ),
-                                                        confirmDismiss:
-                                                            (direction) async {
-                                                          if (direction ==
-                                                              DismissDirection
-                                                                  .startToEnd) {
+                                                        );
+                                                      },
+                                                      scrollDirection:
+                                                          Axis.vertical),
+                                                ),
+                                                const SizedBox(height: 15),
+                                                SizedBox(
+                                                    child: CircleAvatar(
+                                                        radius: 20,
+                                                        backgroundColor:
+                                                            Colors.grey[500],
+                                                        child: IconButton(
+                                                          icon: const FaIcon(
+                                                              FontAwesomeIcons
+                                                                  .plus),
+                                                          onPressed: () {
                                                             Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
                                                                   builder: (BuildContext
                                                                           context) =>
-                                                                      EditCommitmentScreen(
+                                                                      AddCommitmentScreen(
                                                                     contractKey:
                                                                         contracts[contractIndex]
                                                                             .key,
-                                                                    commitmentArray:
-                                                                        contracts[contractIndex]
-                                                                            .commitments,
-                                                                    commitmentIndex:
-                                                                        commitmentIndex,
                                                                   ),
                                                                 ));
-                                                            return false;
-                                                          } else if (direction ==
-                                                              DismissDirection
-                                                                  .endToStart) {
-                                                            ContractService().deleteCommitment(
-                                                                contracts[
-                                                                        contractIndex]
-                                                                    .key,
-                                                                contracts[
-                                                                        contractIndex]
-                                                                    .commitments,
-                                                                commitmentIndex);
-                                                            return true;
-                                                          }
-                                                          return null;
-                                                        },
-                                                        child: Column(
-                                                          children: [
-                                                            Consumer<
-                                                                    ThemeService>(
-                                                                builder: (context,
-                                                                        theme,
-                                                                        child) =>
-                                                                    Container(
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(10),
-                                                                        color: theme.darkTheme ==
-                                                                                true
-                                                                            ? Colors.grey[700]
-                                                                            : Colors.grey[200],
-                                                                        boxShadow: const [
-                                                                          BoxShadow(
-                                                                              color: Colors.transparent,
-                                                                              spreadRadius: 3),
-                                                                        ],
-                                                                      ),
-                                                                      child:
-                                                                          ListTile(
-                                                                        leading: Consumer<
-                                                                                UserService>(
-                                                                            builder: (context, user, child) =>
-                                                                                CircularProfileAvatar(
-                                                                                  user.avatar!,
-                                                                                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                                                                                  placeHolder: (context, url) => const SizedBox(
-                                                                                    width: 20,
-                                                                                    height: 20,
-                                                                                    child: CircularProgressIndicator(),
-                                                                                  ),
-                                                                                  radius: 20,
-                                                                                  borderWidth: 2,
-                                                                                  borderColor: Colors.grey,
-                                                                                  elevation: 10,
-                                                                                  backgroundColor: Colors.transparent,
-                                                                                  imageFit: BoxFit.fill,
-                                                                                  cacheImage: true,
-                                                                                )),
-                                                                        title:
-                                                                            Text(
-                                                                          contracts[contractIndex].commitments[commitmentIndex]
-                                                                              [
-                                                                              'commitment'],
-                                                                          style: const TextStyle(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                        subtitle:
-                                                                            const Text(
-                                                                          'subtitle.',
-                                                                          style: TextStyle(
-                                                                              fontSize: 13,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                      ),
-                                                                    )),
-                                                            const SizedBox(
-                                                              height: 5,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                    scrollDirection:
-                                                        Axis.vertical),
-                                              ),
-                                              const SizedBox(height: 15),
-                                              SizedBox(
-                                                  child: CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundColor:
-                                                          Colors.grey[500],
-                                                      child: IconButton(
-                                                        icon: const FaIcon(
+                                                          },
+                                                        ))),
+                                                const SizedBox(height: 15),
+                                              ],
+                                            )
+                                          : Column(
+                                              children: [
+                                                SizedBox(
+                                                    height: 50,
+                                                    child: Center(
+                                                        child: Consumer<
+                                                                LanguageService>(
+                                                            builder: (context,
+                                                                    language,
+                                                                    _) =>
+                                                                Text(language
+                                                                        .mainScreenNoCommitmentsErrorMessage ??
+                                                                    '')))),
+                                                const SizedBox(height: 5),
+                                                SizedBox(
+                                                    child: CircleAvatar(
+                                                        radius: 20,
+                                                        backgroundColor:
+                                                            Colors.grey[500],
+                                                        child: IconButton(
+                                                          icon: const FaIcon(
                                                             FontAwesomeIcons
-                                                                .plus),
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (BuildContext
-                                                                        context) =>
-                                                                    AddCommitmentScreen(
-                                                                  contractKey:
-                                                                      contracts[
-                                                                              contractIndex]
-                                                                          .key,
-                                                                ),
-                                                              ));
-                                                        },
-                                                      ))),
-                                              const SizedBox(height: 15),
-                                            ],
-                                          )
-                                        : Column(
-                                            children: [
-                                              SizedBox(
-                                                  height: 50,
-                                                  child: Center(
-                                                      child: Consumer<
-                                                              LanguageService>(
-                                                          builder: (context,
-                                                                  language,
-                                                                  _) =>
-                                                              Text(language
-                                                                      .mainScreenNoCommitmentsErrorMessage ??
-                                                                  '')))),
-                                              const SizedBox(height: 5),
-                                              SizedBox(
-                                                  child: CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundColor:
-                                                          Colors.grey[500],
-                                                      child: IconButton(
-                                                        icon: const FaIcon(
-                                                          FontAwesomeIcons.plus,
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (BuildContext
-                                                                        context) =>
-                                                                    AddCommitmentScreen(
-                                                                  contractKey:
-                                                                      contracts[
-                                                                              contractIndex]
-                                                                          .key,
-                                                                ),
-                                                              ));
-                                                        },
-                                                      ))),
-                                              const SizedBox(height: 15),
-                                            ],
-                                          ),
-                              ],
+                                                                .plus,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      AddCommitmentScreen(
+                                                                    contractKey:
+                                                                        contracts[contractIndex]
+                                                                            .key,
+                                                                  ),
+                                                                ));
+                                                          },
+                                                        ))),
+                                                const SizedBox(height: 15),
+                                              ],
+                                            ),
+                                ],
+                              ),
+                              //subtitle:
                             ),
-                            //subtitle:
                           ),
                         )),
               ),
@@ -791,7 +793,7 @@ class _MainScreenState extends State<MainScreen> {
       body: Scrollbar(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
             child: Column(children: [
               contracts.isEmpty
                   ? SizedBox(

@@ -1,9 +1,10 @@
 import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {}
 
@@ -88,27 +89,8 @@ class NotificationService extends ChangeNotifier {
         print("Notification added");
       }
       // Step 2: Subscribe to the topic
-      if (defaultTargetPlatform == TargetPlatform.iOS ||
-          defaultTargetPlatform == TargetPlatform.android) {
-        if (kDebugMode) {
-          print("Subscribed to topic: $topic");
-        }
-        FirebaseMessaging.instance.subscribeToTopic(topic);
-      }
+      await subscribeToTopic(topic);
 
-      if (kIsWeb) {
-        // subscribe to push notification for web
-        String? token = await _firebaseMessaging.getToken(
-          vapidKey:
-              "BAG5adkrh-YOeQUTWaibQbfhH8MTckignRFvm5cyZohcRL-p04RymWoUJguPx2bkOsmcz654FutHq_GHilz4q8g",
-        );
-
-        FirebaseFunctions.instanceFor()
-            .httpsCallable('subscribeTokenToTopicWeb',
-                options:
-                    HttpsCallableOptions(timeout: const Duration(seconds: 30)))
-            .call({'token': token, 'topic': topic});
-      }
       // Step 3: send the push notification
       FirebaseFunctions.instanceFor()
           .httpsCallable(function,
@@ -138,5 +120,29 @@ class NotificationService extends ChangeNotifier {
       }
       return error;
     });
+  }
+
+  Future subscribeToTopic(topic) async {
+    if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.android) {
+      if (kDebugMode) {
+        print("Subscribed to topic: $topic");
+      }
+      FirebaseMessaging.instance.subscribeToTopic(topic);
+    }
+
+    if (kIsWeb) {
+      // subscribe to push notification for web
+      String? token = await _firebaseMessaging.getToken(
+        vapidKey:
+            "BAG5adkrh-YOeQUTWaibQbfhH8MTckignRFvm5cyZohcRL-p04RymWoUJguPx2bkOsmcz654FutHq_GHilz4q8g",
+      );
+
+      FirebaseFunctions.instanceFor()
+          .httpsCallable('subscribeTokenToTopicWeb',
+              options:
+                  HttpsCallableOptions(timeout: const Duration(seconds: 30)))
+          .call({'token': token, 'topic': topic});
+    }
   }
 }

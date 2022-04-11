@@ -1,6 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+
+import 'email_service.dart';
 //import 'notification_service.dart';
 
 class ContractService extends ChangeNotifier {
@@ -40,21 +42,33 @@ class ContractService extends ChangeNotifier {
         .map(_contractsFromSnapshot);
   }
 
-  Future addContract(title, participants) {
+  Future addContract(contractTitle, participantUids, participantEmails,
+      participantUsernames, emailTitle, body) async {
     final user = FirebaseAuth.instance.currentUser;
+
+    participantUids.add(user?.uid);
 
     return FirebaseFirestore.instance.collection('contracts').add({
       'owner_user_id': user?.uid,
-      'title': title,
-      'participants': participants,
+      'title': contractTitle,
+      'participants': participantUids,
       'commitments': []
-    }).then((value) {
+    }).then((value) async {
       if (kDebugMode) {
         print("Contract added");
       }
-      // await NotificationService().sendNotification(
-      //     title, body, contractKey, 'addContractNotification');
-      // return null;
+
+      for (var i = 0; i < participantEmails.length; i++) {
+        print(participantEmails[i]);
+        await EmailService().sendEmail(
+          'addContractEmail',
+          participantEmails[i],
+          participantUsernames[i],
+          emailTitle,
+          body,
+        );
+      }
+      return null;
     }).catchError((error) {
       if (kDebugMode) {
         print("Error: $error");

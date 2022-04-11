@@ -1,21 +1,23 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:random_string/random_string.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:random_string/random_string.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+
 import 'analytics_service.dart';
 import 'email_service.dart';
 import 'emulator_service.dart';
-import 'package:crypto/crypto.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserService extends ChangeNotifier {
   String? uid;
@@ -49,7 +51,8 @@ class UserService extends ChangeNotifier {
 
   List<UserService> _usersFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return UserService(uid: doc.id, username: doc['username']);
+      return UserService(
+          uid: doc.id, username: doc['username'], email: doc['email']);
     }).toList();
   }
 

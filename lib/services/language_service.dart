@@ -1,5 +1,6 @@
-import 'dart:ui' as ui;
 import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,7 @@ class LanguageService extends ChangeNotifier {
   String? editProfileScreenAppBarTitle;
   String? signInScreenAppBarTitle;
   String? signUpScreenAppBarTitle;
+
   // Buttons
   String? newContractScreenButtonText;
   String? newCommitmentScreenButtonText;
@@ -32,6 +34,7 @@ class LanguageService extends ChangeNotifier {
   String? signInScreenButtonText;
   String? signUpScreenButtonText;
   String? mainScreenSettingsLogoutButton;
+
   // Placeholders
   String? newContractScreenContractTitlePlaceholder;
   String? newCommitmentScreenCommitmentPlaceholder;
@@ -43,6 +46,7 @@ class LanguageService extends ChangeNotifier {
   String? signUpScreenUsernamePlaceholder;
   String? signInUpScreenEmailPlaceholder;
   String? signInUpScreenPasswordPlaceholder;
+
   // Error Messages
   String? newContractScreenContractTitleErrorMessage;
   String? newCommitmentScreenCommitmentErrorMessage;
@@ -58,6 +62,7 @@ class LanguageService extends ChangeNotifier {
   String? mainScreenNoNotificationsErrorMessage;
   String? genericAuthErrorMessage;
   String? genericFirebaseErrorMessage;
+
   // Links
   String? signInScreenResetPasswordLink;
   String? signInScreenSignUpUsingEmailLink;
@@ -65,22 +70,31 @@ class LanguageService extends ChangeNotifier {
   String? mainScreenDismissebleEditCommitmentLink;
   String? mainScreenDismissebleDeleteCommitmentLink;
   String? mainScreenDismissebleMarkNotificationReadLink;
+
   // Labels
   String? mainScreenSettingEditProfileLabel;
   String? mainScreenSettingsLanguageLabel;
   String? mainScreenSettingsThemeLabel;
   String? mainScreenSettingsBiometricsLabel;
   String? mainScreenSettingsAnalyticsLabel;
+
   // Headers
   String? mainScreenNotificationHeader;
+
   // Push notifications titles
   String? activateContractNotificationTitle;
+
   // Push notifications bodies
   String? activateContractNotificationBody;
+
   // Email titles
   String? welcomeEmailTitle;
+  String? addContractEmailTitle;
+
   // Email bodies
   String? welcomeEmailBody;
+  String? addContractEmailBody;
+
   // Email signatures
   String? welcomeEmailSignature;
 
@@ -222,8 +236,11 @@ class LanguageService extends ChangeNotifier {
             'Click to add commitment to the contract';
         // Email titles
         welcomeEmailTitle = 'Welcome to Commit';
+        addContractEmailTitle = 'You have been added to a new contract';
         // Email bodies
         welcomeEmailBody = 'You have made the right decision to commit';
+        addContractEmailBody =
+            'You have been added as a participant in a new contract';
         // Email signatures
         welcomeEmailSignature = 'Team Commit';
         break;
@@ -309,9 +326,11 @@ class LanguageService extends ChangeNotifier {
             'Klik om commitments aan het contract toe te voegen';
         // Email titles
         welcomeEmailTitle = 'Welkom bij Commit';
+        addContractEmailTitle = 'Je bent toegevoegd aan een contract';
         // Email bodies
         welcomeEmailBody =
             'Je hebt het juiste besluit genomen om je te commiteren';
+        addContractEmailBody = 'Je bent toegevoegd aan een nieuw contract.';
         // Email signatures
         welcomeEmailSignature = 'Team Commit';
         break;
@@ -393,8 +412,11 @@ class LanguageService extends ChangeNotifier {
             'Click to add commitment to the contract';
         // Email titles
         welcomeEmailTitle = 'Welcome to Commit';
+        addContractEmailTitle = 'You have been added to a new contract';
         // Email bodies
         welcomeEmailBody = 'You have made the right decision to commit';
+        addContractEmailBody =
+            'You have been added as a participant in a new contract';
         // Email signatures
         welcomeEmailSignature = 'Team Commit';
     }
