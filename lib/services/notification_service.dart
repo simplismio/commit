@@ -6,21 +6,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
+import '../models/notification_model.dart';
+
 Future<void> onBackgroundMessage(RemoteMessage message) async {}
 
 class NotificationService extends ChangeNotifier {
   final _firebaseMessaging = FirebaseMessaging.instance;
 
-  final String? key;
-  final String? title;
-  final String? body;
   static String? notificationPermission;
 
-  NotificationService({this.key, this.title, this.body});
-
-  List<NotificationService> _notificationsFromSnapshot(QuerySnapshot snapshot) {
+  List<NotificationModel> _notificationsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return NotificationService(
+      return NotificationModel(
         key: doc.id,
         title: doc['title'],
         body: doc['body'],
@@ -28,7 +25,7 @@ class NotificationService extends ChangeNotifier {
     }).toList();
   }
 
-  Stream<List<NotificationService>> get notifications {
+  Stream<List<NotificationModel>> get notifications {
     if (kDebugMode) {
       print('Loading notifications');
     }

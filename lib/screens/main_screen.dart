@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 
 import '../../services/theme_service.dart';
 import '../../services/user_service.dart';
+import '../models/contract_model.dart';
+import '../models/notification_model.dart';
+import '../models/user_model.dart';
 import '../services/analytics_service.dart';
 import '../services/biometric_service.dart';
 import '../services/contract_service.dart';
@@ -50,13 +53,14 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List contracts = Provider.of<List<ContractService>>(context, listen: true);
+    List contracts = Provider.of<List<ContractModel>>(context, listen: true);
     List notifications =
-        Provider.of<List<NotificationService>>(context, listen: true);
+        Provider.of<List<NotificationModel>>(context, listen: true);
     //UserService? user = Provider.of<UserService?>(context, listen: false);
     //List users = Provider.of<List<UserService>>(context);
 
     contractBlock(contractIndex) {
+      ContractService().checkForEmailAsParticipant(contracts[contractIndex]);
       return Column(
         children: [
           Row(
@@ -284,7 +288,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                         ),
                                                                         child:
                                                                             ListTile(
-                                                                          leading: Consumer<UserService>(
+                                                                          leading: Consumer<UserModel>(
                                                                               builder: (context, user, child) => CircularProfileAvatar(
                                                                                     user.avatar!,
                                                                                     errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -448,7 +452,7 @@ class _MainScreenState extends State<MainScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 75),
-              Consumer<UserService>(
+              Consumer<UserModel>(
                   builder: (context, user, child) => SizedBox(
                         child: Center(
                           child: user.avatar != null
@@ -477,7 +481,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       )),
               Center(
-                child: Consumer<UserService>(
+                child: Consumer<UserModel>(
                   builder: (context, user, child) => Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Container(
@@ -507,7 +511,7 @@ class _MainScreenState extends State<MainScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      Consumer<UserService>(
+                                      Consumer<UserModel>(
                                           builder: (context, user, child) =>
                                               EditProfileScreen(
                                                 currentAvatarLink: user.avatar,

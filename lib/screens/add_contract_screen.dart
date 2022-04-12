@@ -4,13 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user_model.dart';
 import '../services/contract_service.dart';
 import '../services/language_service.dart';
 import '../services/theme_service.dart';
-import '../services/user_service.dart';
 
 class AddContractScreen extends StatefulWidget {
-  const AddContractScreen({Key? key}) : super(key: key);
+  const AddContractScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _AddContractScreenState createState() => _AddContractScreenState();
@@ -26,7 +28,7 @@ class _AddContractScreenState extends State<AddContractScreen> {
   List participantUids = [];
   List participantUsernames = [];
   List participantEmails = [];
-  List<UserService?> matches = [];
+  List<UserModel?> matches = [];
   String? emailParticipant = '';
 
   _getSuggestions(String query, users) {
@@ -57,9 +59,9 @@ class _AddContractScreenState extends State<AddContractScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<UserService?> users =
-        Provider.of<List<UserService>>(context, listen: false);
-    UserService? user = Provider.of<UserService?>(context, listen: false);
+    List<UserModel?> users =
+        Provider.of<List<UserModel>>(context, listen: false);
+    UserModel? user = Provider.of<UserModel?>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(

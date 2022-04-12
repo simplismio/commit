@@ -2,26 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import '../models/contract_model.dart';
 import 'email_service.dart';
 //import 'notification_service.dart';
 
 class ContractService extends ChangeNotifier {
-  final String? key;
-  final String? title;
-  final String? ownerUserId;
-  final List? participants;
-  final List? commitments;
-
-  ContractService(
-      {this.key,
-      this.title,
-      this.ownerUserId,
-      this.participants,
-      this.commitments});
-
-  List<ContractService> _contractsFromSnapshot(QuerySnapshot snapshot) {
+  List<ContractModel> _contractsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return ContractService(
+      return ContractModel(
           key: doc.id,
           title: doc['title'],
           ownerUserId: doc['owner_user_id'],
@@ -30,16 +18,55 @@ class ContractService extends ChangeNotifier {
     }).toList();
   }
 
-  Stream<List<ContractService>> get contracts {
+  Stream<List<ContractModel>> get contracts {
     if (kDebugMode) {
       print('Loading contracts');
     }
     final user = FirebaseAuth.instance.currentUser;
-    return FirebaseFirestore.instance
-        .collection('contracts')
-        .where('participants', arrayContains: user?.uid)
-        .snapshots()
-        .map(_contractsFromSnapshot);
+
+    if (user != null) {
+      return FirebaseFirestore.instance
+          .collection('contracts')
+          .where('participants', arrayContainsAny: [user.uid, user.email])
+          .snapshots()
+          .map(_contractsFromSnapshot);
+    } else {
+      return FirebaseFirestore.instance
+          .collection('contracts')
+          .where('participants', isEqualTo: user?.uid)
+          .snapshots()
+          .map(_contractsFromSnapshot);
+    }
+  }
+
+  checkForEmailAsParticipant(contract) {
+    final user = FirebaseAuth.instance.currentUser;
+    List newParticipants = [];
+
+    if (contract.participants.contains(user?.email)) {
+      contract.participants.forEach((item) {
+        if (item == user?.email) {
+          newParticipants.add(user?.uid);
+        } else {
+          newParticipants.add(item);
+        }
+      });
+      if (newParticipants.isNotEmpty) {
+        return FirebaseFirestore.instance
+            .collection('contracts')
+            .doc(contract.key)
+            .update({'participants': newParticipants}).then((value) {
+          if (kDebugMode) {
+            print('Contract updated');
+          }
+        }).catchError((error) {
+          if (kDebugMode) {
+            print('Error: $error');
+          }
+          return error;
+        });
+      }
+    }
   }
 
   Future addContract(contractTitle, participantUids, participantEmails,

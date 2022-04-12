@@ -15,48 +15,37 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:random_string/random_string.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../models/user_model.dart';
 import 'analytics_service.dart';
 import 'email_service.dart';
 import 'emulator_service.dart';
 
 class UserService extends ChangeNotifier {
-  String? uid;
-  String? avatar;
-  String? username;
-  String? email;
-
-  UserService({
-    this.uid,
-    this.avatar,
-    this.username,
-    this.email,
-  });
-
-  UserService? _userFromFirebaseUser(User? user) {
+  UserModel? _userFromFirebaseUser(User? user) {
     if (user != null) {
       if (kDebugMode) {
         print('Firebase UID is: ${user.uid}');
       }
     }
-    return UserService(
+    return UserModel(
         uid: user?.uid,
         avatar: user?.photoURL,
         username: user?.displayName,
         email: user?.email);
   }
 
-  Stream<UserService?> get user {
+  Stream<UserModel?> get user {
     return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
   }
 
-  List<UserService> _usersFromSnapshot(QuerySnapshot snapshot) {
+  List<UserModel> _usersFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
-      return UserService(
+      return UserModel(
           uid: doc.id, username: doc['username'], email: doc['email']);
     }).toList();
   }
 
-  Stream<List<UserService>> get users {
+  Stream<List<UserModel>> get users {
     if (kDebugMode) {
       print('Loading contracts');
     }

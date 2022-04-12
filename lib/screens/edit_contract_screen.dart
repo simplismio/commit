@@ -1,11 +1,13 @@
 import 'package:commit/services/contract_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../services/language_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../models/contract_model.dart';
+import '../services/language_service.dart';
 
 class EditContractScreen extends StatefulWidget {
-  final ContractService? contract;
+  final ContractModel? contract;
 
   const EditContractScreen({Key? key, this.contract}) : super(key: key);
 

@@ -1,22 +1,27 @@
-import './services/user_service.dart';
-import './services/theme_service.dart';
-import 'services/biometric_service.dart';
-import 'package:provider/provider.dart';
+import 'dart:async';
+
+import 'package:commit/services/language_service.dart';
+import 'package:commit/services/media_service.dart';
+import 'package:commit/services/notification_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:provider/provider.dart';
+
+import './services/theme_service.dart';
+import './services/user_service.dart';
+import 'models/contract_model.dart';
+import 'models/notification_model.dart';
+import 'models/user_model.dart';
 import 'services/analytics_service.dart';
+import 'services/biometric_service.dart';
 import 'services/contract_service.dart';
 import 'services/emulator_service.dart';
-import 'services/language_service.dart';
-import 'services/media_service.dart';
-import 'services/notification_service.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/biometric_utility.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -68,7 +73,7 @@ Future<void> main() async {
   }
 
   runZonedGuarded<Future<void>>(() async {
-    runApp(StreamProvider<UserService?>.value(
+    runApp(StreamProvider<UserModel?>.value(
         value: UserService().user,
         initialData: null,
         catchError: (BuildContext context, e) {
@@ -90,11 +95,11 @@ class CommitApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeService()),
           ChangeNotifierProvider(create: (_) => BiometricService()),
-          ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => MediaService()),
+          ChangeNotifierProvider(create: (_) => LanguageService()),
           ChangeNotifierProvider(create: (_) => NotificationService()),
           ChangeNotifierProvider(create: (_) => AnalyticsService()),
-          StreamProvider<List<ContractService>>.value(
+          StreamProvider<List<ContractModel>>.value(
               value: ContractService().contracts,
               initialData: const [],
               catchError: (BuildContext context, e) {
@@ -103,7 +108,7 @@ class CommitApp extends StatelessWidget {
                 }
                 return [];
               }),
-          StreamProvider<List<NotificationService>>.value(
+          StreamProvider<List<NotificationModel>>.value(
               value: NotificationService().notifications,
               initialData: const [],
               catchError: (BuildContext context, e) {
@@ -112,7 +117,7 @@ class CommitApp extends StatelessWidget {
                 }
                 return [];
               }),
-          StreamProvider<List<UserService>>.value(
+          StreamProvider<List<UserModel>>.value(
               value: UserService().users,
               initialData: const [],
               catchError: (BuildContext context, e) {
