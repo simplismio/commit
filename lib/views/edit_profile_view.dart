@@ -1,22 +1,27 @@
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../services/language_service.dart';
-import '../services/media_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../services/user_service.dart';
+import 'package:provider/provider.dart';
 
-class EditProfileScreen extends StatefulWidget {
+import '../models/language_Model.dart';
+import '../models/media_model.dart';
+import '../models/user_model.dart';
+
+class EditProfileView extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
   final currentAvatarLink;
+
   // ignore: prefer_typing_uninitialized_variables
   final currentUserUid;
+
   // ignore: prefer_typing_uninitialized_variables
   final currentUsername;
+
   // ignore: prefer_typing_uninitialized_variables
   final currentUserEmail;
-  const EditProfileScreen(
+
+  const EditProfileView(
       {Key? key,
       this.currentAvatarLink,
       this.currentUserUid,
@@ -25,10 +30,10 @@ class EditProfileScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  _EditProfileViewState createState() => _EditProfileViewState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileViewState extends State<EditProfileView> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
 
@@ -51,9 +56,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             );
           },
         ),
-        title: Consumer<LanguageService>(
+        title: Consumer<LanguageModel>(
             builder: (context, language, _) =>
-                Text(language.editProfileScreenAppBarTitle ?? '',
+                Text(language.editProfileViewAppBarTitle ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
@@ -69,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: <Widget>[
                   const SizedBox(height: 10.0),
                   Center(
-                    child: Consumer<MediaService>(
+                    child: Consumer<MediaModel>(
                         builder: (context, media, _) => Column(
                               children: [
                                 widget.currentAvatarLink == null
@@ -301,34 +306,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             )),
                   ),
                   const SizedBox(height: 20.0),
-                  Consumer<LanguageService>(
+                  Consumer<LanguageModel>(
                       builder: (context, language, _) => TextFormField(
                           decoration: InputDecoration(
-                              hintText: language
-                                  .editProfileScreenUsernamePlaceholder),
+                              hintText:
+                                  language.editProfileViewUsernamePlaceholder),
                           textAlign: TextAlign.left,
                           initialValue: widget.currentUsername,
                           autofocus: true,
                           validator: (String? value) {
                             return (value != null && value.length < 2)
-                                ? language.editProfileScreenUsernameErrorMessage
+                                ? language.editProfileViewUsernameErrorMessage
                                 : null;
                           },
                           onChanged: (val) {
                             setState(() => username = val);
                           })),
                   const SizedBox(height: 20.0),
-                  Consumer<LanguageService>(
+                  Consumer<LanguageModel>(
                       builder: (context, language, _) => TextFormField(
                           decoration: InputDecoration(
                               hintText:
-                                  language.editProfileScreenEmailPlaceholder),
+                                  language.editProfileViewEmailPlaceholder),
                           textAlign: TextAlign.left,
                           initialValue: widget.currentUserEmail,
                           autofocus: true,
                           validator: (String? value) {
                             return (value != null && value.length < 2)
-                                ? language.editProfileScreenUsernameErrorMessage
+                                ? language.editProfileViewUsernameErrorMessage
                                 : null;
                           },
                           onChanged: (val) {
@@ -337,13 +342,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 10.0),
                   SizedBox(
                     width: 300,
-                    child: Consumer<MediaService>(
+                    child: Consumer<MediaModel>(
                         builder: (context, media, child) => ElevatedButton(
                               child: loading
                                   ? const LinearProgressIndicator()
-                                  : Consumer<LanguageService>(
+                                  : Consumer<LanguageModel>(
                                       builder: (context, language, _) => Text(
-                                          language.editProfileScreenButtonText ??
+                                          language.editProfileViewButtonText ??
                                               '',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -360,7 +365,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     email = widget.currentUserEmail;
                                   }
 
-                                  UserService()
+                                  UserModel()
                                       .updateUserProfile(
                                           widget.currentAvatarLink,
                                           media.newAvatarUrlMobile,
@@ -378,7 +383,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       setState(() => loading = false);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                        content: Consumer<LanguageService>(
+                                        content: Consumer<LanguageModel>(
                                             builder: (context, language, _) =>
                                                 Text(
                                                   language.genericFirebaseErrorMessage ??

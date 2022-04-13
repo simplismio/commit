@@ -2,7 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
-class EmailService {
+class EmailModel {
   Future sendEmail(function, email, username, title, body) async {
     try {
       FirebaseFunctions.instanceFor()

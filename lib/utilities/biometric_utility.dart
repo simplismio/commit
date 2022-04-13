@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import '../models/biometric_model.dart';
 import 'authorization_utility.dart';
-import '../../services/biometric_service.dart';
 
 class BiometricUtility extends StatefulWidget {
   const BiometricUtility({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class _BiometricUtilityState extends State<BiometricUtility> {
         print('The user is not yet authenticated using biometrics');
       }
 
-      BiometricService().authenticate().then((result) => setState(() =>
+      BiometricModel().authenticate().then((result) => setState(() =>
           result == true ? hasAuthenticated = true : hasAuthenticated = false));
       if (hasAuthenticated == true) {
         if (kDebugMode) {

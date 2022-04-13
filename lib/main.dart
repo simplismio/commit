@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:commit/services/language_service.dart';
-import 'package:commit/services/media_service.dart';
-import 'package:commit/services/notification_service.dart';
+import 'package:commit/Models/language_Model.dart';
+import 'package:commit/Models/media_Model.dart';
+import 'package:commit/Models/notification_Model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -11,15 +11,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './services/theme_service.dart';
-import './services/user_service.dart';
-import 'models/contract_model.dart';
-import 'models/notification_model.dart';
-import 'models/user_model.dart';
-import 'services/analytics_service.dart';
-import 'services/biometric_service.dart';
-import 'services/contract_service.dart';
-import 'services/emulator_service.dart';
+import './models/analytics_Model.dart';
+import './models/biometric_Model.dart';
+import './models/contract_Model.dart';
+import './models/emulator_Model.dart';
+import './models/theme_Model.dart';
+import './models/user_Model.dart';
 import 'utilities/authorization_utility.dart';
 import 'utilities/biometric_utility.dart';
 
@@ -54,19 +51,19 @@ Future<void> main() async {
             measurementId: "G-8Z10Z47T7F"));
   }
 
-  NotificationService().initialize();
+  NotificationModel().initialize();
 
-  if (AnalyticsService().analytics == true) {
+  if (AnalyticsModel().analytics == true) {
     await FirebaseAnalytics.instance.logAppOpen();
     await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   }
 
   if (kDebugMode) {
     try {
-      EmulatorService.setupAuthEmulator();
-      EmulatorService.setupFirestoreEmulator();
-      EmulatorService.setupStorageEmulator();
-      EmulatorService.setupFunctionsEmulator();
+      EmulatorModel.setupAuthEmulator();
+      EmulatorModel.setupFirestoreEmulator();
+      EmulatorModel.setupStorageEmulator();
+      EmulatorModel.setupFunctionsEmulator();
     } catch (e) {
       print(e);
     }
@@ -74,7 +71,7 @@ Future<void> main() async {
 
   runZonedGuarded<Future<void>>(() async {
     runApp(StreamProvider<UserModel?>.value(
-        value: UserService().user,
+        value: UserModel().user,
         initialData: null,
         catchError: (BuildContext context, e) {
           if (kDebugMode) {
@@ -93,14 +90,14 @@ class CommitApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => ThemeService()),
-          ChangeNotifierProvider(create: (_) => BiometricService()),
-          ChangeNotifierProvider(create: (_) => MediaService()),
-          ChangeNotifierProvider(create: (_) => LanguageService()),
-          ChangeNotifierProvider(create: (_) => NotificationService()),
-          ChangeNotifierProvider(create: (_) => AnalyticsService()),
+          ChangeNotifierProvider(create: (_) => ThemeModel()),
+          ChangeNotifierProvider(create: (_) => BiometricModel()),
+          ChangeNotifierProvider(create: (_) => MediaModel()),
+          ChangeNotifierProvider(create: (_) => LanguageModel()),
+          ChangeNotifierProvider(create: (_) => NotificationModel()),
+          ChangeNotifierProvider(create: (_) => AnalyticsModel()),
           StreamProvider<List<ContractModel>>.value(
-              value: ContractService().contracts,
+              value: ContractModel().contracts,
               initialData: const [],
               catchError: (BuildContext context, e) {
                 if (kDebugMode) {
@@ -109,7 +106,7 @@ class CommitApp extends StatelessWidget {
                 return [];
               }),
           StreamProvider<List<NotificationModel>>.value(
-              value: NotificationService().notifications,
+              value: NotificationModel().notifications,
               initialData: const [],
               catchError: (BuildContext context, e) {
                 if (kDebugMode) {
@@ -118,7 +115,7 @@ class CommitApp extends StatelessWidget {
                 return [];
               }),
           StreamProvider<List<UserModel>>.value(
-              value: UserService().users,
+              value: UserModel().users,
               initialData: const [],
               catchError: (BuildContext context, e) {
                 if (kDebugMode) {
@@ -127,23 +124,23 @@ class CommitApp extends StatelessWidget {
                 return [];
               }),
         ],
-        child: Consumer<ThemeService>(
-            builder: (context, ThemeService theme, child) {
+        child:
+            Consumer<ThemeModel>(builder: (context, ThemeModel theme, child) {
           if (kDebugMode) {
             print('The theme is dark: ' + theme.darkTheme.toString());
           }
           if (defaultTargetPlatform == TargetPlatform.iOS ||
               defaultTargetPlatform == TargetPlatform.android) {
             return MaterialApp(
-                navigatorObservers: AnalyticsService().analytics == true
+                navigatorObservers: AnalyticsModel().analytics == true
                     ? [
                         FirebaseAnalyticsObserver(
                             analytics: FirebaseAnalytics.instance),
                       ]
                     : [],
                 theme: theme.darkTheme == true ? dark : light,
-                home: Scaffold(body: Consumer<BiometricService>(builder:
-                    (context, BiometricService localAuthentication, child) {
+                home: Scaffold(body: Consumer<BiometricModel>(builder:
+                    (context, BiometricModel localAuthentication, child) {
                   if (kDebugMode) {
                     print('Starting app, local user authentication status: ' +
                         localAuthentication.biometrics.toString());
@@ -156,7 +153,7 @@ class CommitApp extends StatelessWidget {
                 })));
           } else {
             return MaterialApp(
-                navigatorObservers: AnalyticsService().analytics == true
+                navigatorObservers: AnalyticsModel().analytics == true
                     ? [
                         FirebaseAnalyticsObserver(
                             analytics: FirebaseAnalytics.instance),

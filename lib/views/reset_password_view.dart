@@ -1,31 +1,23 @@
 import 'package:flutter/material.dart';
-import '../services/contract_service.dart';
-import '../services/language_service.dart';
-import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
-class EditCommitmentScreen extends StatefulWidget {
-  final String? contractKey;
-  // ignore: prefer_typing_uninitialized_variables
-  final commitmentArray;
-  final int? commitmentIndex;
+import '../models/language_Model.dart';
+import '../models/user_model.dart';
 
-  const EditCommitmentScreen({
-    Key? key,
-    this.contractKey,
-    this.commitmentArray,
-    this.commitmentIndex,
-  }) : super(key: key);
+class ResetPasswordView extends StatefulWidget {
+  const ResetPasswordView({Key? key}) : super(key: key);
 
   @override
-  _EditCommitmentScreenState createState() => _EditCommitmentScreenState();
+  _ResetPasswordViewState createState() => _ResetPasswordViewState();
 }
 
-class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
+class _ResetPasswordViewState extends State<ResetPasswordView> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
+  String error = '';
 
-  String? commitment;
+  String? email;
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +35,9 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
             );
           },
         ),
-        title: Consumer<LanguageService>(
+        title: Consumer<LanguageModel>(
             builder: (context, language, _) =>
-                Text(language.editCommitmentScreenAppBarTitle ?? '',
+                Text(language.resetPasswordViewAppBarTitle ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
@@ -59,62 +51,44 @@ class _EditCommitmentScreenState extends State<EditCommitmentScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                Consumer<LanguageService>(
+                Consumer<LanguageModel>(
                     builder: (context, language, _) => TextFormField(
                         decoration: InputDecoration(
-                            hintText: language
-                                    .editCommitmentScreenCommitmentPlaceholder ??
-                                ''),
+                            hintText:
+                                language.resetPasswordViewEmailPlaceholder),
                         textAlign: TextAlign.left,
-                        initialValue:
-                            widget.commitmentArray[widget.commitmentIndex]
-                                ['commitment'],
                         autofocus: true,
                         validator: (String? value) {
+                          //print(value.length);
                           return (value != null && value.length < 2)
-                              ? language
-                                  .editCommitmentScreenCommitmentErrorMessage
+                              ? language.resetPasswordViewEmailErrorMessage
                               : null;
                         },
                         onChanged: (val) {
-                          setState(() => commitment = val);
+                          setState(() => email = val);
                         })),
-                const SizedBox(height: 10.0),
+                const SizedBox(height: 20.0),
                 SizedBox(
                   width: 300,
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
-                        : Consumer<LanguageService>(
-                            builder: (context, language, _) => Text(
-                                language.editCommitmentScreenButtonText ?? '',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ))),
+                        : Consumer<LanguageModel>(
+                            builder: (context, language, _) =>
+                                Text(language.resetPasswordViewButtonText ?? '',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ))),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
-
-                        // ignore: prefer_conditional_assignment
-                        if (commitment == null) {
-                          commitment =
-                              widget.commitmentArray[widget.commitmentIndex]
-                                  ['commitment'];
-                        }
-
-                        ContractService()
-                            .editCommitment(
-                                widget.contractKey,
-                                widget.commitmentArray,
-                                widget.commitmentIndex,
-                                commitment)
-                            .then((result) {
+                        UserModel().resetPassword(email).then((result) {
                           if (result == null) {
                             Navigator.of(context).maybePop();
                           } else {
                             setState(() => loading = false);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Consumer<LanguageService>(
+                              content: Consumer<LanguageModel>(
                                   builder: (context, language, _) => Text(
                                         language.genericFirebaseErrorMessage ??
                                             '',

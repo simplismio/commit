@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
-import '../services/contract_service.dart';
-import '../services/language_service.dart';
-import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
-class AddCommitmentScreen extends StatefulWidget {
+import '../models/contract_model.dart';
+import '../models/language_model.dart';
+
+class EditCommitmentView extends StatefulWidget {
   final String? contractKey;
-  const AddCommitmentScreen({Key? key, this.contractKey}) : super(key: key);
+
+  // ignore: prefer_typing_uninitialized_variables
+  final commitmentArray;
+  final int? commitmentIndex;
+
+  const EditCommitmentView({
+    Key? key,
+    this.contractKey,
+    this.commitmentArray,
+    this.commitmentIndex,
+  }) : super(key: key);
 
   @override
-  _AddCommitmentScreenState createState() => _AddCommitmentScreenState();
+  _EditCommitmentViewState createState() => _EditCommitmentViewState();
 }
 
-class _AddCommitmentScreenState extends State<AddCommitmentScreen> {
+class _EditCommitmentViewState extends State<EditCommitmentView> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
+
   String? commitment;
 
   @override
@@ -33,9 +45,9 @@ class _AddCommitmentScreenState extends State<AddCommitmentScreen> {
             );
           },
         ),
-        title: Consumer<LanguageService>(
+        title: Consumer<LanguageModel>(
             builder: (context, language, _) =>
-                Text(language.newCommitmentScreenAppBarTitle ?? '',
+                Text(language.editCommitmentViewAppBarTitle ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
@@ -49,18 +61,21 @@ class _AddCommitmentScreenState extends State<AddCommitmentScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                Consumer<LanguageService>(
+                Consumer<LanguageModel>(
                     builder: (context, language, _) => TextFormField(
                         decoration: InputDecoration(
                             hintText: language
-                                .newCommitmentScreenCommitmentPlaceholder),
+                                    .editCommitmentViewCommitmentPlaceholder ??
+                                ''),
                         textAlign: TextAlign.left,
+                        initialValue:
+                            widget.commitmentArray[widget.commitmentIndex]
+                                ['commitment'],
                         autofocus: true,
                         validator: (String? value) {
-                          //print(value.length);
                           return (value != null && value.length < 2)
                               ? language
-                                  .newCommitmentScreenCommitmentErrorMessage
+                                  .editCommitmentViewCommitmentErrorMessage
                               : null;
                         },
                         onChanged: (val) {
@@ -72,24 +87,36 @@ class _AddCommitmentScreenState extends State<AddCommitmentScreen> {
                   child: ElevatedButton(
                     child: loading
                         ? const LinearProgressIndicator()
-                        : Consumer<LanguageService>(
+                        : Consumer<LanguageModel>(
                             builder: (context, language, _) => Text(
-                                language.newCommitmentScreenButtonText ?? '',
+                                language.editCommitmentViewButtonText ?? '',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ))),
                     onPressed: () async {
                       if (formKeyForm.currentState!.validate()) {
                         setState(() => loading = true);
-                        ContractService()
-                            .addCommitment(widget.contractKey, commitment)
+
+                        // ignore: prefer_conditional_assignment
+                        if (commitment == null) {
+                          commitment =
+                              widget.commitmentArray[widget.commitmentIndex]
+                                  ['commitment'];
+                        }
+
+                        ContractModel()
+                            .editCommitment(
+                                widget.contractKey,
+                                widget.commitmentArray,
+                                widget.commitmentIndex,
+                                commitment)
                             .then((result) {
                           if (result == null) {
                             Navigator.of(context).maybePop();
                           } else {
                             setState(() => loading = false);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Consumer<LanguageService>(
+                              content: Consumer<LanguageModel>(
                                   builder: (context, language, _) => Text(
                                         language.genericFirebaseErrorMessage ??
                                             '',

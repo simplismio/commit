@@ -5,31 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../services/theme_service.dart';
-import '../../services/user_service.dart';
+import '../models/analytics_model.dart';
+import '../models/biometric_model.dart';
 import '../models/contract_model.dart';
+import '../models/language_model.dart';
 import '../models/notification_model.dart';
+import '../models/theme_model.dart';
 import '../models/user_model.dart';
-import '../services/analytics_service.dart';
-import '../services/biometric_service.dart';
-import '../services/contract_service.dart';
-import '../services/language_service.dart';
-import '../services/notification_service.dart';
 import '../utilities/authorization_utility.dart';
-import 'add_commitment_screen.dart';
-import 'add_contract_screen.dart';
-import 'edit_commitment_screen.dart';
-import 'edit_contract_screen.dart';
-import 'edit_profile.dart';
+import 'add_commitment_view.dart';
+import 'add_contract_view.dart';
+import 'edit_commitment_view.dart';
+import 'edit_contract_view.dart';
+import 'edit_profile_view.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class MainView extends StatefulWidget {
+  const MainView({Key? key}) : super(key: key);
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _MainViewState createState() => _MainViewState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainViewState extends State<MainView> {
   @override
   void initState() {
     super.initState();
@@ -56,17 +53,17 @@ class _MainScreenState extends State<MainScreen> {
     List contracts = Provider.of<List<ContractModel>>(context, listen: true);
     List notifications =
         Provider.of<List<NotificationModel>>(context, listen: true);
-    //UserService? user = Provider.of<UserService?>(context, listen: false);
-    //List users = Provider.of<List<UserService>>(context);
+    //UserModel? user = Provider.of<UserModel?>(context, listen: false);
+    //List users = Provider.of<List<UserModel>>(context);
 
     contractBlock(contractIndex) {
-      ContractService().checkForEmailAsParticipant(contracts[contractIndex]);
+      ContractModel().checkForEmailAsParticipant(contracts[contractIndex]);
       return Column(
         children: [
           Row(
             children: [
               Expanded(
-                child: Consumer<ThemeService>(
+                child: Consumer<ThemeModel>(
                     builder: (context, theme, child) => Padding(
                           padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
                           child: Container(
@@ -97,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 MaterialPageRoute(
                                                   builder:
                                                       (BuildContext context) =>
-                                                          EditContractScreen(
+                                                          EditContractView(
                                                     contract: contracts[
                                                         contractIndex],
                                                   ),
@@ -122,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     FontAwesomeIcons
                                                         .chevronDown),
                                                 onPressed: () async {
-                                                  await NotificationService()
+                                                  await NotificationModel()
                                                       .subscribeToTopic(
                                                           contracts[
                                                                   contractIndex]
@@ -182,9 +179,9 @@ class _MainScreenState extends State<MainScreen> {
                                                                       width:
                                                                           10),
                                                                   Consumer<
-                                                                          LanguageService>(
+                                                                          LanguageModel>(
                                                                       builder: (context, language, _) => Text(
-                                                                          language.mainScreenDismissebleEditCommitmentLink ??
+                                                                          language.mainViewDismissebleEditCommitmentLink ??
                                                                               '',
                                                                           style: const TextStyle(
                                                                               color: Colors.white,
@@ -216,9 +213,9 @@ class _MainScreenState extends State<MainScreen> {
                                                                       width:
                                                                           10),
                                                                   Consumer<
-                                                                          LanguageService>(
+                                                                          LanguageModel>(
                                                                       builder: (context, language, _) => Text(
-                                                                          language.mainScreenDismissebleDeleteCommitmentLink ??
+                                                                          language.mainViewDismissebleDeleteCommitmentLink ??
                                                                               '',
                                                                           style: const TextStyle(
                                                                               color: Colors.white,
@@ -238,7 +235,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                   MaterialPageRoute(
                                                                     builder: (BuildContext
                                                                             context) =>
-                                                                        EditCommitmentScreen(
+                                                                        EditCommitmentView(
                                                                       contractKey:
                                                                           contracts[contractIndex]
                                                                               .key,
@@ -253,7 +250,7 @@ class _MainScreenState extends State<MainScreen> {
                                                             } else if (direction ==
                                                                 DismissDirection
                                                                     .endToStart) {
-                                                              ContractService().deleteCommitment(
+                                                              ContractModel().deleteCommitment(
                                                                   contracts[
                                                                           contractIndex]
                                                                       .key,
@@ -268,7 +265,7 @@ class _MainScreenState extends State<MainScreen> {
                                                           child: Column(
                                                             children: [
                                                               Consumer<
-                                                                      ThemeService>(
+                                                                      ThemeModel>(
                                                                   builder: (context,
                                                                           theme,
                                                                           child) =>
@@ -345,7 +342,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                 MaterialPageRoute(
                                                                   builder: (BuildContext
                                                                           context) =>
-                                                                      AddCommitmentScreen(
+                                                                      AddCommitmentView(
                                                                     contractKey:
                                                                         contracts[contractIndex]
                                                                             .key,
@@ -362,12 +359,12 @@ class _MainScreenState extends State<MainScreen> {
                                                     height: 50,
                                                     child: Center(
                                                         child: Consumer<
-                                                                LanguageService>(
+                                                                LanguageModel>(
                                                             builder: (context,
                                                                     language,
                                                                     _) =>
                                                                 Text(language
-                                                                        .mainScreenNoCommitmentsErrorMessage ??
+                                                                        .mainViewNoCommitmentsErrorMessage ??
                                                                     '')))),
                                                 const SizedBox(height: 5),
                                                 SizedBox(
@@ -386,7 +383,7 @@ class _MainScreenState extends State<MainScreen> {
                                                                 MaterialPageRoute(
                                                                   builder: (BuildContext
                                                                           context) =>
-                                                                      AddCommitmentScreen(
+                                                                      AddCommitmentView(
                                                                     contractKey:
                                                                         contracts[contractIndex]
                                                                             .key,
@@ -498,9 +495,9 @@ class _MainScreenState extends State<MainScreen> {
                   padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
                   child: Row(
                     children: [
-                      Consumer<LanguageService>(
+                      Consumer<LanguageModel>(
                           builder: (context, language, child) => Text(
-                              language.mainScreenSettingEditProfileLabel ?? '',
+                              language.mainViewSettingEditProfileLabel ?? '',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 15))),
                       const Spacer(),
@@ -513,7 +510,7 @@ class _MainScreenState extends State<MainScreen> {
                                   builder: (BuildContext context) =>
                                       Consumer<UserModel>(
                                           builder: (context, user, child) =>
-                                              EditProfileScreen(
+                                              EditProfileView(
                                                 currentAvatarLink: user.avatar,
                                                 currentUserUid: user.uid,
                                                 currentUsername: user.username,
@@ -528,13 +525,13 @@ class _MainScreenState extends State<MainScreen> {
                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Row(
                   children: [
-                    Consumer<LanguageService>(
+                    Consumer<LanguageModel>(
                         builder: (context, language, child) => Text(
-                            language.mainScreenSettingsLanguageLabel ?? '',
+                            language.mainViewSettingsLanguageLabel ?? '',
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 15))),
                     const Spacer(),
-                    Consumer<LanguageService>(
+                    Consumer<LanguageModel>(
                         builder: (context, language, child) =>
                             DropdownButton<String>(
                               value: language.language,
@@ -547,7 +544,7 @@ class _MainScreenState extends State<MainScreen> {
                               onChanged: (String? newValue) {
                                 language.setLanguage(newValue);
                               },
-                              items: LanguageService.languages
+                              items: LanguageModel.languages
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
                                 return DropdownMenuItem<String>(
@@ -560,11 +557,11 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               const SizedBox(height: 5),
-              Consumer<ThemeService>(
+              Consumer<ThemeModel>(
                 builder: (context, theme, child) => SwitchListTile(
-                  title: Consumer<LanguageService>(
+                  title: Consumer<LanguageModel>(
                       builder: (context, language, child) => Text(
-                            language.mainScreenSettingsThemeLabel ?? '',
+                            language.mainViewSettingsThemeLabel ?? '',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           )),
                   onChanged: (value) {
@@ -575,12 +572,12 @@ class _MainScreenState extends State<MainScreen> {
               ),
               defaultTargetPlatform == TargetPlatform.iOS ||
                       defaultTargetPlatform == TargetPlatform.android
-                  ? Consumer<BiometricService>(
+                  ? Consumer<BiometricModel>(
                       builder: (context, localAuthentication, child) =>
                           SwitchListTile(
-                        title: Consumer<LanguageService>(
+                        title: Consumer<LanguageModel>(
                             builder: (context, language, child) => Text(
-                                  language.mainScreenSettingsBiometricsLabel ??
+                                  language.mainViewSettingsBiometricsLabel ??
                                       '',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
@@ -593,11 +590,11 @@ class _MainScreenState extends State<MainScreen> {
                     )
                   : Container(),
               const SizedBox(height: 5),
-              Consumer<AnalyticsService>(
+              Consumer<AnalyticsModel>(
                 builder: (context, analytics, child) => SwitchListTile(
-                  title: Consumer<LanguageService>(
+                  title: Consumer<LanguageModel>(
                       builder: (context, language, child) => Text(
-                            language.mainScreenSettingsAnalyticsLabel ?? '',
+                            language.mainViewSettingsAnalyticsLabel ?? '',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           )),
                   onChanged: (value) {
@@ -612,16 +609,16 @@ class _MainScreenState extends State<MainScreen> {
                 child: SizedBox(
                   width: 120,
                   child: ElevatedButton(
-                    child: Consumer<LanguageService>(
+                    child: Consumer<LanguageModel>(
                         builder: (context, language, child) => Text(
-                              language.mainScreenSettingsLogoutButton ?? '',
+                              language.mainViewSettingsLogoutButton ?? '',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             )),
                     onPressed: () async {
                       setState(() => loading = true);
-                      UserService().signOut().then((result) {
+                      UserModel().signOut().then((result) {
                         setState(() => loading = false);
                         Navigator.push(
                             context,
@@ -647,9 +644,9 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 100, 8, 8),
-              child: Consumer<LanguageService>(
+              child: Consumer<LanguageModel>(
                   builder: (context, language, child) => Text(
-                      language.mainScreenNotificationHeader ?? '',
+                      language.mainViewNotificationHeader ?? '',
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 18)))),
           Padding(
@@ -658,10 +655,10 @@ class _MainScreenState extends State<MainScreen> {
                 ? SizedBox(
                     height: 150,
                     child: Center(
-                        child: Consumer<LanguageService>(
-                            builder: (context, language, _) => Text(language
-                                    .mainScreenNoNotificationsErrorMessage ??
-                                ''))))
+                        child: Consumer<LanguageModel>(
+                            builder: (context, language, _) => Text(
+                                language.mainViewNoNotificationsErrorMessage ??
+                                    ''))))
                 : ListView.builder(
                     shrinkWrap: true,
                     itemCount: notifications.length,
@@ -678,9 +675,9 @@ class _MainScreenState extends State<MainScreen> {
                                 const FaIcon(FontAwesomeIcons.envelopeOpen,
                                     color: Colors.white),
                                 const SizedBox(width: 10),
-                                Consumer<LanguageService>(
+                                Consumer<LanguageModel>(
                                     builder: (context, language, _) => Text(
-                                        language.mainScreenDismissebleMarkNotificationReadLink ??
+                                        language.mainViewDismissebleMarkNotificationReadLink ??
                                             '',
                                         style: const TextStyle(
                                             color: Colors.white,
@@ -702,9 +699,9 @@ class _MainScreenState extends State<MainScreen> {
                                   color: Colors.white,
                                 ),
                                 const SizedBox(width: 10),
-                                Consumer<LanguageService>(
+                                Consumer<LanguageModel>(
                                     builder: (context, language, _) => Text(
-                                        language.mainScreenDismissebleMarkNotificationReadLink ??
+                                        language.mainViewDismissebleMarkNotificationReadLink ??
                                             '',
                                         style: const TextStyle(
                                             color: Colors.white,
@@ -716,11 +713,11 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         confirmDismiss: (direction) async {
                           if (direction == DismissDirection.startToEnd) {
-                            NotificationService().markNotificationAsRead(
+                            NotificationModel().markNotificationAsRead(
                                 notifications[notificationIndex].key);
                             return true;
                           } else if (direction == DismissDirection.endToStart) {
-                            NotificationService().markNotificationAsRead(
+                            NotificationModel().markNotificationAsRead(
                                 notifications[notificationIndex].key);
                             return true;
                           }
@@ -745,7 +742,7 @@ class _MainScreenState extends State<MainScreen> {
       )));
     }
 
-// Consumer<ThemeService>(
+// Consumer<ThemeModel>(
 //                     builder: (context, theme, child) =>
 
     return Scaffold(
@@ -762,9 +759,9 @@ class _MainScreenState extends State<MainScreen> {
             );
           },
         ),
-        title: Consumer<LanguageService>(
+        title: Consumer<LanguageModel>(
             builder: (context, language, _) =>
-                Text(language.mainScreenAppBarTitle ?? '',
+                Text(language.mainViewAppBarTitle.toString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
@@ -803,9 +800,9 @@ class _MainScreenState extends State<MainScreen> {
                   ? SizedBox(
                       height: 175,
                       child: Center(
-                          child: Consumer<LanguageService>(
+                          child: Consumer<LanguageModel>(
                               builder: (context, language, _) => Text(
-                                  language.mainScreenNoContractsErrorMessage ??
+                                  language.mainViewNoContractsErrorMessage ??
                                       ''))))
                   : breakpoint > MediaQuery.of(context).size.width
                       ? mobileView()
@@ -821,8 +818,7 @@ class _MainScreenState extends State<MainScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      const AddContractScreen()));
+                  builder: (BuildContext context) => const AddContractView()));
         },
         child: const FaIcon(
           FontAwesomeIcons.plus,

@@ -4,21 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../models/user_model.dart';
-import '../services/contract_service.dart';
-import '../services/language_service.dart';
-import '../services/theme_service.dart';
+import '../Models/contract_Model.dart';
+import '../Models/language_Model.dart';
+import '../Models/theme_Model.dart';
+import '../Models/user_Model.dart';
 
-class AddContractScreen extends StatefulWidget {
-  const AddContractScreen({
+class AddContractView extends StatefulWidget {
+  const AddContractView({
     Key? key,
   }) : super(key: key);
 
   @override
-  _AddContractScreenState createState() => _AddContractScreenState();
+  _AddContractViewState createState() => _AddContractViewState();
 }
 
-class _AddContractScreenState extends State<AddContractScreen> {
+class _AddContractViewState extends State<AddContractView> {
   final formKeyForm = GlobalKey<FormState>();
   TextEditingController participantController = TextEditingController();
 
@@ -77,9 +77,9 @@ class _AddContractScreenState extends State<AddContractScreen> {
             );
           },
         ),
-        title: Consumer<LanguageService>(
+        title: Consumer<LanguageModel>(
             builder: (context, language, _) =>
-                Text(language.newContractScreenAppBarTitle ?? '',
+                Text(language.newContractViewAppBarTitle.toString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                     ))),
@@ -93,21 +93,21 @@ class _AddContractScreenState extends State<AddContractScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 30.0),
-                Consumer<LanguageService>(
+                Consumer<LanguageModel>(
                     builder: (context, language, _) => TextFormField(
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(20),
                             ],
                             decoration: InputDecoration(
                                 hintText: language
-                                    .newContractScreenContractTitlePlaceholder),
+                                    .newContractViewContractTitlePlaceholder),
                             textAlign: TextAlign.left,
                             autofocus: true,
                             validator: (String? value) {
                               //print(value.length);
                               return (value != null && value.length < 2)
                                   ? language
-                                      .newContractScreenContractTitleErrorMessage
+                                      .newContractViewContractTitleErrorMessage
                                   : null;
                             },
                             onChanged: (val) {
@@ -120,7 +120,6 @@ class _AddContractScreenState extends State<AddContractScreen> {
                         hintText: "Participants' username or email"),
                     textAlign: TextAlign.left,
                     autofocus: true,
-                    validator: (String? value) {},
                     onChanged: (val) {
                       setState(() {
                         participant = val;
@@ -131,7 +130,7 @@ class _AddContractScreenState extends State<AddContractScreen> {
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Container(
+                        child: SizedBox(
                           width: 300,
                           child: ListView.builder(
                               shrinkWrap: true,
@@ -150,7 +149,7 @@ class _AddContractScreenState extends State<AddContractScreen> {
                                   child: Padding(
                                       padding:
                                           const EdgeInsets.fromLTRB(3, 5, 3, 0),
-                                      child: Consumer<ThemeService>(
+                                      child: Consumer<ThemeModel>(
                                           builder: (context, theme, child) =>
                                               Chip(
                                                 deleteIcon: const Icon(
@@ -241,19 +240,18 @@ class _AddContractScreenState extends State<AddContractScreen> {
                 const SizedBox(height: 5),
                 SizedBox(
                   width: 300,
-                  child: Consumer<LanguageService>(
+                  child: Consumer<LanguageModel>(
                       builder: (context, language, _) => ElevatedButton(
                             child: loading
                                 ? const LinearProgressIndicator()
-                                : Text(
-                                    language.newContractScreenButtonText ?? '',
+                                : Text(language.newContractViewButtonText ?? '',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     )),
                             onPressed: () async {
                               if (formKeyForm.currentState!.validate()) {
                                 setState(() => loading = true);
-                                ContractService()
+                                ContractModel()
                                     .addContract(
                                         title,
                                         participantUids,
@@ -268,7 +266,7 @@ class _AddContractScreenState extends State<AddContractScreen> {
                                     setState(() => loading = false);
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
-                                      content: Consumer<LanguageService>(
+                                      content: Consumer<LanguageModel>(
                                           builder: (context, language, _) =>
                                               Text(
                                                 language.genericFirebaseErrorMessage ??

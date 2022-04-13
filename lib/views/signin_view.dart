@@ -2,20 +2,21 @@ import 'package:commit/utilities/authorization_utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../services/user_service.dart';
-import '../services/language_service.dart';
-import '../services/theme_service.dart';
-import 'reset_password_screen.dart';
 import 'package:provider/provider.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+import '../../Models/user_Model.dart';
+import '../Models/language_Model.dart';
+import '../Models/theme_Model.dart';
+import 'reset_password_view.dart';
+
+class SignInView extends StatefulWidget {
+  const SignInView({Key? key}) : super(key: key);
 
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  _SignInViewState createState() => _SignInViewState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInViewState extends State<SignInView> {
   final formKeyForm = GlobalKey<FormState>();
   bool loading = false;
 
@@ -45,16 +46,16 @@ class _SignInScreenState extends State<SignInScreen> {
     return ElevatedButton(
       child: loading
           ? const LinearProgressIndicator()
-          : Consumer<LanguageService>(
+          : Consumer<LanguageModel>(
               builder: (context, language, _) =>
-                  Text(language.signInScreenButtonText ?? '',
+                  Text(language.signInViewButtonText ?? '',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ))),
       onPressed: () async {
         if (formKeyForm.currentState!.validate()) {
           setState(() => loading = true);
-          UserService()
+          UserModel()
               .signInUsingEmailAndPassword(email, password)
               .then((result) {
             if (result == null) {
@@ -67,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
             } else {
               setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Consumer<LanguageService>(
+                content: Consumer<LanguageModel>(
                     builder: (context, language, _) => Text(
                           language.genericAuthErrorMessage ?? '',
                           style: const TextStyle(
@@ -88,18 +89,18 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   signUpButton() {
-    return Consumer<LanguageService>(
+    return Consumer<LanguageModel>(
         builder: (context, language, _) => ElevatedButton(
               child: loading
                   ? const LinearProgressIndicator()
-                  : Text(language.signUpScreenButtonText ?? '',
+                  : Text(language.signUpViewButtonText ?? '',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       )),
               onPressed: () async {
                 if (formKeyForm.currentState!.validate()) {
                   setState(() => loading = true);
-                  UserService()
+                  UserModel()
                       .signUpUsingEmailAndPassword(username, email, password,
                           language.welcomeEmailTitle, language.welcomeEmailBody)
                       .then((result) {
@@ -110,7 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     } else {
                       setState(() => loading = false);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Consumer<LanguageService>(
+                        content: Consumer<LanguageModel>(
                             builder: (context, language, _) => Text(
                                   language.genericAuthErrorMessage ?? '',
                                   style: const TextStyle(
@@ -139,42 +140,41 @@ class _SignInScreenState extends State<SignInScreen> {
             children: <Widget>[
               signIn == true
                   ? Container()
-                  : Consumer<LanguageService>(
+                  : Consumer<LanguageModel>(
                       builder: (context, language, _) => TextFormField(
                           decoration: InputDecoration(
-                              hintText:
-                                  language.signUpScreenUsernamePlaceholder),
+                              hintText: language.signUpViewUsernamePlaceholder),
                           textAlign: TextAlign.left,
                           autofocus: true,
                           validator: (String? value) {
                             return (value != null && value.length < 2)
-                                ? language.signUpScreenUsernameErrorMessage
+                                ? language.signUpViewUsernameErrorMessage
                                 : null;
                           },
                           onChanged: (val) {
                             setState(() => username = val);
                           })),
               const SizedBox(height: 10),
-              Consumer<LanguageService>(
+              Consumer<LanguageModel>(
                   builder: (context, language, _) => TextFormField(
                       decoration: InputDecoration(
-                          hintText: language.signInUpScreenEmailPlaceholder),
+                          hintText: language.signInUpViewEmailPlaceholder),
                       textAlign: TextAlign.left,
                       autofocus: true,
                       validator: (String? value) {
                         return (value != null && value.length < 2)
-                            ? language.signInUpScreenEmailErrorMessage
+                            ? language.signInUpViewEmailErrorMessage
                             : null;
                       },
                       onChanged: (val) {
                         setState(() => email = val);
                       })),
               const SizedBox(height: 10),
-              Consumer<LanguageService>(
+              Consumer<LanguageModel>(
                   builder: (context, language, _) => TextFormField(
                       obscureText: obscureText,
                       decoration: InputDecoration(
-                        hintText: language.signInUpScreenPasswordPlaceholder,
+                        hintText: language.signInUpViewPasswordPlaceholder,
                         suffixIcon: InkWell(
                           onTap: showOrHidePasswordToggle,
                           child: Icon(
@@ -189,7 +189,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       autofocus: true,
                       validator: (String? value) {
                         return (value != null && value.length < 2)
-                            ? language.signInUpScreenPasswordErrorMessage
+                            ? language.signInUpViewPasswordErrorMessage
                             : null;
                       },
                       onChanged: (val) {
@@ -200,16 +200,15 @@ class _SignInScreenState extends State<SignInScreen> {
                   ? SizedBox(
                       height: 25,
                       child: GestureDetector(
-                          child: Consumer<LanguageService>(
+                          child: Consumer<LanguageModel>(
                               builder: (context, language, _) => Text(
-                                  language.signInScreenResetPasswordLink ??
-                                      '')),
+                                  language.signInViewResetPasswordLink ?? '')),
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        const ResetPasswordScreen()));
+                                        const ResetPasswordView()));
                           }),
                     )
                   : Container(),
@@ -218,23 +217,23 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: signIn == true ? signInButton() : signUpButton()),
               const SizedBox(height: 10),
               signIn == true
-                  ? Consumer<LanguageService>(
+                  ? Consumer<LanguageModel>(
                       builder: (context, language, _) => SizedBox(
                             height: 18,
                             child: GestureDetector(
                                 child: Text(
-                                    language.signInScreenSignUpUsingEmailLink ??
+                                    language.signInViewSignUpUsingEmailLink ??
                                         ''),
                                 onTap: () {
                                   signInSignUpToggle();
                                 }),
                           ))
-                  : Consumer<LanguageService>(
+                  : Consumer<LanguageModel>(
                       builder: (context, language, _) => SizedBox(
                             height: 18,
                             child: GestureDetector(
                                 child: Text(
-                                    language.signInScreengoBackToSignInLink ??
+                                    language.signInViewgoBackToSignInLink ??
                                         ''),
                                 onTap: () {
                                   signInSignUpToggle();
@@ -251,7 +250,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   //           const FaIcon(FontAwesomeIcons.facebookSquare),
                   //       onPressed: () {
                   //         setState(() => loading = true);
-                  //         UserService()
+                  //         UserModel()
                   //             .signInWithFacebook()
                   //             .then((result) {});
                   //       }),
@@ -260,7 +259,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   //       icon: const FaIcon(FontAwesomeIcons.google),
                   //       onPressed: () {
                   //         setState(() => loading = true);
-                  //         UserService()
+                  //         UserModel()
                   //             .signInWithGoogle()
                   //             .then((result) {});
                   //       }),
@@ -270,7 +269,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   //           icon: const FaIcon(FontAwesomeIcons.apple),
                   //           onPressed: () {
                   //             setState(() => loading = true);
-                  //             UserService()
+                  //             UserModel()
                   //                 .signInWithApple()
                   //                 .then((result) {});
                   //           })
@@ -294,15 +293,15 @@ class _SignInScreenState extends State<SignInScreen> {
           centerTitle: true,
           title: !kIsWeb
               ? signIn
-                  ? Consumer<LanguageService>(
+                  ? Consumer<LanguageModel>(
                       builder: (context, language, _) =>
-                          Text(language.signInScreenAppBarTitle ?? '',
+                          Text(language.signInViewAppBarTitle ?? '',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )))
-                  : Consumer<LanguageService>(
+                  : Consumer<LanguageModel>(
                       builder: (context, language, _) =>
-                          Text(language.signUpScreenAppBarTitle ?? '',
+                          Text(language.signUpViewAppBarTitle ?? '',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )))
@@ -344,7 +343,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         const SizedBox(height: 175),
                         Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 150, 0),
-                            child: Consumer<ThemeService>(
+                            child: Consumer<ThemeModel>(
                               builder: (context, theme, child) => Container(
                                 decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(

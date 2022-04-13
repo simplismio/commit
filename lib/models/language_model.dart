@@ -1,267 +1,545 @@
-class LanguageModel {
-  // AppBar titles
-  static Map<String, String>? mainScreenAppBarTitle = {
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class LanguageModel with ChangeNotifier {
+  static List<String> languages = ['English', 'Dutch'];
+  final String key = "language";
+
+  late String _language;
+  late Map<String, dynamic> translations;
+
+  LanguageModel() {
+    _language = 'English';
+    _loadFromPrefs();
+  }
+
+  String get language => _language;
+
+  setLanguage(_value) {
+    _language = _value;
+    _saveToPrefs();
+  }
+
+  defaultLanguage() {
+    String? systemLanguage;
+    String? defaultLanguage;
+
+    if (kIsWeb) {
+      Locale webLocale = ui.window.locale;
+      String webLocaleAsString = webLocale.toString();
+      List<String> split = webLocaleAsString.split("_");
+      systemLanguage = split[0];
+    } else {
+      String systemLocale = Platform.localeName;
+      List<String> split = systemLocale.split("_");
+      systemLanguage = split[0];
+    }
+
+    if (kDebugMode) {
+      print('Setting system language as default: $systemLanguage');
+    }
+
+    switch (systemLanguage) {
+      case 'en':
+        defaultLanguage = 'English';
+        break;
+      case 'nl':
+        defaultLanguage = 'Dutch';
+        break;
+      default:
+        defaultLanguage = 'English';
+    }
+    return defaultLanguage;
+  }
+
+  _loadFromPrefs() async {
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    _language = preference.getString(key) ?? defaultLanguage();
+    _switchLanguage(_language);
+    notifyListeners();
+  }
+
+  _saveToPrefs() async {
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    await preference.setString(key, _language);
+    _switchLanguage(_language);
+    notifyListeners();
+  }
+
+  final Map<String, String>? _mainViewAppBarTitle = {
     'English': 'Contracts',
     'Dutch': 'Contracten'
   };
-  static Map<String, String>? newContractScreenAppBarTitle = {
+  final Map<String, String>? _newContractViewAppBarTitle = {
     'English': 'New contract',
     'Dutch': 'Nieuw contract'
   };
-  static Map<String, String>? newCommitmentScreenAppBarTitle = {
+  final Map<String, String>? _newCommitmentViewAppBarTitle = {
     'English': 'New commitment',
     'Dutch': 'Nieuw commitment'
   };
-  static Map<String, String>? editContractScreenAppBarTitle = {
+  final Map<String, String>? _editContractViewAppBarTitle = {
     'English': 'Edit contract',
     'Dutch': 'Wijzig contract'
   };
-  static Map<String, String>? editCommitmentScreenAppBarTitle = {
+  final Map<String, String>? _editCommitmentViewAppBarTitle = {
     'English': 'Edit commitment',
     'Dutch': 'Wijzig commitment'
   };
-  static Map<String, String>? resetPasswordScreenAppBarTitle = {
+  final Map<String, String>? _resetPasswordViewAppBarTitle = {
     'English': 'Reset password',
     'Dutch': 'Reset wachtwoord'
   };
-  static Map<String, String>? editProfileScreenAppBarTitle = {
+  final Map<String, String>? _editProfileViewAppBarTitle = {
     'English': 'Edit profile',
     'Dutch': 'Wijzig profiel'
   };
-  static Map<String, String>? signInScreenAppBarTitle = {
+  final Map<String, String>? _signInViewAppBarTitle = {
     'English': 'Sign in',
     'Dutch': 'Log in'
   };
-  static Map<String, String>? signUpScreenAppBarTitle = {
+  final Map<String, String>? _signUpViewAppBarTitle = {
     'English': 'Sign up',
     'Dutch': 'Registreer'
   };
 
   // Buttons
-  static Map<String, String>? newContractScreenButtonText = {
+  final Map<String, String>? _newContractViewButtonText = {
     'English': 'Save contract',
     'Dutch': 'Contract opslaan'
   };
-  static Map<String, String>? newCommitmentScreenButtonText = {
+  final Map<String, String>? _newCommitmentViewButtonText = {
     'English': 'Save commitment',
     'Dutch': 'Commitment opslaan'
   };
-  static Map<String, String>? editContractScreenButtonText = {
+  final Map<String, String>? _editContractViewButtonText = {
     'English': 'Save changes',
     'Dutch': 'Wijzigingn opslaan'
   };
-  static Map<String, String>? editCommitmentScreenButtonText = {
+  final Map<String, String>? _editCommitmentViewButtonText = {
     'English': 'Save changes',
     'Dutch': 'Wijzigingn opslaan'
   };
-  static Map<String, String>? resetPasswordScreenButtonText = {
+  final Map<String, String>? _resetPasswordViewButtonText = {
     'English': 'Email reset link',
     'Dutch': 'Email reset link'
   };
-  static Map<String, String>? editProfileScreenButtonText = {
+  final Map<String, String>? _editProfileViewButtonText = {
     'English': 'Save changes ',
     'Dutch': 'Wijzingen opslaan'
   };
-  static Map<String, String>? editContractScreenDeleteContractButtonText = {
+  final Map<String, String>? _editContractViewDeleteContractButtonText = {
     'English': 'Save changes ',
     'Dutch': 'Wijzingen opslaan'
   };
-  static Map<String, String>? signInScreenButtonText = {
+  final Map<String, String>? _signInViewButtonText = {
     'English': 'Sign in',
     'Dutch': 'Log in'
   };
-  static Map<String, String>? signUpScreenButtonText = {
+  final Map<String, String>? _signUpViewButtonText = {
     'English': 'Sign up',
     'Dutch': 'Registreer'
   };
-  static Map<String, String>? mainScreenSettingsLogoutButton = {
+  final Map<String, String>? _mainViewSettingsLogoutButton = {
     'English': 'Log out',
     'Dutch': 'Uitloggen'
   };
 
   // Placeholders
-  static Map<String, String>? newContractScreenContractTitlePlaceholder = {
+  final Map<String, String>? _newContractViewContractTitlePlaceholder = {
     'English': 'Contract title',
     'Dutch': 'Titel van het contract'
   };
-  static Map<String, String>? newCommitmentScreenCommitmentPlaceholder = {
+  final Map<String, String>? _newCommitmentViewCommitmentPlaceholder = {
     'English': 'Commitment',
     'Dutch': 'Commitment'
   };
-  static Map<String, String>? editContractScreenContractTitlePlaceholder = {
+  final Map<String, String>? _editContractViewContractTitlePlaceholder = {
     'English': 'Contract title',
     'Dutch': 'Titel van het contract'
   };
-  static Map<String, String>? editCommitmentScreenCommitmentPlaceholder = {
+  final Map<String, String>? _editCommitmentViewCommitmentPlaceholder = {
     'English': 'Commitment',
     'Dutch': 'Commitment'
   };
-  static Map<String, String>? resetPasswordScreenEmailPlaceholder = {
+  final Map<String, String>? _resetPasswordViewEmailPlaceholder = {
     'English': 'Email',
     'Dutch': 'Email'
   };
-  static Map<String, String>? editProfileScreenUsernamePlaceholder = {
+  final Map<String, String>? _editProfileViewUsernamePlaceholder = {
     'English': 'Username',
     'Dutch': 'Gebruikersnaam'
   };
-  static Map<String, String>? editProfileScreenEmailPlaceholder = {
+  final Map<String, String>? _editProfileViewEmailPlaceholder = {
     'English': 'Email',
     'Dutch': 'Email'
   };
-  static Map<String, String>? signUpScreenUsernamePlaceholder = {
+  final Map<String, String>? _signUpViewUsernamePlaceholder = {
     'English': 'Username',
     'Dutch': 'Gebruikersnaam'
   };
-  static Map<String, String>? signInUpScreenEmailPlaceholder = {
+  final Map<String, String>? _signInUpViewEmailPlaceholder = {
     'English': 'Email',
     'Dutch': 'Email'
   };
-  static Map<String, String>? signInUpScreenPasswordPlaceholder = {
+  final Map<String, String>? _signInUpViewPasswordPlaceholder = {
     'English': 'Password',
     'Dutch': 'Wachtwoord'
   };
 
   // Error Messages
-  static Map<String, String>? newContractScreenContractTitleErrorMessage = {
+  final Map<String, String>? _newContractViewContractTitleErrorMessage = {
     'English': 'Please provide a valid contract title',
     'Dutch': 'De ingegeven contract titel is incorrect'
   };
-  static Map<String, String>? newCommitmentScreenCommitmentErrorMessage = {
+  final Map<String, String>? _newCommitmentViewCommitmentErrorMessage = {
     'English': 'Please provide a valid commitment',
     'Dutch': 'Het ingegeven commitment is incorrect'
   };
-  static Map<String, String>? editContractScreenContractTitleErrorMessage = {
+  final Map<String, String>? _editContractViewContractTitleErrorMessage = {
     'English': 'Please provide a valid contract title',
     'Dutch': 'De ingegeven contract title is incorrect'
   };
-  static Map<String, String>? editCommitmentScreenCommitmentErrorMessage = {
+  final Map<String, String>? _editCommitmentViewCommitmentErrorMessage = {
     'English': 'Please provide a valid commitment',
     'Dutch': 'Het ingegeven commitment is incorrect'
   };
-  static Map<String, String>? resetPasswordScreenEmailErrorMessage = {
+  final Map<String, String>? _resetPasswordViewEmailErrorMessage = {
     'English': 'Please provide a valid email address',
     'Dutch': 'Het ingegeven email adres is incorrect'
   };
-  static Map<String, String>? editProfileScreenUsernameErrorMessage = {
+  final Map<String, String>? _editProfileViewUsernameErrorMessage = {
     'English': 'Please provide a valid username',
     'Dutch': 'De ingegeven gebruikersnaam is incorrect'
   };
-  static Map<String, String>? signUpScreenUsernameErrorMessage = {
+  final Map<String, String>? _signUpViewUsernameErrorMessage = {
     'English': 'Please provide a valid username',
     'Dutch': 'Het ingegeven wachtwoord is incorrect'
   };
-  static Map<String, String>? signInUpScreenEmailErrorMessage = {
+  final Map<String, String>? _signInUpViewEmailErrorMessage = {
     'English': 'Please provide a valid email address',
     'Dutch': 'De ingegeven gebruikersnaam is incorrect'
   };
-  static Map<String, String>? signInUpScreenPasswordErrorMessage = {
+  final Map<String, String>? _signInUpViewPasswordErrorMessage = {
     'English': 'testEN',
     'Dutch': 'Er zijn nog geen commitments gemaakt'
   };
-  static Map<String, String>? mainScreenNoContractsErrorMessage = {
+  final Map<String, String>? _mainViewNoContractsErrorMessage = {
     'English': 'There are no contracts yet',
     'Dutch': 'Er zijn nog geen contracten'
   };
-  static Map<String, String>? mainScreenNoCommitmentsErrorMessage = {
+  final Map<String, String>? _mainViewNoCommitmentsErrorMessage = {
     'English': 'There are no commitments yet',
     'Dutch': 'Er zijn nog geen commitments gemaakt'
   };
-  static Map<String, String>? mainScreenNoNotificationsErrorMessage = {
+  final Map<String, String>? _mainViewNoNotificationsErrorMessage = {
     'English': 'There are no notifications yet',
     'Dutch': 'Er zijn nog geen notificaties'
   };
-  static Map<String, String>? genericAuthErrorMessage = {
+  final Map<String, String>? _genericAuthErrorMessage = {
     'English': 'Email address or password is incorrect',
     'Dutch': 'Email adres of wachtwoord is incorrect'
   };
-  static Map<String, String>? genericFirebaseErrorMessage = {
+  final Map<String, String>? _genericFirebaseErrorMessage = {
     'English': 'Something went wrong. Please try again',
     'Dutch': 'Er is iets verkeerd gegaan. Probeert u het s.v.p. opnieuw'
   };
 
   // Links
-  static Map<String, String>? signInScreenResetPasswordLink = {
+  final Map<String, String>? _signInViewResetPasswordLink = {
     'English': 'I forgot my password',
     'Dutch': 'Ik ben mijn wachtwoord vergeten'
   };
-  static Map<String, String>? signInScreenSignUpUsingEmailLink = {
+  final Map<String, String>? _signInViewSignUpUsingEmailLink = {
     'English': 'Sign up using email',
     'Dutch': 'Registreer met een email adres'
   };
-  static Map<String, String>? signInScreengoBackToSignInLink = {
+  final Map<String, String>? _signInViewgoBackToSignInLink = {
     'English': 'Go back to sign in',
     'Dutch': 'Ga terug naar log in'
   };
-  static Map<String, String>? mainScreenDismissebleEditCommitmentLink = {
+  final Map<String, String>? _mainViewDismissebleEditCommitmentLink = {
     'English': 'Edit commitment',
     'Dutch': 'Wijzig commitment'
   };
-  static Map<String, String>? mainScreenDismissebleDeleteCommitmentLink = {
+  final Map<String, String>? _mainViewDismissebleDeleteCommitmentLink = {
     'English': 'Delete commitment',
     'Dutch': 'Verwijder commitment'
   };
-  static Map<String, String>? mainScreenDismissebleMarkNotificationReadLink = {
+  final Map<String, String>? _mainViewDismissebleMarkNotificationReadLink = {
     'English': 'Mark as read',
     'Dutch': 'Markeren als gelezen'
   };
 
   // Labels
-  static Map<String, String>? mainScreenSettingEditProfileLabel = {
+  final Map<String, String>? _mainViewSettingEditProfileLabel = {
     'English': 'Edit profile',
     'Dutch': 'Wijzig profiel'
   };
-  static Map<String, String>? mainScreenSettingsLanguageLabel = {
+  final Map<String, String>? _mainViewSettingsLanguageLabel = {
     'English': 'Language',
     'Dutch': 'Taal'
   };
-  static Map<String, String>? mainScreenSettingsThemeLabel = {
+  final Map<String, String>? _mainViewSettingsThemeLabel = {
     'English': 'Dark theme',
     'Dutch': 'Donker thema'
   };
-  static Map<String, String>? mainScreenSettingsBiometricsLabel = {
+  final Map<String, String>? _mainViewSettingsBiometricsLabel = {
     'English': 'Biometric unlock',
     'Dutch': 'Unlock met biometrie'
   };
-  static Map<String, String>? mainScreenSettingsAnalyticsLabel = {
+  final Map<String, String>? _mainViewSettingsAnalyticsLabel = {
     'English': 'Share analytics',
     'Dutch': 'Deel gebruiksgegevens'
   };
 
   // Headers
-  static Map<String, String>? mainScreenNotificationHeader = {
+  final Map<String, String>? _mainViewNotificationHeader = {
     'English': 'Notifications',
     'Dutch': 'Notificaties'
   };
 
   // Push notifications titles
-  static Map<String, String>? activateContractNotificationTitle = {
+  final Map<String, String>? _activateContractNotificationTitle = {
     'English': 'Contract activated',
     'Dutch': 'Contract geactiveerd'
   };
 
   // Push notifications bodies
-  static Map<String, String>? activateContractNotificationBody = {
+  final Map<String, String>? _activateContractNotificationBody = {
     'English': 'Click to add commitment to the contract',
     'Dutch': 'Contract geactiveerd'
   };
 
   // Email titles
-  static Map<String, String>? welcomeEmailTitle = {
+  final Map<String, String>? _welcomeEmailTitle = {
     'English': 'Welcome to Commit',
     'Dutch': 'Welkom bij Commit'
   };
-  static Map<String, String>? addContractEmailTitle = {
+  final Map<String, String>? _addContractEmailTitle = {
     'English': 'You have been added to a new contract',
     'Dutch': 'Je bent toegevoegd aan een contract'
   };
 
   // Email bodies
-  static Map<String, String>? welcomeEmailBody = {
+  final Map<String, String>? _welcomeEmailBody = {
     'English': 'You have made the right decision to commit',
     'Dutch': 'Je hebt het juiste besluit genomen om je te commiteren'
   };
-  static Map<String, String>? addContractEmailBody = {
+  final Map<String, String>? _addContractEmailBody = {
     'English': 'You have been added as a participant in a new contract',
     'Dutch': 'Je bent toegevoegd aan een contract'
   };
+
+  // AppBar titles
+  String? mainViewAppBarTitle;
+  String? newContractViewAppBarTitle;
+  String? newCommitmentViewAppBarTitle;
+  String? editContractViewAppBarTitle;
+  String? editCommitmentViewAppBarTitle;
+  String? resetPasswordViewAppBarTitle;
+  String? editProfileViewAppBarTitle;
+  String? signInViewAppBarTitle;
+  String? signUpViewAppBarTitle;
+
+  // Buttons
+  String? newContractViewButtonText;
+  String? newCommitmentViewButtonText;
+  String? editContractViewButtonText;
+  String? editCommitmentViewButtonText;
+  String? resetPasswordViewButtonText;
+  String? editProfileViewButtonText;
+  String? editContractViewDeleteContractButtonText;
+  String? signInViewButtonText;
+  String? signUpViewButtonText;
+  String? mainViewSettingsLogoutButton;
+
+  // Placeholders
+  String? newContractViewContractTitlePlaceholder;
+  String? newCommitmentViewCommitmentPlaceholder;
+  String? editContractViewContractTitlePlaceholder;
+  String? editCommitmentViewCommitmentPlaceholder;
+  String? resetPasswordViewEmailPlaceholder;
+  String? editProfileViewUsernamePlaceholder;
+  String? editProfileViewEmailPlaceholder;
+  String? signUpViewUsernamePlaceholder;
+  String? signInUpViewEmailPlaceholder;
+  String? signInUpViewPasswordPlaceholder;
+
+  // Error Messages
+  String? newContractViewContractTitleErrorMessage;
+  String? newCommitmentViewCommitmentErrorMessage;
+  String? editContractViewContractTitleErrorMessage;
+  String? editCommitmentViewCommitmentErrorMessage;
+  String? resetPasswordViewEmailErrorMessage;
+  String? editProfileViewUsernameErrorMessage;
+  String? signUpViewUsernameErrorMessage;
+  String? signInUpViewEmailErrorMessage;
+  String? signInUpViewPasswordErrorMessage;
+  String? mainViewNoContractsErrorMessage;
+  String? mainViewNoCommitmentsErrorMessage;
+  String? mainViewNoNotificationsErrorMessage;
+  String? genericAuthErrorMessage;
+  String? genericFirebaseErrorMessage;
+
+  // Links
+  String? signInViewResetPasswordLink;
+  String? signInViewSignUpUsingEmailLink;
+  String? signInViewgoBackToSignInLink;
+  String? mainViewDismissebleEditCommitmentLink;
+  String? mainViewDismissebleDeleteCommitmentLink;
+  String? mainViewDismissebleMarkNotificationReadLink;
+
+  // Labels
+  String? mainViewSettingEditProfileLabel;
+  String? mainViewSettingsLanguageLabel;
+  String? mainViewSettingsThemeLabel;
+  String? mainViewSettingsBiometricsLabel;
+  String? mainViewSettingsAnalyticsLabel;
+
+  // Headers
+  String? mainViewNotificationHeader;
+
+  // Push notifications titles
+  String? activateContractNotificationTitle;
+
+  // Push notifications bodies
+  String? activateContractNotificationBody;
+
+  // Email titles
+  String? welcomeEmailTitle;
+  String? addContractEmailTitle;
+
+  // Email bodies
+  String? welcomeEmailBody;
+  String? addContractEmailBody;
+
+  void _switchLanguage(_language) {
+    mainViewAppBarTitle = _mainViewAppBarTitle?[_language].toString();
+    newContractViewAppBarTitle =
+        _newContractViewAppBarTitle?[_language].toString();
+    newCommitmentViewAppBarTitle =
+        _newCommitmentViewAppBarTitle?[_language].toString();
+    editContractViewAppBarTitle =
+        _editContractViewAppBarTitle?[_language].toString();
+    editCommitmentViewAppBarTitle =
+        _editCommitmentViewAppBarTitle?[_language].toString();
+    resetPasswordViewAppBarTitle =
+        _resetPasswordViewAppBarTitle?[_language].toString();
+    editProfileViewAppBarTitle =
+        _editProfileViewAppBarTitle?[_language].toString();
+    signInViewAppBarTitle = _signInViewAppBarTitle?[_language].toString();
+    signUpViewAppBarTitle = _signUpViewAppBarTitle?[_language].toString();
+    // Buttons
+    newContractViewButtonText =
+        _newContractViewButtonText?[_language].toString();
+    newCommitmentViewButtonText =
+        _newCommitmentViewButtonText?[_language].toString();
+    editContractViewButtonText =
+        _editContractViewButtonText?[_language].toString();
+    editCommitmentViewButtonText =
+        _editCommitmentViewButtonText?[_language].toString();
+    resetPasswordViewButtonText =
+        _resetPasswordViewButtonText?[_language].toString();
+    editProfileViewButtonText =
+        _editProfileViewButtonText?[_language].toString();
+    editContractViewDeleteContractButtonText =
+        _editContractViewDeleteContractButtonText?[_language].toString();
+    signInViewButtonText = _signInViewButtonText?[_language].toString();
+    signUpViewButtonText = _signUpViewButtonText?[_language].toString();
+    mainViewSettingsLogoutButton =
+        _mainViewSettingsLogoutButton?[_language].toString();
+    // Placeholder
+    newContractViewContractTitlePlaceholder =
+        _newContractViewContractTitlePlaceholder?[_language].toString();
+    newCommitmentViewCommitmentPlaceholder =
+        _newCommitmentViewCommitmentPlaceholder?[_language].toString();
+    editContractViewContractTitlePlaceholder =
+        _editContractViewContractTitlePlaceholder?[_language].toString();
+    editCommitmentViewCommitmentPlaceholder =
+        _editCommitmentViewCommitmentPlaceholder?[_language].toString();
+    resetPasswordViewEmailPlaceholder =
+        _resetPasswordViewEmailPlaceholder?[_language].toString();
+    editProfileViewUsernamePlaceholder =
+        _editProfileViewUsernamePlaceholder?[_language].toString();
+    editProfileViewEmailPlaceholder =
+        _editProfileViewEmailPlaceholder?[_language].toString();
+    signUpViewUsernamePlaceholder =
+        _signUpViewUsernamePlaceholder?[_language].toString();
+    signInUpViewEmailPlaceholder =
+        _signInUpViewEmailPlaceholder?[_language].toString();
+    signInUpViewPasswordPlaceholder =
+        _signInUpViewPasswordPlaceholder?[_language].toString();
+    // Error Messages
+    newContractViewContractTitleErrorMessage =
+        _newContractViewContractTitleErrorMessage?[_language].toString();
+    newCommitmentViewCommitmentErrorMessage =
+        _newCommitmentViewCommitmentErrorMessage?[_language].toString();
+    editContractViewContractTitleErrorMessage =
+        _editContractViewContractTitleErrorMessage?[_language].toString();
+    editCommitmentViewCommitmentErrorMessage =
+        _editCommitmentViewCommitmentErrorMessage?[_language].toString();
+    resetPasswordViewEmailErrorMessage =
+        _resetPasswordViewEmailErrorMessage?[_language].toString();
+    signUpViewUsernameErrorMessage =
+        _signUpViewUsernameErrorMessage?[_language].toString();
+    signInUpViewEmailErrorMessage =
+        _signInUpViewEmailErrorMessage?[_language].toString();
+    signInUpViewPasswordErrorMessage =
+        _signInUpViewPasswordErrorMessage?[_language].toString();
+    editProfileViewUsernameErrorMessage =
+        _editProfileViewUsernameErrorMessage?[_language].toString();
+    mainViewNoContractsErrorMessage =
+        _mainViewNoContractsErrorMessage?[_language].toString();
+    mainViewNoCommitmentsErrorMessage =
+        _mainViewNoCommitmentsErrorMessage?[_language].toString();
+    mainViewNoNotificationsErrorMessage =
+        _mainViewNoNotificationsErrorMessage?[_language].toString();
+    genericAuthErrorMessage = _genericAuthErrorMessage?[_language].toString();
+    genericFirebaseErrorMessage =
+        _genericFirebaseErrorMessage?[_language].toString();
+    // Links
+    signInViewResetPasswordLink =
+        _signInViewResetPasswordLink?[_language].toString();
+    signInViewSignUpUsingEmailLink =
+        _signInViewSignUpUsingEmailLink?[_language].toString();
+    signInViewgoBackToSignInLink =
+        _signInViewgoBackToSignInLink?[_language].toString();
+    mainViewDismissebleEditCommitmentLink =
+        _mainViewDismissebleEditCommitmentLink?[_language].toString();
+    mainViewDismissebleDeleteCommitmentLink =
+        _mainViewDismissebleDeleteCommitmentLink?[_language].toString();
+    mainViewDismissebleMarkNotificationReadLink =
+        _mainViewDismissebleMarkNotificationReadLink?[_language].toString();
+    // Labels
+    mainViewSettingEditProfileLabel =
+        _mainViewSettingEditProfileLabel?[_language].toString();
+    mainViewSettingsLanguageLabel =
+        _mainViewSettingsLanguageLabel?[_language].toString();
+    mainViewSettingsThemeLabel =
+        _mainViewSettingsThemeLabel?[_language].toString();
+    mainViewSettingsBiometricsLabel =
+        _mainViewSettingsBiometricsLabel?[_language].toString();
+    mainViewSettingsAnalyticsLabel =
+        _mainViewSettingsAnalyticsLabel?[_language].toString();
+    // Header
+    mainViewNotificationHeader =
+        _mainViewNotificationHeader?[_language].toString();
+    // Push notifications titles
+    activateContractNotificationTitle =
+        _activateContractNotificationTitle?[_language].toString();
+    // Push notifications bodies
+    activateContractNotificationBody =
+        _activateContractNotificationBody?[_language].toString();
+    // Email titles
+    welcomeEmailTitle = _welcomeEmailTitle?[_language].toString();
+    addContractEmailTitle = _addContractEmailTitle?[_language].toString();
+    // Email bodies
+    welcomeEmailBody = _welcomeEmailBody?[_language].toString();
+    addContractEmailBody = _addContractEmailBody?[_language].toString();
+  }
 }

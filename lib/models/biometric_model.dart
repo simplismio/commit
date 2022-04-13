@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class BiometricService extends ChangeNotifier {
+class BiometricModel extends ChangeNotifier {
   final LocalAuthentication auth = LocalAuthentication();
 
   final String key = "biometrics";
@@ -48,7 +48,7 @@ class BiometricService extends ChangeNotifier {
     }
   }
 
-  BiometricService() {
+  BiometricModel() {
     _biometrics = false;
     _loadFromPrefs();
   }

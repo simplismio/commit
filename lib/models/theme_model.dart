@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ThemeData light = ThemeData(
   brightness: Brightness.light,
@@ -13,13 +13,13 @@ ThemeData dark = ThemeData(
   primarySwatch: Colors.indigo,
 );
 
-class ThemeService extends ChangeNotifier {
+class ThemeModel extends ChangeNotifier {
   final String key = "theme";
   late bool _darkTheme;
 
   bool get darkTheme => kDebugMode ? _darkTheme : !_darkTheme;
 
-  ThemeService() {
+  ThemeModel() {
     _darkTheme = false;
     _loadFromPrefs();
   }
