@@ -17,8 +17,8 @@ import './models/contract_Model.dart';
 import './models/emulator_Model.dart';
 import './models/theme_Model.dart';
 import './models/user_Model.dart';
-import 'utilities/authorization_utility.dart';
-import 'utilities/biometric_utility.dart';
+import 'helpers/authorization_helper.dart';
+import 'helpers/biometric_helper.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -146,9 +146,9 @@ class CommitApp extends StatelessWidget {
                         localAuthentication.biometrics.toString());
                   }
                   if (localAuthentication.biometrics == true) {
-                    return const BiometricUtility();
+                    return const BiometricHelper();
                   } else {
-                    return const AuthorizationUtility();
+                    return const AuthorizationHelper();
                   }
                 })));
           } else {
@@ -160,7 +160,7 @@ class CommitApp extends StatelessWidget {
                       ]
                     : [],
                 theme: theme.darkTheme == true ? dark : light,
-                home: const Scaffold(body: AuthorizationUtility()));
+                home: const Scaffold(body: AuthorizationHelper()));
           }
         }));
   }

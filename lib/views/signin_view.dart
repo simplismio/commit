@@ -1,4 +1,3 @@
-import 'package:commit/utilities/authorization_utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../Models/user_Model.dart';
 import '../Models/language_Model.dart';
 import '../Models/theme_Model.dart';
+import '../helpers/authorization_helper.dart';
 import 'reset_password_view.dart';
 
 class SignInView extends StatefulWidget {
@@ -63,7 +63,7 @@ class _SignInViewState extends State<SignInView> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) =>
-                        const AuthorizationUtility(),
+                        const AuthorizationHelper(),
                   ));
             } else {
               setState(() => loading = false);
