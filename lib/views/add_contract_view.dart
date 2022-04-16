@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../Models/contract_Model.dart';
-import '../Models/language_Model.dart';
-import '../Models/theme_Model.dart';
-import '../Models/user_Model.dart';
+import '../models/contract_model.dart';
+import '../models/language_model.dart';
+import '../models/theme_model.dart';
+import '../models/user_model.dart';
 
 class AddContractView extends StatefulWidget {
   const AddContractView({

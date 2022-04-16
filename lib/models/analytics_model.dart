@@ -19,7 +19,7 @@ class AnalyticsModel extends ChangeNotifier {
 
   _loadFromPrefs() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
-    _analytics = _pref.getBool(key) ?? false;
+    _analytics = _pref.getBool(key) ?? true;
     notifyListeners();
   }
 

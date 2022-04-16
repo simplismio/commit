@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers/authorization_helper.dart';
 import '../models/analytics_model.dart';
 import '../models/biometric_model.dart';
 import '../models/contract_model.dart';
@@ -12,12 +13,13 @@ import '../models/language_model.dart';
 import '../models/notification_model.dart';
 import '../models/theme_model.dart';
 import '../models/user_model.dart';
-import '../utilities/authorization_utility.dart';
 import 'add_commitment_view.dart';
 import 'add_contract_view.dart';
 import 'edit_commitment_view.dart';
 import 'edit_contract_view.dart';
 import 'edit_profile_view.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_app_installations/firebase_app_installations.dart';
 
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);
@@ -48,13 +50,35 @@ class _MainViewState extends State<MainView> {
     });
   }
 
+  getParticipantUsernames(participants, users) {
+    String? participantString = '';
+    ;
+
+    participants.forEach((participant) {
+      for (var i = 0; i < users.length; i++) {
+        if (participant == users[i].uid) {
+          if (participantString == null) {
+            participantString = users[i].username;
+          } else {
+            if (EmailValidator.validate(participant) == true) {
+              participantString = participantString! + ' ' + participant;
+            } else {
+              participantString = participantString! + ' ' + users[i].username;
+            }
+          }
+        }
+      }
+    });
+    return participantString;
+  }
+
   @override
   Widget build(BuildContext context) {
     List contracts = Provider.of<List<ContractModel>>(context, listen: true);
     List notifications =
         Provider.of<List<NotificationModel>>(context, listen: true);
     //UserModel? user = Provider.of<UserModel?>(context, listen: false);
-    //List users = Provider.of<List<UserModel>>(context);
+    List users = Provider.of<List<UserModel>>(context);
 
     contractBlock(contractIndex) {
       ContractModel().checkForEmailAsParticipant(contracts[contractIndex]);
@@ -132,6 +156,19 @@ class _MainViewState extends State<MainView> {
                                               )
                                       ],
                                     ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          getParticipantUsernames(
+                                              contracts[contractIndex]
+                                                  .participants,
+                                              users),
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                          ),
+                                        )
+                                      ],
+                                    )
                                   ],
                                 ),
                               ),
@@ -624,7 +661,7 @@ class _MainViewState extends State<MainView> {
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    const AuthorizationUtility()));
+                                    const AuthorizationHelper()));
                       });
                     },
                   ),

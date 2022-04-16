@@ -1,9 +1,8 @@
 import 'dart:async';
+import 'firebase_options.dart';
 
-import 'package:commit/Models/language_Model.dart';
-import 'package:commit/Models/media_Model.dart';
-import 'package:commit/Models/notification_Model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_app_installations/firebase_app_installations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_performance/firebase_performance.dart';
@@ -11,14 +10,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './models/analytics_Model.dart';
-import './models/biometric_Model.dart';
-import './models/contract_Model.dart';
-import './models/emulator_Model.dart';
-import './models/theme_Model.dart';
-import './models/user_Model.dart';
+import './models/analytics_model.dart';
+import './models/biometric_model.dart';
+import './models/contract_model.dart';
+import './models/emulator_model.dart';
+import './models/theme_model.dart';
 import 'helpers/authorization_helper.dart';
 import 'helpers/biometric_helper.dart';
+import 'models/language_model.dart';
+import 'models/media_model.dart';
+import 'models/notification_model.dart';
+import 'models/user_model.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -37,8 +40,10 @@ Future<void> main() async {
 
   if (defaultTargetPlatform == TargetPlatform.iOS ||
       defaultTargetPlatform == TargetPlatform.android) {
-    await Firebase.initializeApp();
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    await Firebase.initializeApp(
+      name: 'Commit',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } else {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -51,11 +56,18 @@ Future<void> main() async {
             measurementId: "G-8Z10Z47T7F"));
   }
 
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   NotificationModel().initialize();
 
   if (AnalyticsModel().analytics == true) {
     await FirebaseAnalytics.instance.logAppOpen();
     await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
+  }
+
+  if (kDebugMode) {
+    String? firebaseInstallationId =
+        await FirebaseInstallations.instance.getId();
+    print('Firebase Installation ID: $firebaseInstallationId');
   }
 
   if (kDebugMode) {

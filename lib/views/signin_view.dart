@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../Models/user_Model.dart';
-import '../Models/language_Model.dart';
-import '../Models/theme_Model.dart';
 import '../helpers/authorization_helper.dart';
+import '../models/language_model.dart';
+import '../models/theme_model.dart';
+import '../models/user_model.dart';
 import 'reset_password_view.dart';
 
 class SignInView extends StatefulWidget {
@@ -106,7 +106,12 @@ class _SignInViewState extends State<SignInView> {
                       .then((result) {
                     if (result == null) {
                       if (mounted) {
-                        Navigator.pop(context); // Navigator.push(
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const AuthorizationHelper(),
+                            ));
                       }
                     } else {
                       setState(() => loading = false);

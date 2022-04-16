@@ -79,18 +79,15 @@ class UserModel extends ChangeNotifier {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email!, password: password!);
 
-      final _user = FirebaseAuth.instance.currentUser;
-      await _user?.updateDisplayName(username);
-      await _user?.reload();
+      final user = FirebaseAuth.instance.currentUser;
+      await user?.updateDisplayName(username);
+      await user?.reload();
 
       return FirebaseFirestore.instance
           .collection('users')
-          .doc(_user?.uid)
-          .set({
-        'username': username,
-        'email': _user?.email,
-        'avatar': ''
-      }).then((value) async {
+          .doc(user?.uid)
+          .set({'username': username, 'email': user?.email, 'avatar': ''}).then(
+              (value) async {
         if (kDebugMode) {
           print("User added to users table");
         }

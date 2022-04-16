@@ -1,9 +1,9 @@
-import 'package:commit/Models/contract_Model.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../Models/language_Model.dart';
+import '../models/contract_model.dart';
+import '../models/language_model.dart';
 
 class EditContractView extends StatefulWidget {
   final ContractModel? contract;

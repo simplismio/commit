@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../models/language_Model.dart';
+import '../models/language_model.dart';
 import '../models/media_model.dart';
 import '../models/user_model.dart';
 

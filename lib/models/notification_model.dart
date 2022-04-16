@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/foundation.dart';
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {}
@@ -14,8 +15,6 @@ class NotificationModel with ChangeNotifier {
   final String? body;
 
   NotificationModel({this.key, this.title, this.body});
-
-  final _firebaseMessaging = FirebaseMessaging.instance;
 
   static String? notificationPermission;
 
@@ -43,21 +42,22 @@ class NotificationModel with ChangeNotifier {
   }
 
   initialize() async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+    // NotificationSettings settings =
+    //     await FirebaseMessaging.instance.requestPermission(
+    //   alert: true,
+    //   announcement: false,
+    //   badge: true,
+    //   carPlay: false,
+    //   criticalAlert: false,
+    //   provisional: false,
+    //   sound: true,
+    // );
 
-    if (kDebugMode) {
-      print('User granted permission: ${settings.authorizationStatus}');
-    }
+    // if (kDebugMode) {
+    //   print('User granted permission: ${settings.authorizationStatus}');
+    // }
 
-    notificationPermission = settings.authorizationStatus.toString();
+    //notificationPermission = settings.authorizationStatus.toString();
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
 
     FirebaseMessaging.onMessage.listen(
@@ -68,7 +68,7 @@ class NotificationModel with ChangeNotifier {
       },
     );
     if (kDebugMode) {
-      _firebaseMessaging.getToken().then((value) {
+      FirebaseMessaging.instance.getToken().then((value) {
         if (kDebugMode) {
           print('Token: $value');
         }
@@ -134,7 +134,7 @@ class NotificationModel with ChangeNotifier {
 
     if (kIsWeb) {
       // subscribe to push notification for web
-      String? token = await _firebaseMessaging.getToken(
+      String? token = await FirebaseMessaging.instance.getToken(
         vapidKey:
             "BAG5adkrh-YOeQUTWaibQbfhH8MTckignRFvm5cyZohcRL-p04RymWoUJguPx2bkOsmcz654FutHq_GHilz4q8g",
       );

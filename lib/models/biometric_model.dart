@@ -32,9 +32,10 @@ class BiometricModel extends ChangeNotifier {
     bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
-          localizedReason: 'Please authenticate',
-          useErrorDialogs: true,
-          stickyAuth: true);
+        localizedReason: 'Please authenticate',
+        //useErrorDialogs: true,
+        //stickyAuth: true
+      );
       if (authenticated == true) {
         return true;
       } else {

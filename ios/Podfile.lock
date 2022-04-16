@@ -383,6 +383,12 @@ PODS:
   - Firebase/Functions (8.14.0):
     - Firebase/CoreOnly
     - FirebaseFunctions (~> 8.14.0)
+  - Firebase/InAppMessaging (8.14.0):
+    - Firebase/CoreOnly
+    - FirebaseInAppMessaging (~> 8.14.0-beta)
+  - Firebase/Installations (8.14.0):
+    - Firebase/CoreOnly
+    - FirebaseInstallations (~> 8.14.0)
   - Firebase/Messaging (8.14.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 8.14.0)
@@ -396,6 +402,10 @@ PODS:
     - Firebase/AnalyticsWithoutAdIdSupport (= 8.14.0)
     - firebase_core
     - Flutter
+  - firebase_app_installations (0.1.0-10):
+    - Firebase/Installations (= 8.14.0)
+    - firebase_core
+    - Flutter
   - firebase_auth (3.3.14):
     - Firebase/Auth (= 8.14.0)
     - firebase_core
@@ -405,6 +415,10 @@ PODS:
     - Flutter
   - firebase_crashlytics (2.6.2):
     - Firebase/Crashlytics (= 8.14.0)
+    - firebase_core
+    - Flutter
+  - firebase_in_app_messaging (0.6.0-11):
+    - Firebase/InAppMessaging (= 8.14.0)
     - firebase_core
     - Flutter
   - firebase_messaging (11.2.13):
@@ -467,7 +481,13 @@ PODS:
   - FirebaseFunctions (8.14.0):
     - FirebaseCore (~> 8.0)
     - GTMSessionFetcher/Core (~> 1.5)
-  - FirebaseInstallations (8.15.0):
+  - FirebaseInAppMessaging (8.14.0-beta):
+    - FirebaseABTesting (~> 8.0)
+    - FirebaseCore (~> 8.0)
+    - FirebaseInstallations (~> 8.0)
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (~> 2.30908.0)
+  - FirebaseInstallations (8.14.0):
     - FirebaseCore (~> 8.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
@@ -575,7 +595,7 @@ PODS:
   - image_picker_ios (0.0.1):
     - Flutter
   - leveldb-library (1.22.1)
-  - local_auth (0.0.1):
+  - local_auth_ios (0.0.1):
     - Flutter
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
@@ -597,9 +617,11 @@ DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
+  - firebase_app_installations (from `.symlinks/plugins/firebase_app_installations/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
+  - firebase_in_app_messaging (from `.symlinks/plugins/firebase_in_app_messaging/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_performance (from `.symlinks/plugins/firebase_performance/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
@@ -607,7 +629,7 @@ DEPENDENCIES:
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - local_auth (from `.symlinks/plugins/local_auth/ios`)
+  - local_auth_ios (from `.symlinks/plugins/local_auth_ios/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
@@ -631,6 +653,7 @@ SPEC REPOS:
     - FirebaseCrashlytics
     - FirebaseFirestore
     - FirebaseFunctions
+    - FirebaseInAppMessaging
     - FirebaseInstallations
     - FirebaseMessaging
     - FirebasePerformance
@@ -656,12 +679,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cloud_functions/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
+  firebase_app_installations:
+    :path: ".symlinks/plugins/firebase_app_installations/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_crashlytics:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
+  firebase_in_app_messaging:
+    :path: ".symlinks/plugins/firebase_in_app_messaging/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   firebase_performance:
@@ -676,8 +703,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
-  local_auth:
-    :path: ".symlinks/plugins/local_auth/ios"
+  local_auth_ios:
+    :path: ".symlinks/plugins/local_auth_ios/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   shared_preferences_ios:
@@ -699,9 +726,11 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: 66ff4ddf372d9c3fc360e65ae048a47a482c29b9
   Firebase: 7e8fe528c161b9271d365217a74c16aaf834578e
   firebase_analytics: 41aebc4570dd750b3cf38d33c4b4cfcf5bd56065
+  firebase_app_installations: b1a74d5dd8b7a67cccb463b6894b4a40873af195
   firebase_auth: db3557d178b86a0d2ccdb7a878a1d1c2fe70de4e
   firebase_core: cdef02fcf55872191eb0568d4c31a7a700e38582
   firebase_crashlytics: 6c0450e99d20c62d0cd868f287a12aeffbe9b010
+  firebase_in_app_messaging: 2e7fc44b57b39ab77bcd37e25c2e79220b13de40
   firebase_messaging: 57f89047ec0084a4049e253ce84cea39becadad4
   firebase_performance: b1803c7573ed151f785b9d8124dadf9f531ab10e
   firebase_storage: 4a9711df9392778a9f8641d5ce4cb7a228c0472c
@@ -713,7 +742,8 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: 079ef36f5c4b7161188928faec40fa276ebefd84
   FirebaseFirestore: fff37682b934e3e94d83e5c24936721890a2edf0
   FirebaseFunctions: 72a8e24d3bcba2782f18602b14533b1525ff297c
-  FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
+  FirebaseInAppMessaging: 4733f565ae997b92dfddc55848c1ec1b131c79a5
+  FirebaseInstallations: 7d1d967a307c12f1aadd76844fc321cef699b1ce
   FirebaseMessaging: 5ebc42d281567658a2cb72b9ef3506e4a1a1a6e4
   FirebasePerformance: ecaa182ba9c6654e2e3813e759036d80e22269a8
   FirebaseRemoteConfig: 2d6e2cfdb49af79535c8af8a80a4a5009038ec2b
@@ -732,7 +762,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 4577a4cc914a5a07c40a8a0ad0acc22080418c2d
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
-  local_auth: 1740f55d7af0a2e2a8684ce225fe79d8931e808c
+  local_auth_ios: 0d333dde7780f669e66f19d2ff6005f3ea84008d
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
