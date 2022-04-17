@@ -129,12 +129,12 @@ class LanguageModel with ChangeNotifier {
     'Dutch': 'Email reset link'
   };
   final Map<String, String>? _editProfileViewButtonText = {
-    'English': 'Save changes ',
+    'English': 'Save changes',
     'Dutch': 'Wijzingen opslaan'
   };
   final Map<String, String>? _editContractViewDeleteContractButtonText = {
-    'English': 'Save changes ',
-    'Dutch': 'Wijzingen opslaan'
+    'English': 'Delete contract',
+    'Dutch': 'Contract verwijderen'
   };
   final Map<String, String>? _signInViewButtonText = {
     'English': 'Sign in',
@@ -296,6 +296,10 @@ class LanguageModel with ChangeNotifier {
     'English': 'Share analytics',
     'Dutch': 'Deel gebruiksgegevens'
   };
+  final Map<String, String>? _mainViewSelfLabel = {
+    'English': 'you',
+    'Dutch': 'jijzelf'
+  };
 
   // Headers
   final Map<String, String>? _mainViewNotificationHeader = {
@@ -400,6 +404,7 @@ class LanguageModel with ChangeNotifier {
   String? mainViewSettingsThemeLabel;
   String? mainViewSettingsBiometricsLabel;
   String? mainViewSettingsAnalyticsLabel;
+  String? mainViewSelfLabel;
 
   // Headers
   String? mainViewNotificationHeader;
@@ -526,6 +531,7 @@ class LanguageModel with ChangeNotifier {
         _mainViewSettingsBiometricsLabel?[_language].toString();
     mainViewSettingsAnalyticsLabel =
         _mainViewSettingsAnalyticsLabel?[_language].toString();
+    mainViewSelfLabel = _mainViewSelfLabel?[_language].toString();
     // Header
     mainViewNotificationHeader =
         _mainViewNotificationHeader?[_language].toString();

@@ -19,7 +19,6 @@ import 'edit_commitment_view.dart';
 import 'edit_contract_view.dart';
 import 'edit_profile_view.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_app_installations/firebase_app_installations.dart';
 
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);
@@ -50,26 +49,22 @@ class _MainViewState extends State<MainView> {
     });
   }
 
-  getParticipantUsernames(participants, users) {
+  getParticipantUsername(participantUid, users, language, user) {
     String? participantString = '';
-    ;
-
-    participants.forEach((participant) {
-      for (var i = 0; i < users.length; i++) {
-        if (participant == users[i].uid) {
-          if (participantString == null) {
-            participantString = users[i].username;
-          } else {
-            if (EmailValidator.validate(participant) == true) {
-              participantString = participantString! + ' ' + participant;
-            } else {
-              participantString = participantString! + ' ' + users[i].username;
-            }
-          }
+    for (var i = 0; i < users.length; i++) {
+      if (participantUid == users[i].uid) {
+        if (users[i].uid == user.uid) {
+          participantString = language.mainViewSelfLabel;
+        } else {
+          participantString = users[i].username;
         }
+        return participantString;
       }
-    });
-    return participantString;
+      if (EmailValidator.validate(participantUid) == true) {
+        participantString = participantUid;
+        return participantString;
+      }
+    }
   }
 
   @override
@@ -77,7 +72,7 @@ class _MainViewState extends State<MainView> {
     List contracts = Provider.of<List<ContractModel>>(context, listen: true);
     List notifications =
         Provider.of<List<NotificationModel>>(context, listen: true);
-    //UserModel? user = Provider.of<UserModel?>(context, listen: false);
+    UserModel? user = Provider.of<UserModel?>(context, listen: false);
     List users = Provider.of<List<UserModel>>(context);
 
     contractBlock(contractIndex) {
@@ -156,24 +151,55 @@ class _MainViewState extends State<MainView> {
                                               )
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          getParticipantUsernames(
-                                              contracts[contractIndex]
-                                                  .participants,
-                                              users),
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                          ),
-                                        )
-                                      ],
-                                    )
                                   ],
                                 ),
                               ),
                               subtitle: Column(
                                 children: <Widget>[
+                                  toggledCommitments[contractIndex] == false
+                                      ? Container()
+                                      : SizedBox(
+                                          height: 25.0,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const ClampingScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: contracts[contractIndex]
+                                                .participants
+                                                .length,
+                                            itemBuilder: (BuildContext context,
+                                                int participantIndex) {
+                                              return Consumer<LanguageModel>(
+                                                builder:
+                                                    (context, language, _) =>
+                                                        Row(
+                                                  children: [
+                                                    participantIndex == 0
+                                                        ? Container()
+                                                        : const Text(','),
+                                                    participantIndex == 0
+                                                        ? Container()
+                                                        : const SizedBox(
+                                                            width: 5),
+                                                    Text(
+                                                      getParticipantUsername(
+                                                          contracts[contractIndex]
+                                                                  .participants[
+                                                              participantIndex],
+                                                          users,
+                                                          language,
+                                                          user),
+                                                      style: const TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
                                   toggledCommitments[contractIndex] == false
                                       ? Container()
                                       : contracts[contractIndex]

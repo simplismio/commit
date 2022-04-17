@@ -31,7 +31,7 @@ class _AddContractViewState extends State<AddContractView> {
   List<UserModel?> matches = [];
   String? emailParticipant = '';
 
-  _getSuggestions(String query, users) {
+  getSuggestions(String query, users) {
     matches = List.from(users);
 
     for (var i = 0; i < matches.length; i++) {
@@ -123,7 +123,7 @@ class _AddContractViewState extends State<AddContractView> {
                     onChanged: (val) {
                       setState(() {
                         participant = val;
-                        _getSuggestions(val.toLowerCase(), users);
+                        getSuggestions(val.toLowerCase(), users);
                       });
                     }),
                 participantUsernames.isEmpty

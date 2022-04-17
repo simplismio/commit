@@ -21,7 +21,6 @@ import 'models/language_model.dart';
 import 'models/media_model.dart';
 import 'models/notification_model.dart';
 import 'models/user_model.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
