@@ -26,9 +26,9 @@ class _EditContractViewState extends State<EditContractView> {
   String? participant;
   List participantUids = [];
   List participantUsernames = [];
-  List participantEmails = [];
   List<UserModel?> matches = [];
   String? emailParticipant = '';
+  bool matchesAreSetAtStart = false;
 
   getSuggestions(String query, users) {
     matches = List.from(users);
@@ -56,18 +56,27 @@ class _EditContractViewState extends State<EditContractView> {
     }
   }
 
-  setMatches(users) {
-    matches = List.from(users);
+  setMatchesOnStart(users) {
+    matches = [];
     List? tempParticipants = widget.contract!.participants;
-    print(matches);
     tempParticipants?.forEach((item) {
-      for (var i = 0; i < matches.length; i++) {
-        if (!matches[i]!.username!.toLowerCase().contains(item)) {
-          setState(() {
-            matches.removeAt(i);
-          });
+      for (var i = 0; i < users.length; i++) {
+        if (users[i]!.uid! == item) {
+          if (participantUids.contains(item) == false) {
+            participantUids.add(item);
+          }
+          if (participantUsernames.contains(users[i]!.username!) == false) {
+            participantUsernames.add(users[i]!.username!);
+          }
+        }
+        if (EmailValidator.validate(item) == true) {
+          if (participantUsernames.contains(item) == false) {
+            participantUids.add(item);
+            participantUsernames.add(item);
+          }
         }
       }
+      matchesAreSetAtStart = true;
     });
   }
 
@@ -77,8 +86,9 @@ class _EditContractViewState extends State<EditContractView> {
         Provider.of<List<UserModel>>(context, listen: false);
     UserModel? user = Provider.of<UserModel?>(context, listen: false);
 
-    setMatches(users);
-    print(matches);
+    if (matchesAreSetAtStart == false) {
+      setMatchesOnStart(users);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -150,40 +160,34 @@ class _EditContractViewState extends State<EditContractView> {
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
                               itemCount: participantUsernames.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return GestureDetector(
-                                  onTap: (() {
-                                    setState(() {
-                                      participantUids.removeAt(index);
-                                      participantUsernames.removeAt(index);
-                                      participantEmails.removeAt(index);
-                                      participantController.clear();
-                                    });
-                                  }),
-                                  child: Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(3, 5, 3, 0),
-                                      child: Consumer<ThemeModel>(
-                                          builder: (context, theme, child) =>
-                                              Chip(
-                                                deleteIcon: const Icon(
-                                                  Icons.close,
-                                                ),
-                                                onDeleted: () {
-                                                  setState(() {
-                                                    participantUids
-                                                        .removeAt(index);
-                                                    participantUsernames
-                                                        .removeAt(index);
-                                                    participantEmails
-                                                        .removeAt(index);
-                                                  });
-                                                },
-                                                label: Text(
-                                                  participantUsernames[index],
-                                                ),
-                                              ))),
-                                );
+                              itemBuilder:
+                                  (BuildContext context, int participantIndex) {
+                                return participantUsernames[participantIndex] ==
+                                        user!.username
+                                    ? Container()
+                                    : Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            3, 5, 3, 0),
+                                        child: Consumer<ThemeModel>(
+                                            builder: (context, theme, child) =>
+                                                Chip(
+                                                  deleteIcon: const Icon(
+                                                    Icons.close,
+                                                  ),
+                                                  onDeleted: () {
+                                                    setState(() {
+                                                      participantUids.removeAt(
+                                                          participantIndex);
+                                                      participantUsernames
+                                                          .removeAt(
+                                                              participantIndex);
+                                                    });
+                                                  },
+                                                  label: Text(
+                                                    participantUsernames[
+                                                        participantIndex],
+                                                  ),
+                                                )));
                               }),
                         ),
                       ),
@@ -195,19 +199,21 @@ class _EditContractViewState extends State<EditContractView> {
                           child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: matches.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return matches[index]?.uid == user?.uid
+                              itemBuilder:
+                                  (BuildContext context, int matchesIndex) {
+                                return matches[matchesIndex]?.uid == user?.uid
                                     ? Container()
                                     : GestureDetector(
                                         onTap: (() {
                                           setState(() {
-                                            participantUids
-                                                .add(matches[index]?.uid ?? '');
+                                            participantUids.add(
+                                                matches[matchesIndex]?.uid ??
+                                                    '');
                                             participantUsernames.add(
-                                                matches[index]?.username ?? '');
-                                            participantEmails.add(
-                                                matches[index]?.email ?? '');
-                                            matches.removeAt(index);
+                                                matches[matchesIndex]
+                                                        ?.username ??
+                                                    '');
+                                            matches.removeAt(matchesIndex);
                                             participantController.clear();
                                           });
                                         }),
@@ -216,7 +222,8 @@ class _EditContractViewState extends State<EditContractView> {
                                           child: Card(
                                             child: ListTile(
                                                 title: Text(
-                                                    matches[index]?.username ??
+                                                    matches[matchesIndex]!
+                                                            .username ??
                                                         '')),
                                           ),
                                         ),
@@ -235,6 +242,7 @@ class _EditContractViewState extends State<EditContractView> {
                               participantUids.add(emailParticipant);
                               participant = '';
                               emailParticipant = '';
+                              participantController.clear();
                             });
                           },
                           child: Card(
@@ -273,7 +281,8 @@ class _EditContractViewState extends State<EditContractView> {
                         }
 
                         ContractModel()
-                            .editContract(widget.contract!.key, title)
+                            .editContract(
+                                widget.contract!.key, title, participantUids)
                             .then((result) {
                           if (result == null) {
                             Navigator.of(context).maybePop();

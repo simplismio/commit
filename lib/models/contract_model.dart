@@ -115,11 +115,12 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
-  Future editContract(_contractKey, _title) {
+  Future editContract(contractKey, title, participantUids) {
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractKey)
-        .update({'title': _title}).then((value) {
+        .doc(contractKey)
+        .update({'title': title, 'participants': participantUids}).then(
+            (value) {
       if (kDebugMode) {
         print('Contract updated');
       }
@@ -134,10 +135,10 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
-  Future deleteContract(_contractKey) {
+  Future deleteContract(contractKey) {
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractKey)
+        .doc(contractKey)
         .delete()
         // ignore: avoid_print
         .then((value) {
@@ -180,13 +181,13 @@ class ContractModel extends ChangeNotifier {
   }
 
   Future editCommitment(
-      _contractKey, _commitmentArray, _commitmentKey, _commitment) {
-    _commitmentArray[_commitmentKey]['commitment'] = _commitment;
+      contractKey, commitmentArray, commitmentKey, commitment) {
+    commitmentArray[commitmentKey]['commitment'] = commitment;
 
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractKey)
-        .update({'commitments': _commitmentArray}).then((value) {
+        .doc(contractKey)
+        .update({'commitments': commitmentArray}).then((value) {
       if (kDebugMode) {
         print("Commitment updated");
       }
@@ -201,13 +202,13 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
-  Future deleteCommitment(_contractKey, _commitmentArray, _commitmentIndex) {
-    _commitmentArray.removeAt(_commitmentIndex);
+  Future deleteCommitment(contractKey, commitmentArray, commitmentIndex) {
+    commitmentArray.removeAt(commitmentIndex);
 
     return FirebaseFirestore.instance
         .collection('contracts')
-        .doc(_contractKey)
-        .update({'commitments': _commitmentArray}).then((value) {
+        .doc(contractKey)
+        .update({'commitments': commitmentArray}).then((value) {
       if (kDebugMode) {
         print("Commitment deleted");
       }
