@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
 import '../helpers/authorization_helper.dart';
 import '../models/analytics_model.dart';
 import '../models/biometric_model.dart';
@@ -20,6 +19,7 @@ import 'edit_contract_view.dart';
 import 'edit_profile_view.dart';
 import 'package:email_validator/email_validator.dart';
 
+/// MainView view class
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);
 
@@ -27,18 +27,27 @@ class MainView extends StatefulWidget {
   _MainViewState createState() => _MainViewState();
 }
 
+/// MainView view state class
 class _MainViewState extends State<MainView> {
   @override
+
+  /// Function to set initial class state
   void initState() {
     super.initState();
 
+    /// Initite toggle commitments to collapse contract in load
     for (var i = 0; i < 100; i++) {
       toggledCommitments[i] = false;
     }
   }
 
+  /// Initialize loading bool
   bool loading = false;
+
+  /// Initialize breakpoint to serve layout for mobile and web layouts
   final double breakpoint = 600;
+
+  /// Initialize variables to collapse contracts on load
   final Map<int, bool> toggledCommitments = {};
   bool toggledCommitmentsValue = kIsWeb ? true : false;
 
@@ -75,7 +84,55 @@ class _MainViewState extends State<MainView> {
     UserModel? user = Provider.of<UserModel?>(context, listen: false);
     List users = Provider.of<List<UserModel>>(context);
 
-    contractBlock(contractIndex) {
+    loadAppBar() {
+      AppBar(
+        leading: Builder(
+          builder: (context) {
+            return IconButton(
+              icon: const FaIcon(
+                FontAwesomeIcons.bars,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+        title: Consumer<LanguageModel>(
+            builder: (context, language, _) =>
+                Text(language.mainViewAppBarTitle.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ))),
+        centerTitle: true,
+        elevation: 0,
+        actions: [
+          Builder(
+            builder: (context) {
+              return notifications.isNotEmpty
+                  ? Badge(
+                      badgeContent: Text(notifications.length.toString()),
+                      position: BadgePosition.topEnd(top: 5, end: 5),
+                      child: IconButton(
+                        icon: const FaIcon(FontAwesomeIcons.bell),
+                        onPressed: () {
+                          Scaffold.of(context).openEndDrawer();
+                        },
+                      ),
+                    )
+                  : IconButton(
+                      icon: const FaIcon(FontAwesomeIcons.bell),
+                      onPressed: () {
+                        Scaffold.of(context).openEndDrawer();
+                      },
+                    );
+            },
+          ),
+        ],
+      );
+    }
+
+    loadContractBlock(contractIndex) {
       ContractModel().checkForEmailAsParticipant(contracts[contractIndex]);
       return Column(
         children: [
@@ -470,7 +527,7 @@ class _MainViewState extends State<MainView> {
       );
     }
 
-    mobileView() {
+    loadMobileView() {
       return SizedBox(
           height: double.maxFinite,
           width: double.maxFinite,
@@ -478,12 +535,12 @@ class _MainViewState extends State<MainView> {
               shrinkWrap: true,
               itemCount: contracts.length,
               itemBuilder: (BuildContext context, int contractIndex) {
-                return contractBlock(contractIndex);
+                return loadContractBlock(contractIndex);
               },
               scrollDirection: Axis.vertical));
     }
 
-    desktopView() {
+    loadDesktopView() {
       return contracts.asMap().containsKey(0) == true
           ? SizedBox(
               child: Padding(
@@ -499,13 +556,13 @@ class _MainViewState extends State<MainView> {
                     shrinkWrap: true,
                     children: List<Widget>.generate(
                         contracts.length, // same length as the data
-                        (contractIndex) => contractBlock(contractIndex))),
+                        (contractIndex) => loadContractBlock(contractIndex))),
               ),
             )
           : Container();
     }
 
-    drawerLeft() {
+    loadDrawerLeft() {
       return Drawer(
         child: SingleChildScrollView(
           child: Column(
@@ -699,7 +756,7 @@ class _MainViewState extends State<MainView> {
       );
     }
 
-    drawerRight() {
+    loadDrawerRight() {
       return Drawer(
           child: SingleChildScrollView(
               child: Column(
@@ -809,51 +866,7 @@ class _MainViewState extends State<MainView> {
 //                     builder: (context, theme, child) =>
 
     return Scaffold(
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const FaIcon(
-                FontAwesomeIcons.bars,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-        title: Consumer<LanguageModel>(
-            builder: (context, language, _) =>
-                Text(language.mainViewAppBarTitle.toString(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ))),
-        centerTitle: true,
-        elevation: 0,
-        actions: [
-          Builder(
-            builder: (context) {
-              return notifications.isNotEmpty
-                  ? Badge(
-                      badgeContent: Text(notifications.length.toString()),
-                      position: BadgePosition.topEnd(top: 5, end: 5),
-                      child: IconButton(
-                        icon: const FaIcon(FontAwesomeIcons.bell),
-                        onPressed: () {
-                          Scaffold.of(context).openEndDrawer();
-                        },
-                      ),
-                    )
-                  : IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.bell),
-                      onPressed: () {
-                        Scaffold.of(context).openEndDrawer();
-                      },
-                    );
-            },
-          ),
-        ],
-      ),
+      appBar: loadAppBar(),
       body: Scrollbar(
         child: SingleChildScrollView(
           child: Padding(
@@ -868,14 +881,14 @@ class _MainViewState extends State<MainView> {
                                   language.mainViewNoContractsErrorMessage ??
                                       ''))))
                   : breakpoint > MediaQuery.of(context).size.width
-                      ? mobileView()
-                      : desktopView()
+                      ? loadMobileView()
+                      : loadDesktopView()
             ]),
           ),
         ),
       ),
-      drawer: drawerLeft(),
-      endDrawer: drawerRight(),
+      drawer: loadDrawerLeft(),
+      endDrawer: loadDrawerRight(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

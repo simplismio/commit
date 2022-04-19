@@ -1,29 +1,40 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Language model class
+/// Uses ChangeNotifier to update changes to MainView
 class LanguageModel with ChangeNotifier {
-  static List<String> languages = ['English', 'Dutch'];
+  /// Language class variables
   final String key = "language";
 
+  /// Inituate supported languages list for MainView
+  static List<String> languages = ['English', 'Dutch'];
+
+  /// Toggle value language
   late String _language;
   late Map<String, dynamic> translations;
 
-  LanguageModel() {
-    _language = 'English';
-    _loadFromPrefs();
-  }
-
+  /// Getter for the language setting
   String get language => _language;
 
-  setLanguage(_value) {
-    _language = _value;
-    _saveToPrefs();
+  /// Language model class constructor
+  /// Initialize _language variable
+  /// Loads latest language setting from SharedPreferences
+  LanguageModel() {
+    _language = 'English';
+    loadFromPrefs();
   }
 
+  /// Function to set the language
+  setLanguage(_value) {
+    _language = _value;
+    saveToPrefs();
+  }
+
+  /// Identify the locale in the phone or browser and set the default locale in case user has not set language yet
   defaultLanguage() {
     String? systemLanguage;
     String? defaultLanguage;
@@ -56,20 +67,23 @@ class LanguageModel with ChangeNotifier {
     return defaultLanguage;
   }
 
-  _loadFromPrefs() async {
+  /// Function to load the language settings in SharedPreferences
+  void loadFromPrefs() async {
     SharedPreferences preference = await SharedPreferences.getInstance();
     _language = preference.getString(key) ?? defaultLanguage();
-    _switchLanguage(_language);
+    switchLanguage(_language);
     notifyListeners();
   }
 
-  _saveToPrefs() async {
+  /// Function to save the language in SharedPreferences
+  void saveToPrefs() async {
     SharedPreferences preference = await SharedPreferences.getInstance();
     await preference.setString(key, _language);
-    _switchLanguage(_language);
+    switchLanguage(_language);
     notifyListeners();
   }
 
+  /// Set the Maps that contain translations
   final Map<String, String>? _mainViewAppBarTitle = {
     'English': 'Contracts',
     'Dutch': 'Contracten'
@@ -339,6 +353,8 @@ class LanguageModel with ChangeNotifier {
     'Dutch': 'Je bent toegevoegd aan een contract'
   };
 
+  /// Create the variables that hold the value to be shared with Views
+
   // AppBar titles
   String? mainViewAppBarTitle;
   String? newContractViewAppBarTitle;
@@ -423,7 +439,8 @@ class LanguageModel with ChangeNotifier {
   String? welcomeEmailBody;
   String? addContractEmailBody;
 
-  void _switchLanguage(_language) {
+  /// Function to switch the language immediately
+  void switchLanguage(_language) {
     mainViewAppBarTitle = _mainViewAppBarTitle?[_language].toString();
     newContractViewAppBarTitle =
         _newContractViewAppBarTitle?[_language].toString();

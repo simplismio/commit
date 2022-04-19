@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,15 +7,19 @@ import 'package:flutter/foundation.dart';
 
 Future<void> onBackgroundMessage(RemoteMessage message) async {}
 
+/// Notification model class
+/// Uses ChangeNotifier to update changes to MainView
 class NotificationModel with ChangeNotifier {
+  /// Notification class variables
   final String? key;
   final String? title;
   final String? body;
 
+  /// Notification model class constructor
   NotificationModel({this.key, this.title, this.body});
 
-  static String? notificationPermission;
-
+  /// Convert Firebase response to Notification object
+  /// Returns Notification object as list
   List<NotificationModel> _notificationsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return NotificationModel(
@@ -27,6 +30,8 @@ class NotificationModel with ChangeNotifier {
     }).toList();
   }
 
+  /// Stream for Firebase notfication changes
+  /// Returns most recent Notification object from Firebse
   Stream<List<NotificationModel>> get notifications {
     if (kDebugMode) {
       print('Loading notifications');
@@ -57,8 +62,11 @@ class NotificationModel with ChangeNotifier {
     // }
 
     //notificationPermission = settings.authorizationStatus.toString();
+
+    /// Function to listen to background messages
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
 
+    /// Function to listen to foreground messages
     FirebaseMessaging.onMessage.listen(
       (message) async {
         if (kDebugMode) {
@@ -75,6 +83,8 @@ class NotificationModel with ChangeNotifier {
     }
   }
 
+  /// Function to send ush notitation to users' phones.
+  /// Returns of null or error
   Future sendPushNotification(title, body, topic, function) async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -106,6 +116,8 @@ class NotificationModel with ChangeNotifier {
     });
   }
 
+  /// Function to mark notifications as read
+  /// Returns of null or error
   Future markNotificationAsRead(notificationKey) async {
     return FirebaseFirestore.instance
         .collection('notifications')
@@ -114,6 +126,7 @@ class NotificationModel with ChangeNotifier {
       if (kDebugMode) {
         print("Notification updated");
       }
+      return null;
     }).catchError((error) {
       if (kDebugMode) {
         print("Failed to merge data: $error");
@@ -122,7 +135,8 @@ class NotificationModel with ChangeNotifier {
     });
   }
 
-  Future subscribeToTopic(topic) async {
+  /// Function to subscribe user to topic
+  Future<void> subscribeToTopic(topic) async {
     if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.android) {
       if (kDebugMode) {

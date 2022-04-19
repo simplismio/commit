@@ -13,29 +13,41 @@ ThemeData dark = ThemeData(
   primarySwatch: Colors.indigo,
 );
 
+/// Theme model class
+/// Uses ChangeNotifier to update changes to Main
 class ThemeModel extends ChangeNotifier {
+  /// Theme class variables
   final String key = "theme";
+
+  /// Toggle value theme
   late bool _darkTheme;
 
+  /// Getter for the theme setting
   bool get darkTheme => kDebugMode ? _darkTheme : !_darkTheme;
 
+  /// Theme model class constructor
+  /// Initialize _darkTheme variable
+  /// Loads latest theme setting from SharedPreferences
   ThemeModel() {
     _darkTheme = false;
-    _loadFromPrefs();
+    loadFromPrefs();
   }
 
-  toggleTheme() {
+  /// Function to toggle the theme setting in SharedPreferences
+  void toggleTheme() {
     _darkTheme = !_darkTheme;
-    _saveToPrefs();
+    saveToPrefs();
   }
 
-  _loadFromPrefs() async {
+  /// Function to load the theme settings in SharedPreferences
+  void loadFromPrefs() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     _darkTheme = _pref.getBool(key) ?? true;
     notifyListeners();
   }
 
-  _saveToPrefs() async {
+  /// Function to save the theme settings in SharedPreferences
+  void saveToPrefs() async {
     SharedPreferences _pref = await SharedPreferences.getInstance();
     await _pref.setBool(key, _darkTheme);
     notifyListeners();

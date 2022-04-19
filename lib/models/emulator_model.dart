@@ -4,22 +4,35 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
+/// Emulator model class
 class EmulatorModel {
-  static bool testingOnRealDevice = false;
-  static String localIP = '192.168.60.121';
+  /// Emulator class variables
+  final bool testingOnEmulator = true;
+  final String localIP = '192.168.60.121';
 
-  static void setupAuthEmulator() {
-    if (testingOnRealDevice == true) {
+  /// Emulator model class constructor
+  /// Setup all emulators
+  EmulatorModel() {
+    setupAuthEmulator();
+    setupFirestoreEmulator();
+    setupStorageEmulator();
+    setupFunctionsEmulator();
+  }
+
+  /// Function to setup the Auth emulator
+  void setupAuthEmulator() {
+    if (testingOnEmulator == false) {
       FirebaseAuth.instance.useAuthEmulator(localIP, 9099);
     } else {
       FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     }
   }
 
-  static void setupFirestoreEmulator() {
+  /// Function to setup the Firestore emulator
+  void setupFirestoreEmulator() {
     if (FirebaseFirestore.instance.settings.host == null) {
       if (defaultTargetPlatform == TargetPlatform.android) {
-        if (testingOnRealDevice == true) {
+        if (testingOnEmulator == false) {
           FirebaseFirestore.instance.settings = Settings(
               host: '$localIP:8080',
               sslEnabled: false,
@@ -31,7 +44,7 @@ class EmulatorModel {
               persistenceEnabled: false);
         }
       } else {
-        if (testingOnRealDevice == true) {
+        if (testingOnEmulator == false) {
           FirebaseFirestore.instance.settings = Settings(
               host: '$localIP:8080',
               sslEnabled: false,
@@ -46,9 +59,10 @@ class EmulatorModel {
     }
   }
 
-  static void setupStorageEmulator() {
+  /// Function to setup the Storage emulator
+  void setupStorageEmulator() {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      if (testingOnRealDevice == true) {
+      if (testingOnEmulator == false) {
         FirebaseStorage.instance.useStorageEmulator(localIP, 9199);
       } else {
         FirebaseStorage.instance.useStorageEmulator('10.0.2.2', 9199);
@@ -58,8 +72,9 @@ class EmulatorModel {
     }
   }
 
-  static void setupFunctionsEmulator() {
-    if (testingOnRealDevice == true) {
+  /// Function to setup the Functions emulator
+  void setupFunctionsEmulator() {
+    if (testingOnEmulator == false) {
       FirebaseFunctions.instance.useFunctionsEmulator(localIP, 3001);
     } else {
       FirebaseFunctions.instance.useFunctionsEmulator('localhost', 3001);

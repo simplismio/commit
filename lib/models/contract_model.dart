@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-
 import 'email_model.dart';
 //import 'notification_service.dart';
 
+/// Contract model class
+/// Uses ChangeNotifier to update changes to MainView
 class ContractModel extends ChangeNotifier {
+  /// Contract class variables
   final String? key;
   final String? title;
   final String? ownerUserId;
   final List? participants;
   final List? commitments;
 
+  /// Contract model class constructor
   ContractModel(
       {this.key,
       this.title,
@@ -19,7 +22,9 @@ class ContractModel extends ChangeNotifier {
       this.participants,
       this.commitments});
 
-  List<ContractModel> _contractsFromSnapshot(QuerySnapshot snapshot) {
+  /// Convert Firebase response to Contract object
+  /// Returns Contract object as list
+  List<ContractModel> contractsFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return ContractModel(
           key: doc.id,
@@ -30,6 +35,8 @@ class ContractModel extends ChangeNotifier {
     }).toList();
   }
 
+  /// Stream for Firebase contract changes
+  /// Returns most recent Contract object from Firebse
   Stream<List<ContractModel>> get contracts {
     if (kDebugMode) {
       print('Loading contracts');
@@ -41,16 +48,18 @@ class ContractModel extends ChangeNotifier {
           .collection('contracts')
           .where('participants', arrayContainsAny: [user.uid, user.email])
           .snapshots()
-          .map(_contractsFromSnapshot);
+          .map(contractsFromSnapshot);
     } else {
       return FirebaseFirestore.instance
           .collection('contracts')
           .where('participants', isEqualTo: user?.uid)
           .snapshots()
-          .map(_contractsFromSnapshot);
+          .map(contractsFromSnapshot);
     }
   }
 
+  /// For each MainView contractBlock interation, update email to Firease Uid in case user signed up
+  /// Returns null or error
   checkForEmailAsParticipant(contract) {
     final user = FirebaseAuth.instance.currentUser;
     List newParticipants = [];
@@ -71,6 +80,7 @@ class ContractModel extends ChangeNotifier {
           if (kDebugMode) {
             print('Contract updated');
           }
+          return null;
         }).catchError((error) {
           if (kDebugMode) {
             print('Error: $error');
@@ -81,6 +91,8 @@ class ContractModel extends ChangeNotifier {
     }
   }
 
+  /// Function to add contract to Firebase
+  /// Returns null or error
   Future addContract(contractTitle, participantUids, participantEmails,
       participantUsernames, emailTitle, body) async {
     final user = FirebaseAuth.instance.currentUser;
@@ -115,6 +127,8 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
+  /// Function to edit contract in Firebase
+  /// Returns null or error
   Future editContract(contractKey, title, participantUids) {
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -135,6 +149,8 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
+  /// Function to delete contract in Firebase
+  /// Returns null or error
   Future deleteContract(contractKey) {
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -156,6 +172,8 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
+  /// Function to add commitment to Firebase
+  /// Returns null or error
   Future addCommitment(contractKey, commitment) {
     return FirebaseFirestore.instance
         .collection('contracts')
@@ -180,6 +198,8 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
+  /// Function to edit commitment in Firebase
+  /// Returns null or error
   Future editCommitment(
       contractKey, commitmentArray, commitmentKey, commitment) {
     commitmentArray[commitmentKey]['commitment'] = commitment;
@@ -202,6 +222,8 @@ class ContractModel extends ChangeNotifier {
     });
   }
 
+  /// Function to delete commitment in Firebase
+  /// Returns null or error
   Future deleteCommitment(contractKey, commitmentArray, commitmentIndex) {
     commitmentArray.removeAt(commitmentIndex);
 

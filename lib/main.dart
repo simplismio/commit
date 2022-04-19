@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'firebase_options.dart';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_app_installations/firebase_app_installations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +8,6 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import './models/analytics_model.dart';
 import './models/biometric_model.dart';
 import './models/contract_model.dart';
@@ -25,8 +23,10 @@ import 'models/user_model.dart';
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 Future<void> main() async {
+  /// Making native code initialization before Flutter app initiazliation
   WidgetsFlutterBinding.ensureInitialized();
 
+  /// Initiate Facebook Web API for authentication
   // if (kIsWeb) {
   //   // initialiase the facebook javascript SDK
   //   FacebookAuth.i.webInitialize(
@@ -37,6 +37,7 @@ Future<void> main() async {
   //   );
   // }
 
+  /// Initialize App for mobile & web
   if (defaultTargetPlatform == TargetPlatform.iOS ||
       defaultTargetPlatform == TargetPlatform.android) {
     await Firebase.initializeApp(
@@ -55,31 +56,31 @@ Future<void> main() async {
             measurementId: "G-8Z10Z47T7F"));
   }
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  /// Initalize Notifications model
   NotificationModel().initialize();
 
+  /// InitializeAnalytics & Performance measurements if consent given by user
   if (AnalyticsModel().analytics == true) {
     await FirebaseAnalytics.instance.logAppOpen();
     await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
   }
 
-  if (kDebugMode) {
-    String? firebaseInstallationId =
-        await FirebaseInstallations.instance.getId();
-    print('Firebase Installation ID: $firebaseInstallationId');
-  }
-
+  /// Initialize Crashlytics, Emulator & InApp Messages if in debug mode
   if (kDebugMode) {
     try {
-      EmulatorModel.setupAuthEmulator();
-      EmulatorModel.setupFirestoreEmulator();
-      EmulatorModel.setupStorageEmulator();
-      EmulatorModel.setupFunctionsEmulator();
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      EmulatorModel();
+      String? firebaseInstallationId =
+          await FirebaseInstallations.instance.getId();
+      print('Firebase Installation ID: $firebaseInstallationId');
     } catch (e) {
       print(e);
     }
   }
 
+  /// Initialize the app
+  /// Wrap initialization with crashlytic listener
+  /// Wrap initialization with user stream to check authentication stream as early as possible
   runZonedGuarded<Future<void>>(() async {
     runApp(StreamProvider<UserModel?>.value(
         value: UserModel().user,
@@ -94,6 +95,10 @@ Future<void> main() async {
   }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
+/// Commit class
+/// Initializes all streams and notifiers
+/// Initializes MaterialApp for mobile & web
+/// Initializes (local) authentication
 class CommitApp extends StatelessWidget {
   const CommitApp({Key? key}) : super(key: key);
 

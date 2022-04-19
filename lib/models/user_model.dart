@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -14,17 +13,19 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:random_string/random_string.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
 import 'analytics_model.dart';
 import 'email_model.dart';
-import 'emulator_model.dart';
 
+/// User model class
+/// Uses ChangeNotifier to update changes to Main
 class UserModel extends ChangeNotifier {
+  /// User class variables
   String? uid;
   String? avatar;
   String? username;
   String? email;
 
+  /// User model class constructor
   UserModel({
     this.uid,
     this.avatar,
@@ -32,7 +33,9 @@ class UserModel extends ChangeNotifier {
     this.email,
   });
 
-  UserModel? _userFromFirebaseUser(User? user) {
+  /// Convert Firebase response to User object
+  /// Returns User object as list
+  UserModel? userFromFirebaseUser(User? user) {
     if (user != null) {
       if (kDebugMode) {
         print('Firebase UID is: ${user.uid}');
@@ -45,17 +48,23 @@ class UserModel extends ChangeNotifier {
         email: user?.email);
   }
 
+  /// Stream for Firebase user changes
+  /// Returns most recent User object from Firebse
   Stream<UserModel?> get user {
-    return FirebaseAuth.instance.userChanges().map(_userFromFirebaseUser);
+    return FirebaseAuth.instance.userChanges().map(userFromFirebaseUser);
   }
 
-  List<UserModel> _usersFromSnapshot(QuerySnapshot snapshot) {
+  /// Convert Firebase response to User object
+  /// Returns User object as list
+  List<UserModel> usersFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return UserModel(
           uid: doc.id, username: doc['username'], email: doc['email']);
     }).toList();
   }
 
+  /// Stream for Firebase users changes
+  /// Returns most recent Users object from Firebse
   Stream<List<UserModel>> get users {
     if (kDebugMode) {
       print('Loading contracts');
@@ -63,9 +72,11 @@ class UserModel extends ChangeNotifier {
     return FirebaseFirestore.instance
         .collection('users')
         .snapshots()
-        .map(_usersFromSnapshot);
+        .map(usersFromSnapshot);
   }
 
+  /// Function to sign user up in Firebase using email and password
+  /// Returns null or error
   Future signUpUsingEmailAndPassword(
       String? username, String? email, String? password, title, body) async {
     try {
@@ -107,11 +118,12 @@ class UserModel extends ChangeNotifier {
     }
   }
 
+  /// Function to sign user in in Firebase using email and password
+  /// Returns credential or error
   Future signInUsingEmailAndPassword(String? email, String? password) async {
     try {
       if (kDebugMode) {
         print('Signing in user');
-        EmulatorModel.setupAuthEmulator();
       }
       if (AnalyticsModel().analytics == true) {
         await FirebaseAnalytics.instance.logLogin();
@@ -124,11 +136,12 @@ class UserModel extends ChangeNotifier {
     }
   }
 
+  /// Function to reset password
+  /// Returns null or error
   Future resetPassword(String? email) async {
     try {
       if (kDebugMode) {
         print('Sending password reset email');
-        EmulatorModel.setupAuthEmulator();
       }
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email!);
       return null;
@@ -137,28 +150,31 @@ class UserModel extends ChangeNotifier {
     }
   }
 
+  /// Function to sign user out of Firebase session
+  /// Returns null or error
   Future signOut() async {
     try {
       if (kDebugMode) {
         print('Signing out user');
       }
       await FirebaseAuth.instance.signOut();
-
       return null;
     } on FirebaseAuthException catch (error) {
       return error.message;
     }
   }
 
+  /// Function to sign user up using email and password
+  /// Returns credential or error
   Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
+    /// Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    // Obtain the auth details from the request
+    /// Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth =
         await googleUser!.authentication;
 
-    // Create a new credential
+    /// Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -168,6 +184,8 @@ class UserModel extends ChangeNotifier {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  /// Function to sign user in using Facebook
+  /// Returns credential or error
   Future<UserCredential?> signInWithFacebook() async {
     final LoginResult result = await FacebookAuth.instance.login();
     if (result.status == LoginStatus.success) {
@@ -181,6 +199,7 @@ class UserModel extends ChangeNotifier {
     return null;
   }
 
+  /// Function to generate a String nonce
   String generateNonce([int length = 32]) {
     const charset =
         '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
@@ -189,12 +208,15 @@ class UserModel extends ChangeNotifier {
         .join();
   }
 
+  /// Function to generate a sha256 String
   String sha256ofString(String input) {
     final bytes = utf8.encode(input);
     final digest = sha256.convert(bytes);
     return digest.toString();
   }
 
+  /// Function to sign user in using Apple
+  /// Returns credential
   Future<UserCredential> signInWithApple() async {
     final rawNonce = generateNonce();
     final nonce = sha256ofString(rawNonce);
@@ -214,6 +236,8 @@ class UserModel extends ChangeNotifier {
     return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
   }
 
+  /// Function to update user profile
+  /// Returns null or error
   Future updateUserProfile(
       String? currentAvatarUrl,
       File? newAvatarUrlMobile,
