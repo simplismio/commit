@@ -70,7 +70,8 @@ class _EditContractViewState extends State<EditContractView> {
     }
   }
 
-  setMatchesOnStart(users) {
+  /// Function to set contract participants Uid and Username lists
+  setParticipantsOnStart(users) {
     matches = [];
     List? tempParticipants = widget.contract!.participants;
     tempParticipants?.forEach((item) {
@@ -94,6 +95,7 @@ class _EditContractViewState extends State<EditContractView> {
     });
   }
 
+  /// Load AppBar
   loadAppBar() {
     return AppBar(
       leading: Builder(
@@ -344,7 +346,7 @@ class _EditContractViewState extends State<EditContractView> {
     UserModel? user = Provider.of<UserModel?>(context, listen: false);
 
     if (matchesAreSetAtStart == false) {
-      setMatchesOnStart(users);
+      setParticipantsOnStart(users);
     }
 
     return Scaffold(

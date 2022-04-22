@@ -7,6 +7,10 @@ import 'email_model.dart';
 /// Contract model class
 /// Uses ChangeNotifier to update changes to MainView
 class ContractModel extends ChangeNotifier {
+  /// Inituate proofs and penalties list for MainView
+  static List<String> proofs = ['Bank statement', 'Dutch'];
+  static List<String> penalties = ['Payment', 'Blacklist'];
+
   /// Contract class variables
   final String? key;
   final String? title;

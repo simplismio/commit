@@ -1,9 +1,9 @@
+import 'package:commit/views/main_view.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
 import '../models/contract_model.dart';
 import '../models/language_model.dart';
 import '../models/theme_model.dart';
@@ -262,7 +262,12 @@ class _AddContractViewState extends State<AddContractView> {
                   language.addContractEmailBody)
               .then((result) {
             if (result == null) {
-              Navigator.of(context).maybePop();
+              //Navigator.of(context).maybePop();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const MainView(),
+                  ));
             } else {
               setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(

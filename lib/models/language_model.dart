@@ -169,8 +169,8 @@ class LanguageModel with ChangeNotifier {
     'Dutch': 'Titel van het contract'
   };
   final Map<String, String>? _newCommitmentViewCommitmentPlaceholder = {
-    'English': 'Commitment',
-    'Dutch': 'Commitment'
+    'English': 'I promise to..',
+    'Dutch': 'Ik beloof om ..'
   };
   final Map<String, String>? _editContractViewContractTitlePlaceholder = {
     'English': 'Contract title',
@@ -203,6 +203,18 @@ class LanguageModel with ChangeNotifier {
   final Map<String, String>? _signInUpViewPasswordPlaceholder = {
     'English': 'Password',
     'Dutch': 'Wachtwoord'
+  };
+  final Map<String, String>? _addCommitmentCounterpartyPlaceholder = {
+    'English': 'Choose counterparty',
+    'Dutch': 'Kies tegenpartij'
+  };
+  final Map<String, String>? _addCommitmentProofPlaceholder = {
+    'English': 'Choose proof mechanism for fulfillment',
+    'Dutch': 'Kies de bewijsvorm voor nakoming'
+  };
+  final Map<String, String>? _addCommitmentResolutionPlaceholder = {
+    'English': 'Choose resolution mechanism if non-compliant',
+    'Dutch': 'Kies de resolutievorm bij niet na-koming'
   };
 
   // Error Messages
@@ -389,6 +401,9 @@ class LanguageModel with ChangeNotifier {
   String? signUpViewUsernamePlaceholder;
   String? signInUpViewEmailPlaceholder;
   String? signInUpViewPasswordPlaceholder;
+  String? addCommitmentCounterpartyPlaceholder;
+  String? addCommitmentProofPlaceholder;
+  String? addCommitmentResolutionPlaceholder;
 
   // Error Messages
   String? newContractViewContractTitleErrorMessage;
@@ -496,7 +511,13 @@ class LanguageModel with ChangeNotifier {
         _signInUpViewEmailPlaceholder?[_language].toString();
     signInUpViewPasswordPlaceholder =
         _signInUpViewPasswordPlaceholder?[_language].toString();
-    // Error Messages
+    addCommitmentCounterpartyPlaceholder =
+        _addCommitmentCounterpartyPlaceholder?[_language].toString();
+    addCommitmentProofPlaceholder =
+        _addCommitmentProofPlaceholder?[_language].toString();
+    addCommitmentResolutionPlaceholder =
+        _addCommitmentResolutionPlaceholder?[_language].toString();
+    // Error messages
     newContractViewContractTitleErrorMessage =
         _newContractViewContractTitleErrorMessage?[_language].toString();
     newCommitmentViewCommitmentErrorMessage =

@@ -14,9 +14,21 @@ class EmulatorModel {
   /// Setup all emulators
   EmulatorModel() {
     setupAuthEmulator();
+    if (kDebugMode) {
+      print('Set up Auth emulator');
+    }
     setupFirestoreEmulator();
+    if (kDebugMode) {
+      print('Set up Firestore emulator');
+    }
     setupStorageEmulator();
+    if (kDebugMode) {
+      print('Set up Storage emulator');
+    }
     setupFunctionsEmulator();
+    if (kDebugMode) {
+      print('Set up Functions emulator');
+    }
   }
 
   /// Function to setup the Auth emulator
