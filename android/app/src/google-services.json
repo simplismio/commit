@@ -1,0 +1,104 @@
+{
+  "project_info": {
+    "project_number": "236126728561",
+    "project_id": "commit-b9e29",
+    "storage_bucket": "commit-b9e29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236126728561:android:e5c4920b3660bdac7e86d0",
+        "android_client_info": {
+          "package_name": "com.j0ost.commit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236126728561-di5nur639q56s5t9col0rjka8fhvc4ak.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.j0ost.commit",
+            "certificate_hash": "003ef594e138aec9b7073de1914802bef75e9129"
+          }
+        },
+        {
+          "client_id": "236126728561-vtmi0qumsfg1p4gusjnr5omonq48asoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAknUIUUJko0czyQxInPP3EofuE07hhrMs"
+        },
+        {
+          "current_key": "AIzaSyBxHf26EiTtb0uZqq1y8RNbddF6iQbUQEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236126728561-vtmi0qumsfg1p4gusjnr5omonq48asoj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "236126728561-cnqhpmt1gpcf4u8ih9oo30n58f0fcqnr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.j0ost.commit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:236126728561:android:d0e75f963a5b6bfc7e86d0",
+        "android_client_info": {
+          "package_name": "com.j0ost.commit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "236126728561-pdrdbefhpnugvj16kfeubd6u3q87ldf7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.j0ost.commit",
+            "certificate_hash": "003ef594e138aec9b7073de1914802bef75e9129"
+          }
+        },
+        {
+          "client_id": "236126728561-vtmi0qumsfg1p4gusjnr5omonq48asoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAknUIUUJko0czyQxInPP3EofuE07hhrMs"
+        },
+        {
+          "current_key": "AIzaSyBxHf26EiTtb0uZqq1y8RNbddF6iQbUQEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "236126728561-vtmi0qumsfg1p4gusjnr5omonq48asoj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "236126728561-cnqhpmt1gpcf4u8ih9oo30n58f0fcqnr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.j0ost.commit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

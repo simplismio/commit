@@ -19,6 +19,7 @@ import 'models/language_model.dart';
 import 'models/media_model.dart';
 import 'models/notification_model.dart';
 import 'models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -38,10 +39,13 @@ Future<void> main() async {
   // }
 
   /// Initialize App for mobile & web
-  if (defaultTargetPlatform == TargetPlatform.iOS ||
-      defaultTargetPlatform == TargetPlatform.android) {
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
     await Firebase.initializeApp(
       name: 'Commit',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else if (defaultTargetPlatform == TargetPlatform.android) {
+    await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } else {
@@ -69,7 +73,7 @@ Future<void> main() async {
   if (kDebugMode) {
     try {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      EmulatorModel();
+      EmulatorModel().initialize();
       String? firebaseInstallationId =
           await FirebaseInstallations.instance.getId();
       print('Firebase Installation ID: $firebaseInstallationId');

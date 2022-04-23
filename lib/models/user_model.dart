@@ -87,8 +87,8 @@ class UserModel extends ChangeNotifier {
         await FirebaseAnalytics.instance
             .logSignUp(signUpMethod: 'email/password');
       }
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email!, password: password!);
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email!.trim(), password: password!);
 
       final user = FirebaseAuth.instance.currentUser;
       await user?.updateDisplayName(username);
@@ -114,6 +114,9 @@ class UserModel extends ChangeNotifier {
         return error;
       });
     } on FirebaseAuthException catch (error) {
+      if (kDebugMode) {
+        print(error.message);
+      }
       return error.message;
     }
   }
@@ -128,8 +131,8 @@ class UserModel extends ChangeNotifier {
       if (AnalyticsModel().analytics == true) {
         await FirebaseAnalytics.instance.logLogin();
       }
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email!, password: password!);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email!.trim(), password: password!);
       return null;
     } on FirebaseAuthException catch (error) {
       return error.message;

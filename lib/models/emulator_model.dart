@@ -10,33 +10,26 @@ class EmulatorModel {
   final bool testingOnEmulator = true;
   final String localIP = '192.168.60.121';
 
-  /// Emulator model class constructor
-  /// Setup all emulators
-  EmulatorModel() {
+  void initialize() {
     setupAuthEmulator();
-    if (kDebugMode) {
-      print('Set up Auth emulator');
-    }
     setupFirestoreEmulator();
-    if (kDebugMode) {
-      print('Set up Firestore emulator');
-    }
-    setupStorageEmulator();
-    if (kDebugMode) {
-      print('Set up Storage emulator');
-    }
     setupFunctionsEmulator();
-    if (kDebugMode) {
-      print('Set up Functions emulator');
-    }
+    setupStorageEmulator();
+    print('Setup all emulators');
   }
 
   /// Function to setup the Auth emulator
-  void setupAuthEmulator() {
+  void setupAuthEmulator() async {
     if (testingOnEmulator == false) {
       FirebaseAuth.instance.useAuthEmulator(localIP, 9099);
     } else {
-      FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        print('ANDROID');
+        FirebaseAuth.instance.useAuthEmulator('10.0.2.2', 9099);
+      } else {
+        print('IOS+WEB');
+        FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      }
     }
   }
 
