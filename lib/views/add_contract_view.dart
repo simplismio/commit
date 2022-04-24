@@ -262,7 +262,6 @@ class _AddContractViewState extends State<AddContractView> {
                   language.addContractEmailBody)
               .then((result) {
             if (result == null) {
-              //Navigator.of(context).maybePop();
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -271,15 +270,14 @@ class _AddContractViewState extends State<AddContractView> {
             } else {
               setState(() => loading = false);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Consumer<LanguageModel>(
-                    builder: (context, language, _) => Text(
-                          language.genericFirebaseErrorMessage ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        )),
+                content: Text(
+                  language.genericFirebaseErrorMessage ?? '',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 backgroundColor: Colors.grey[800],
               ));
             }

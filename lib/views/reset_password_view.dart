@@ -51,59 +51,69 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
 
   /// Function to load email text field
   loadEmailTextField(language) {
-    return TextFormField(
-        decoration: InputDecoration(
-            hintText: language.resetPasswordViewEmailPlaceholder),
-        textAlign: TextAlign.left,
-        autofocus: true,
-        validator: (String? value) {
-          //print(value.length);
-          return (value != null && value.length < 2)
-              ? language.resetPasswordViewEmailErrorMessage
-              : null;
-        },
-        onChanged: (val) {
-          setState(() => email = val);
-        });
+    return SizedBox(
+      width: double.infinity,
+      child: TextFormField(
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: language.resetPasswordViewEmailPlaceholder),
+          textAlign: TextAlign.left,
+          autofocus: true,
+          validator: (String? value) {
+            //print(value.length);
+            return (value != null && value.length < 2)
+                ? language.resetPasswordViewEmailErrorMessage
+                : null;
+          },
+          onChanged: (val) {
+            setState(() => email = val);
+          }),
+    );
   }
 
   /// Function to load form submit button
-  loadFormSubmitButton() {
-    return ElevatedButton(
-      child: loading
-          ? const LinearProgressIndicator()
-          : Consumer<LanguageModel>(
-              builder: (context, language, _) =>
-                  Text(language.resetPasswordViewButtonText ?? '',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ))),
-      onPressed: () async {
-        if (formKeyForm.currentState!.validate()) {
-          setState(() => loading = true);
-          UserModel().resetPassword(email).then((result) {
-            if (result == null) {
-              Navigator.of(context).maybePop();
-            } else {
-              setState(() => loading = false);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Consumer<LanguageModel>(
-                    builder: (context, language, _) => Text(
-                          language.genericFirebaseErrorMessage ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        )),
-                backgroundColor: Colors.grey[800],
-              ));
-            }
-          });
-        } else {
-          setState(() => loading = false);
-        }
-      },
+  loadFormSubmitButton(language) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        child: loading
+            ? const LinearProgressIndicator()
+            : Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(language.resetPasswordViewButtonText ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
+        onPressed: () async {
+          if (formKeyForm.currentState!.validate()) {
+            setState(() => loading = true);
+            // UserModel()
+            //     .resetPasswordWhileSignedIn(email, language.resetPasswordEmailTitle,
+            //         language.resetPasswordEmailBody)
+            UserModel().resetPasswordWhileNotSignedIn(email).then((result) {
+              if (result == null) {
+                Navigator.of(context).maybePop();
+              } else {
+                setState(() => loading = false);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    language.genericFirebaseErrorMessage ?? '',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  backgroundColor: Colors.grey[800],
+                ));
+              }
+            });
+          } else {
+            setState(() => loading = false);
+          }
+        },
+      ),
     );
   }
 
@@ -113,17 +123,19 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
     return Scaffold(
       appBar: loadAppBar(),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Form(
             key: formKeyForm,
             child: Column(
               children: <Widget>[
-                const SizedBox(height: 30.0),
+                SizedBox(height: 30.0),
                 Consumer<LanguageModel>(
                     builder: (context, language, _) =>
                         loadEmailTextField(language)),
                 const SizedBox(height: 20.0),
-                SizedBox(width: 300, child: loadFormSubmitButton()),
+                Consumer<LanguageModel>(
+                    builder: (context, language, _) =>
+                        loadFormSubmitButton(language)),
               ],
             )),
       ),

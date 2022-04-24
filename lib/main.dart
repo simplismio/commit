@@ -11,15 +11,14 @@ import 'package:provider/provider.dart';
 import './models/analytics_model.dart';
 import './models/biometric_model.dart';
 import './models/contract_model.dart';
-import './models/emulator_model.dart';
+import 'helpers/emulator_helper.dart';
 import './models/theme_model.dart';
 import 'helpers/authorization_helper.dart';
 import 'helpers/biometric_helper.dart';
 import 'models/language_model.dart';
-import 'models/media_model.dart';
+import 'helpers/media_helper.dart';
 import 'models/notification_model.dart';
 import 'models/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 //import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -73,7 +72,7 @@ Future<void> main() async {
   if (kDebugMode) {
     try {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      EmulatorModel().initialize();
+      EmulatorHelper().initialize();
       String? firebaseInstallationId =
           await FirebaseInstallations.instance.getId();
       print('Firebase Installation ID: $firebaseInstallationId');
@@ -112,7 +111,7 @@ class CommitApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeModel()),
           ChangeNotifierProvider(create: (_) => BiometricModel()),
-          ChangeNotifierProvider(create: (_) => MediaModel()),
+          ChangeNotifierProvider(create: (_) => MediaHelper()),
           ChangeNotifierProvider(create: (_) => LanguageModel()),
           ChangeNotifierProvider(create: (_) => NotificationModel()),
           ChangeNotifierProvider(create: (_) => AnalyticsModel()),

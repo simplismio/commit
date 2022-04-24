@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:badges/badges.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/foundation.dart';
@@ -29,9 +31,9 @@ class MainView extends StatefulWidget {
 
 /// MainView view state class
 class _MainViewState extends State<MainView> {
-  @override
+  dynamic timer;
 
-  /// Function to set initial class state
+  @override
   void initState() {
     super.initState();
 
@@ -39,6 +41,17 @@ class _MainViewState extends State<MainView> {
     for (var i = 0; i < 100; i++) {
       toggledCommitments[i] = false;
     }
+    UserModel? user = Provider.of<UserModel?>(context, listen: false);
+
+    timer = Timer.periodic(
+        const Duration(seconds: 60), (Timer t) => user?.reloadUser());
+  }
+
+  /// Function to set initial class state
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   /// Initialize loading bool
@@ -659,8 +672,8 @@ class _MainViewState extends State<MainView> {
                             onChanged: (String? newValue) {
                               language.setLanguage(newValue);
                             },
-                            items: LanguageModel.languages
-                                .map<DropdownMenuItem<String>>((String value) {
+                            items: language.mainViewlanguageDropdownList
+                                ?.map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -724,7 +737,7 @@ class _MainViewState extends State<MainView> {
                 child: ElevatedButton(
                   child: Consumer<LanguageModel>(
                       builder: (context, language, child) => Text(
-                            language.mainViewSettingsLogoutButton ?? '',
+                            language.mainViewSettingsLogoutButtonText ?? '',
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
@@ -855,6 +868,62 @@ class _MainViewState extends State<MainView> {
     )));
   }
 
+  loadUnverifiedNotification() {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Container(
+          width: double.maxFinite,
+          color: Colors.orange,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
+            child: Consumer<LanguageModel>(
+                builder: (context, language, _) => Row(
+                      children: [
+                        Text(language.mainViewUnverifiedEmailLabel ?? ''),
+                        const Spacer(),
+                        ElevatedButton(
+                          child: loading
+                              ? const LinearProgressIndicator()
+                              : Text(
+                                  language.mainViewResendEmailVerificationButtonText ??
+                                      '',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                          onPressed: () async {
+                            setState(() => loading = true);
+                            await UserModel()
+                                .verifyEmail(language.verifyEmailEmailTitle,
+                                    language.verifyEmailEmailBody)
+                                .then((result) {
+                              if (result == null) {
+                                setState(() => loading = false);
+                              } else {
+                                setState(() => loading = false);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Consumer<LanguageModel>(
+                                      builder: (context, language, _) => Text(
+                                            language.genericFirebaseErrorMessage ??
+                                                '',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          )),
+                                  backgroundColor: Colors.grey[800],
+                                ));
+                              }
+                            });
+                          },
+                        )
+                      ],
+                    )),
+          )),
+    );
+  }
+
   /// Main MainView view widget
   @override
   Widget build(BuildContext context) {
@@ -864,6 +933,7 @@ class _MainViewState extends State<MainView> {
         Provider.of<List<NotificationModel>>(context, listen: true);
     UserModel? user = Provider.of<UserModel?>(context, listen: true);
     List users = Provider.of<List<UserModel>>(context, listen: false);
+
     return Scaffold(
       appBar: loadAppBar(notifications),
       body: Scrollbar(
@@ -871,6 +941,9 @@ class _MainViewState extends State<MainView> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
             child: Column(children: [
+              user?.emailIsVerified == true
+                  ? Container()
+                  : loadUnverifiedNotification(),
               contracts.isEmpty
                   ? SizedBox(
                       height: 175,

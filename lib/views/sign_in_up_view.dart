@@ -102,12 +102,14 @@ class _SignInUpViewState extends State<SignInUpView> {
                 .signInUsingEmailAndPassword(email, password)
                 .then((result) {
               if (result == null) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          const AuthorizationHelper(),
-                    ));
+                if (mounted) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            const AuthorizationHelper(),
+                      ));
+                }
               } else {
                 setState(() => loading = false);
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -153,16 +155,23 @@ class _SignInUpViewState extends State<SignInUpView> {
           if (formKeyForm.currentState!.validate()) {
             setState(() => loading = true);
             UserModel()
-                .signUpUsingEmailAndPassword(username, email, password,
-                    language.welcomeEmailTitle, language.welcomeEmailBody)
+                .signUpUsingEmailAndPassword(
+                    username,
+                    email,
+                    password,
+                    language.welcomeEmailTitle,
+                    language.welcomeEmailBody,
+                    language.verifyEmailEmailTitle,
+                    language.verifyEmailEmailBody)
                 .then((result) {
               if (result == null) {
+                UserModel().signOut();
                 if (mounted) {
+                  UserModel().signOut();
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const AuthorizationHelper(),
+                        builder: (BuildContext context) => const SignInUpView(),
                       ));
                 }
               } else {

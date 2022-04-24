@@ -1,16 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'email_model.dart';
+import '../helpers/email_helper.dart';
 //import 'notification_service.dart';
 
 /// Contract model class
 /// Uses ChangeNotifier to update changes to MainView
 class ContractModel extends ChangeNotifier {
-  /// Inituate proofs and penalties list for MainView
-  static List<String> proofs = ['Bank statement', 'Dutch'];
-  static List<String> penalties = ['Payment', 'Blacklist'];
-
   /// Contract class variables
   final String? key;
   final String? title;
@@ -114,7 +110,7 @@ class ContractModel extends ChangeNotifier {
       }
 
       for (var i = 0; i < participantEmails.length; i++) {
-        await EmailModel().sendEmail(
+        await EmailHelper().sendEmail(
           'addContractEmail',
           participantEmails[i],
           participantUsernames[i],

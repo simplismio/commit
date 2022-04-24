@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:commit/models/language_model.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +15,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:random_string/random_string.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'analytics_model.dart';
-import 'email_model.dart';
+import '../helpers/email_helper.dart';
 
 /// User model class
 /// Uses ChangeNotifier to update changes to Main
@@ -24,14 +25,11 @@ class UserModel extends ChangeNotifier {
   String? avatar;
   String? username;
   String? email;
+  bool? emailIsVerified;
 
   /// User model class constructor
-  UserModel({
-    this.uid,
-    this.avatar,
-    this.username,
-    this.email,
-  });
+  UserModel(
+      {this.uid, this.avatar, this.username, this.email, this.emailIsVerified});
 
   /// Convert Firebase response to User object
   /// Returns User object as list
@@ -45,7 +43,8 @@ class UserModel extends ChangeNotifier {
         uid: user?.uid,
         avatar: user?.photoURL,
         username: user?.displayName,
-        email: user?.email);
+        email: user?.email,
+        emailIsVerified: user?.emailVerified);
   }
 
   /// Stream for Firebase user changes
@@ -78,7 +77,13 @@ class UserModel extends ChangeNotifier {
   /// Function to sign user up in Firebase using email and password
   /// Returns null or error
   Future signUpUsingEmailAndPassword(
-      String? username, String? email, String? password, title, body) async {
+      String? username,
+      String? email,
+      String? password,
+      welcomeEmailTitle,
+      welcomeEmailBody,
+      verifyEmailEmailTitle,
+      verifyEmailEmailBody) async {
     try {
       if (kDebugMode) {
         print('Signing up user');
@@ -103,8 +108,9 @@ class UserModel extends ChangeNotifier {
           print("User added to users table");
         }
 
-        await EmailModel()
-            .sendEmail('sendWelcomeEmail', email, username, title, body);
+        await EmailHelper().sendEmail('sendWelcomeEmail', email, username,
+            welcomeEmailTitle, welcomeEmailBody);
+        await verifyEmail(verifyEmailEmailTitle, verifyEmailEmailBody);
 
         return null;
       }).catchError((error) {
@@ -139,14 +145,51 @@ class UserModel extends ChangeNotifier {
     }
   }
 
-  /// Function to reset password
-  /// Returns null or error
-  Future resetPassword(String? email) async {
+  Future reloadUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    await user?.reload();
+  }
+
+  Future verifyEmail(verifyEmailEmailTitle, verifyEmailEmailBody) async {
     try {
       if (kDebugMode) {
         print('Sending password reset email');
       }
+      final user = FirebaseAuth.instance.currentUser;
+      await EmailHelper().sendEmail('verifyEmailEmail', user?.email,
+          user?.displayName, verifyEmailEmailTitle, verifyEmailEmailBody);
+      return null;
+    } on FirebaseAuthException catch (error) {
+      return error.message;
+    }
+  }
+
+  Future resetPasswordWhileNotSignedIn(String? email) async {
+    try {
+      if (kDebugMode) {
+        print('Sending password reset email');
+      }
+      // await FirebaseAuth.instance
+      //     .setLanguageCode(LanguageModel.defaultLanguage);
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email!);
+      return null;
+    } on FirebaseAuthException catch (error) {
+      return error.message;
+    }
+  }
+
+  /// Function to reset password
+  /// Returns null or error
+  Future resetPasswordWhileSignedIn(
+      email, resetPasswordEmailTitle, resetPasswordEmailBody) async {
+    try {
+      if (kDebugMode) {
+        print('Sending password reset email');
+      }
+      final user = FirebaseAuth.instance.currentUser;
+
+      await EmailHelper().sendEmail('resetPasswordEmail', email, '',
+          resetPasswordEmailTitle, resetPasswordEmailBody);
       return null;
     } on FirebaseAuthException catch (error) {
       return error.message;

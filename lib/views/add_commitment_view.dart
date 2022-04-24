@@ -201,7 +201,7 @@ class _AddCommitmentViewState extends State<AddCommitmentView> {
             //TODO: find UID and add it to a list
           });
         },
-        items: ContractModel.proofs.map(
+        items: language.addEditCommitmentProofDropdownList.map(
           (item) {
             return DropdownMenuItem(
               value: item,
@@ -229,7 +229,7 @@ class _AddCommitmentViewState extends State<AddCommitmentView> {
             //TODO: find UID and add it to a list
           });
         },
-        items: ContractModel.penalties.map(
+        items: language.addEditCommitmentResolutionDropdownList.map(
           (item) {
             return DropdownMenuItem(
               value: item,

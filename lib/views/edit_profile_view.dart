@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../models/language_model.dart';
-import '../models/media_model.dart';
+import '../helpers/media_helper.dart';
 import '../models/user_model.dart';
 
 /// EditProfileView view class
@@ -361,7 +361,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 children: <Widget>[
                   const SizedBox(height: 10.0),
                   Center(
-                    child: Consumer<MediaModel>(
+                    child: Consumer<MediaHelper>(
                         builder: (context, media, _) => loadAvatarField(media)),
                   ),
                   const SizedBox(height: 20.0),
@@ -375,7 +375,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 10.0),
                   SizedBox(
                     width: 300,
-                    child: Consumer<MediaModel>(
+                    child: Consumer<MediaHelper>(
                         builder: (context, media, child) =>
                             loadFormSubmitButton(media)),
                   ),

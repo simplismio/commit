@@ -21,9 +21,8 @@ const mailTransport = nodemailer.createTransport({
 });
 
 exports.sendWelcomeEmail = functions.https.onCall((data) => {
-
     var readHTMLFile = function (path, callback) {
-        fs.readFile(path, {encoding: "utf-8"}, function (error, html) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
             if (error) {
                 callback(error);
                 throw error;
@@ -33,24 +32,160 @@ exports.sendWelcomeEmail = functions.https.onCall((data) => {
         });
     };
 
-    readHTMLFile(path.resolve(__dirname, "./templates/welcome.html"), function (error, html) {
+    readHTMLFile(path.resolve(__dirname, "./templates/welcome_template.html"), function (error, html) {
         var template = handlebars.compile(html);
         var replacements = {
             username: data["username"],
             body: data["body"],
         };
+
         var htmlToSend = template(replacements);
         var mailOptions = {
             from: "Commit <forgetaboutprivacy@gmail.com>",
             to: data["email"],
             subject: data["title"],
-            html: htmlToSend
+            html: htmlToSend,
         };
+
         mailTransport.sendMail(mailOptions, function (error) {
             if (error) {
                 console.log(error);
             }
         });
+    });
+    return null;
+});
+
+exports.verifyEmailEmail = functions.https.onCall((data) => {
+
+    var readHTMLFile = function (path, callback) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
+            if (error) {
+                callback(error);
+                throw error;
+            } else {
+                callback(null, html);
+            }
+        });
+    };
+
+    readHTMLFile(path.resolve(__dirname, "./templates/verify_email_template.html"), function (error, html) {
+
+        const actionCodeSettings = {
+            url: 'https://commit-b9e29.web.app',
+            handleCodeInApp: true,
+            iOS: {
+                bundleId: 'com.j0ost.commit',
+            },
+            android: {
+                packageName: 'com.j0ost.commit',
+                installApp: true,
+                minimumVersion: '23',
+            },
+            // FDL custom domain.
+            dynamicLinkDomain: 'https://commit-b9e29.web.app',
+        };
+
+        admin.auth().generateEmailVerificationLink(data["email"], actionCodeSettings)
+            .then((link) => {
+
+                var template = handlebars.compile(html);
+                var replacements = {
+                    username: data["username"],
+                    body: data["body"],
+                    link: link
+                };
+
+
+                var htmlToSend = template(replacements);
+                var mailOptions = {
+                    from: "Commit <forgetaboutprivacy@gmail.com>",
+                    to: data["email"],
+                    subject: data["title"],
+                    html: htmlToSend,
+                };
+
+                mailTransport.sendMail(mailOptions, function (error) {
+                    if (error) {
+                        console.log(error);
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+
+    });
+
+    return null;
+});
+
+exports.resetPasswordEmail = functions.https.onCall((data) => {
+
+    var readHTMLFile = function (path, callback) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
+            if (error) {
+                callback(error);
+                throw error;
+            } else {
+                callback(null, html);
+            }
+        });
+    };
+
+    readHTMLFile(path.resolve(__dirname, "./templates/reset_password_template.html"), function (error, html) {
+
+        // const actionCodeSettings = {
+        //     url: 'http://localhost:3000',
+        //     handleCodeInApp: false
+        // };
+
+        const actionCodeSettings = {
+            url: 'https://commit-b9e29.web.app',
+            handleCodeInApp: true,
+            iOS: {
+                bundleId: 'com.j0ost.commit',
+            },
+            android: {
+                packageName: 'com.j0ost.commit',
+                installApp: true,
+                minimumVersion: '23',
+            },
+            // FDL custom domain.
+            dynamicLinkDomain: 'https://commit-b9e29.web.app',
+        };
+
+        admin.auth().generatePasswordResetLink(data["email"], actionCodeSettings)
+            .then((link) => {
+
+                var template = handlebars.compile(html);
+                var replacements = {
+                    username: data["username"] ?? '',
+                    body: data["body"],
+                    link: link
+                };
+
+
+                var htmlToSend = template(replacements);
+                var mailOptions = {
+                    from: "Commit <forgetaboutprivacy@gmail.com>",
+                    to: data["email"],
+                    subject: data["title"],
+                    html: htmlToSend,
+                };
+
+                mailTransport.sendMail(mailOptions, function (error) {
+                    if (error) {
+                        console.log(error);
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+
     });
 
     return null;
@@ -58,7 +193,7 @@ exports.sendWelcomeEmail = functions.https.onCall((data) => {
 
 exports.addContractEmail = functions.https.onCall((data) => {
     var readHTMLFile = function (path, callback) {
-        fs.readFile(path, {encoding: "utf-8"}, function (error, html) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
             if (error) {
                 callback(error);
                 throw error;
@@ -68,7 +203,7 @@ exports.addContractEmail = functions.https.onCall((data) => {
         });
     };
 
-    readHTMLFile(path.resolve(__dirname, "./templates/add_contract.html"), function (error, html) {
+    readHTMLFile(path.resolve(__dirname, "./templates/add_contract_template.html"), function (error, html) {
         var template = handlebars.compile(html);
         var replacements = {
             username: data["username"],
@@ -92,7 +227,7 @@ exports.addContractEmail = functions.https.onCall((data) => {
 
 exports.addContractEmailNewUser = functions.https.onCall((data) => {
     var readHTMLFile = function (path, callback) {
-        fs.readFile(path, {encoding: "utf-8"}, function (error, html) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
             if (error) {
                 callback(error);
                 throw error;
@@ -102,7 +237,7 @@ exports.addContractEmailNewUser = functions.https.onCall((data) => {
         });
     };
 
-    readHTMLFile(path.resolve(__dirname, "./templates/add_contract_new_user.html"), function (error, html) {
+    readHTMLFile(path.resolve(__dirname, "./templates/add_contract_new_user_template.html"), function (error, html) {
         var template = handlebars.compile(html);
         var replacements = {
             username: data["username"],
@@ -138,12 +273,12 @@ exports.editContractNotification = functions.https.onCall((data) => {
         .then((value) => {
             console.log(value);
             console.info("function executed succesfully");
-            return {msg: "function executed succesfully"};
+            return { msg: "function executed succesfully" };
         })
         .catch((error) => {
             console.info("error in execution");
             console.log(error);
-            return {msg: "error in execution"};
+            return { msg: "error in execution" };
         });
 });
 
@@ -160,12 +295,12 @@ exports.addCommitmentNotification = functions.https.onCall((data) => {
         .then((value) => {
             console.log(value);
             console.info("function executed succesfully");
-            return {msg: "function executed succesfully"};
+            return { msg: "function executed succesfully" };
         })
         .catch((error) => {
             console.info("error in execution");
             console.log(error);
-            return {msg: "error in execution"};
+            return { msg: "error in execution" };
         });
 });
 
@@ -182,12 +317,12 @@ exports.editCommitmentNotification = functions.https.onCall((data) => {
         .then((value) => {
             console.log(value);
             console.info("function executed succesfully");
-            return {msg: "function executed succesfully"};
+            return { msg: "function executed succesfully" };
         })
         .catch((error) => {
             console.info("error in execution");
             console.log(error);
-            return {msg: "error in execution"};
+            return { msg: "error in execution" };
         });
 });
 
@@ -204,12 +339,12 @@ exports.deleteCommitmentNotification = functions.https.onCall((data) => {
         .then((value) => {
             console.log(value);
             console.info("function executed succesfully");
-            return {msg: "function executed succesfully"};
+            return { msg: "function executed succesfully" };
         })
         .catch((error) => {
             console.info("error in execution");
             console.log(error);
-            return {msg: "error in execution"};
+            return { msg: "error in execution" };
         });
 });
 

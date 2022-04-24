@@ -17,6 +17,9 @@ class LanguageModel with ChangeNotifier {
   late String _language;
   late Map<String, dynamic> translations;
 
+  static String? systemLanguage;
+  static String? defaultLanguage;
+
   /// Getter for the language setting
   String get language => _language;
 
@@ -35,10 +38,7 @@ class LanguageModel with ChangeNotifier {
   }
 
   /// Identify the locale in the phone or browser and set the default locale in case user has not set language yet
-  defaultLanguage() {
-    String? systemLanguage;
-    String? defaultLanguage;
-
+  setDefaultLanguage() {
     if (kIsWeb) {
       Locale webLocale = ui.window.locale;
       String webLocaleAsString = webLocale.toString();
@@ -70,7 +70,7 @@ class LanguageModel with ChangeNotifier {
   /// Function to load the language settings in SharedPreferences
   void loadFromPrefs() async {
     SharedPreferences preference = await SharedPreferences.getInstance();
-    _language = preference.getString(key) ?? defaultLanguage();
+    _language = preference.getString(key) ?? setDefaultLanguage();
     switchLanguage(_language);
     notifyListeners();
   }
@@ -121,6 +121,20 @@ class LanguageModel with ChangeNotifier {
     'Dutch': 'Registreer'
   };
 
+  // Dropdown Lists
+  final Map<String, List<String>> _mainViewLanguageDropdownList = {
+    'English': ['English', 'Dutch'],
+    'Dutch': ['Engels', 'Nederlands'],
+  };
+  final Map<String, List<String>> _addEditCommitmentProofDropdownList = {
+    'English': ['Bank statement', 'Transaction'],
+    'Dutch': ['Bankafschrift', 'Transactie'],
+  };
+  final Map<String, List<String>> _addEditCommitmentResolutionDropdownList = {
+    'English': ['Payment', 'Blacklist'],
+    'Dutch': ['Betaling', 'Zwarte lijst'],
+  };
+
   // Buttons
   final Map<String, String>? _newContractViewButtonText = {
     'English': 'Save contract',
@@ -158,9 +172,13 @@ class LanguageModel with ChangeNotifier {
     'English': 'Sign up',
     'Dutch': 'Registreer'
   };
-  final Map<String, String>? _mainViewSettingsLogoutButton = {
+  final Map<String, String>? _mainViewSettingsLogoutButtonText = {
     'English': 'Log out',
     'Dutch': 'Uitloggen'
+  };
+  final Map<String, String>? _mainViewResendEmailVerificationButtonText = {
+    'English': 'Resend',
+    'Dutch': 'Opnieuw'
   };
 
   // Placeholders
@@ -326,6 +344,10 @@ class LanguageModel with ChangeNotifier {
     'English': 'you',
     'Dutch': 'jijzelf'
   };
+  final Map<String, String>? _mainViewUnverifiedEmailLabel = {
+    'English': 'Verify your email',
+    'Dutch': 'Bevestig je email adres'
+  };
 
   // Headers
   final Map<String, String>? _mainViewNotificationHeader = {
@@ -350,6 +372,14 @@ class LanguageModel with ChangeNotifier {
     'English': 'Welcome to Commit',
     'Dutch': 'Welkom bij Commit'
   };
+  final Map<String, String>? _confirmAccountEmailTitle = {
+    'English': 'Confirm your email address',
+    'Dutch': 'Bevestig je email address'
+  };
+  final Map<String, String>? _resetPasswordEmailTitle = {
+    'English': 'Reset your password',
+    'Dutch': 'Wijzig je wachtwoord'
+  };
   final Map<String, String>? _addContractEmailTitle = {
     'English': 'You have been added to a new contract',
     'Dutch': 'Je bent toegevoegd aan een contract'
@@ -359,6 +389,14 @@ class LanguageModel with ChangeNotifier {
   final Map<String, String>? _welcomeEmailBody = {
     'English': 'You have made the right decision to commit',
     'Dutch': 'Je hebt het juiste besluit genomen om je te commiteren'
+  };
+  final Map<String, String>? _verifyEmailEmailBody = {
+    'English': 'Please confirm your email address by clicking on the link',
+    'Dutch': 'Bevestig je email adres via onderstaande link'
+  };
+  final Map<String, String>? _resetPasswordEmailBody = {
+    'English': 'Please click the link to reset your password',
+    'Dutch': 'Reset je wachtwoord via de link'
   };
   final Map<String, String>? _addContractEmailBody = {
     'English': 'You have been added as a participant in a new contract',
@@ -378,6 +416,11 @@ class LanguageModel with ChangeNotifier {
   String? signInViewAppBarTitle;
   String? signUpViewAppBarTitle;
 
+  // Dropdown lists
+  List<String>? mainViewlanguageDropdownList;
+  List<String>? addEditCommitmentProofDropdownList;
+  List<String>? addEditCommitmentResolutionDropdownList;
+
   // Buttons
   String? newContractViewButtonText;
   String? newCommitmentViewButtonText;
@@ -388,7 +431,8 @@ class LanguageModel with ChangeNotifier {
   String? editContractViewDeleteContractButtonText;
   String? signInViewButtonText;
   String? signUpViewButtonText;
-  String? mainViewSettingsLogoutButton;
+  String? mainViewSettingsLogoutButtonText;
+  String? mainViewResendEmailVerificationButtonText;
 
   // Placeholders
   String? newContractViewContractTitlePlaceholder;
@@ -436,6 +480,7 @@ class LanguageModel with ChangeNotifier {
   String? mainViewSettingsBiometricsLabel;
   String? mainViewSettingsAnalyticsLabel;
   String? mainViewSelfLabel;
+  String? mainViewUnverifiedEmailLabel;
 
   // Headers
   String? mainViewNotificationHeader;
@@ -448,10 +493,14 @@ class LanguageModel with ChangeNotifier {
 
   // Email titles
   String? welcomeEmailTitle;
+  String? verifyEmailEmailTitle;
+  String? resetPasswordEmailTitle;
   String? addContractEmailTitle;
 
   // Email bodies
   String? welcomeEmailBody;
+  String? verifyEmailEmailBody;
+  String? resetPasswordEmailBody;
   String? addContractEmailBody;
 
   /// Function to switch the language immediately
@@ -471,6 +520,12 @@ class LanguageModel with ChangeNotifier {
         _editProfileViewAppBarTitle?[_language].toString();
     signInViewAppBarTitle = _signInViewAppBarTitle?[_language].toString();
     signUpViewAppBarTitle = _signUpViewAppBarTitle?[_language].toString();
+    // DropdownLists
+    mainViewlanguageDropdownList = _mainViewLanguageDropdownList[_language];
+    addEditCommitmentResolutionDropdownList =
+        _addEditCommitmentResolutionDropdownList[_language];
+    addEditCommitmentResolutionDropdownList =
+        _addEditCommitmentResolutionDropdownList[_language];
     // Buttons
     newContractViewButtonText =
         _newContractViewButtonText?[_language].toString();
@@ -488,8 +543,10 @@ class LanguageModel with ChangeNotifier {
         _editContractViewDeleteContractButtonText?[_language].toString();
     signInViewButtonText = _signInViewButtonText?[_language].toString();
     signUpViewButtonText = _signUpViewButtonText?[_language].toString();
-    mainViewSettingsLogoutButton =
-        _mainViewSettingsLogoutButton?[_language].toString();
+    mainViewSettingsLogoutButtonText =
+        _mainViewSettingsLogoutButtonText?[_language].toString();
+    mainViewResendEmailVerificationButtonText =
+        _mainViewResendEmailVerificationButtonText?[_language].toString();
     // Placeholder
     newContractViewContractTitlePlaceholder =
         _newContractViewContractTitlePlaceholder?[_language].toString();
@@ -570,6 +627,8 @@ class LanguageModel with ChangeNotifier {
     mainViewSettingsAnalyticsLabel =
         _mainViewSettingsAnalyticsLabel?[_language].toString();
     mainViewSelfLabel = _mainViewSelfLabel?[_language].toString();
+    mainViewUnverifiedEmailLabel =
+        _mainViewUnverifiedEmailLabel?[_language].toString();
     // Header
     mainViewNotificationHeader =
         _mainViewNotificationHeader?[_language].toString();
@@ -581,9 +640,13 @@ class LanguageModel with ChangeNotifier {
         _activateContractNotificationBody?[_language].toString();
     // Email titles
     welcomeEmailTitle = _welcomeEmailTitle?[_language].toString();
+    verifyEmailEmailTitle = _confirmAccountEmailTitle?[_language].toString();
+    resetPasswordEmailTitle = _resetPasswordEmailTitle?[_language].toString();
     addContractEmailTitle = _addContractEmailTitle?[_language].toString();
     // Email bodies
     welcomeEmailBody = _welcomeEmailBody?[_language].toString();
+    verifyEmailEmailBody = _verifyEmailEmailBody?[_language].toString();
+    resetPasswordEmailBody = _resetPasswordEmailBody?[_language].toString();
     addContractEmailBody = _addContractEmailBody?[_language].toString();
   }
 }
