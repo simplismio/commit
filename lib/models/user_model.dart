@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:commit/models/language_model.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -284,7 +283,7 @@ class UserModel extends ChangeNotifier {
 
   /// Function to update user profile
   /// Returns null or error
-  Future updateUserProfile(
+  Future editProfile(
       String? currentAvatarUrl,
       File? newAvatarUrlMobile,
       Future<Uint8List> newAvatarUrlWebData,
@@ -329,18 +328,21 @@ class UserModel extends ChangeNotifier {
       if (kDebugMode) {
         print('Updating the user profile');
       }
-      final _user = FirebaseAuth.instance.currentUser;
+      final user = FirebaseAuth.instance.currentUser;
 
       if (newAvatarUrlMobile != null || newAvatarUrlWebData != null) {
-        await _user?.updatePhotoURL(avatarUrl);
+        await user?.updatePhotoURL(avatarUrl);
       }
-      await _user?.updateDisplayName(username);
-      await _user?.updateEmail(email!);
-      await _user?.reload();
+      // if (password != null) {
+      //   await user?.updatePassword(newPassword);
+      // }
+      await user?.updateDisplayName(username);
+      await user?.updateEmail(email!);
+      await user?.reload();
 
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(_user?.uid)
+          .doc(user?.uid)
           .update({
         'username': username,
         'email': email,

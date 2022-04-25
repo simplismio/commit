@@ -10,15 +10,12 @@ class LanguageModel with ChangeNotifier {
   /// Language class variables
   final String key = "language";
 
-  /// Inituate supported languages list for MainView
-  static List<String> languages = ['English', 'Dutch'];
-
   /// Toggle value language
   late String _language;
   late Map<String, dynamic> translations;
 
   static String? systemLanguage;
-  static String? defaultLanguage;
+  String? defaultLanguage;
 
   /// Getter for the language setting
   String get language => _language;
@@ -27,13 +24,13 @@ class LanguageModel with ChangeNotifier {
   /// Initialize _language variable
   /// Loads latest language setting from SharedPreferences
   LanguageModel() {
-    _language = 'English';
+    _language = setDefaultLanguage();
     loadFromPrefs();
   }
 
   /// Function to set the language
-  setLanguage(_value) {
-    _language = _value;
+  setLanguage(value) {
+    _language = value;
     saveToPrefs();
   }
 
@@ -59,7 +56,7 @@ class LanguageModel with ChangeNotifier {
         defaultLanguage = 'English';
         break;
       case 'nl':
-        defaultLanguage = 'Dutch';
+        defaultLanguage = 'Nederlands';
         break;
       default:
         defaultLanguage = 'English';
@@ -86,321 +83,326 @@ class LanguageModel with ChangeNotifier {
   /// Set the Maps that contain translations
   final Map<String, String>? _mainViewAppBarTitle = {
     'English': 'Contracts',
-    'Dutch': 'Contracten'
+    'Nederlands': 'Contracten'
   };
   final Map<String, String>? _newContractViewAppBarTitle = {
     'English': 'New contract',
-    'Dutch': 'Nieuw contract'
+    'Nederlands': 'Nieuw contract'
   };
   final Map<String, String>? _newCommitmentViewAppBarTitle = {
     'English': 'New commitment',
-    'Dutch': 'Nieuw commitment'
+    'Nederlands': 'Nieuw commitment'
   };
   final Map<String, String>? _editContractViewAppBarTitle = {
     'English': 'Edit contract',
-    'Dutch': 'Wijzig contract'
+    'Nederlands': 'Wijzig contract'
   };
   final Map<String, String>? _editCommitmentViewAppBarTitle = {
     'English': 'Edit commitment',
-    'Dutch': 'Wijzig commitment'
+    'Nederlands': 'Wijzig commitment'
   };
   final Map<String, String>? _resetPasswordViewAppBarTitle = {
     'English': 'Reset password',
-    'Dutch': 'Reset wachtwoord'
+    'Nederlands': 'Reset wachtwoord'
   };
   final Map<String, String>? _editProfileViewAppBarTitle = {
     'English': 'Edit profile',
-    'Dutch': 'Wijzig profiel'
+    'Nederlands': 'Wijzig profiel'
   };
   final Map<String, String>? _signInViewAppBarTitle = {
     'English': 'Sign in',
-    'Dutch': 'Log in'
+    'Nederlands': 'Log in'
   };
   final Map<String, String>? _signUpViewAppBarTitle = {
     'English': 'Sign up',
-    'Dutch': 'Registreer'
+    'Nederlands': 'Registreer'
   };
 
   // Dropdown Lists
-  final Map<String, List<String>> _mainViewLanguageDropdownList = {
-    'English': ['English', 'Dutch'],
-    'Dutch': ['Engels', 'Nederlands'],
-  };
+  final List<String> _mainViewLanguageDropdownList = ['English', 'Nederlands'];
   final Map<String, List<String>> _addEditCommitmentProofDropdownList = {
     'English': ['Bank statement', 'Transaction'],
-    'Dutch': ['Bankafschrift', 'Transactie'],
+    'Nederlands': ['Bankafschrift', 'Transactie'],
   };
   final Map<String, List<String>> _addEditCommitmentResolutionDropdownList = {
     'English': ['Payment', 'Blacklist'],
-    'Dutch': ['Betaling', 'Zwarte lijst'],
+    'Nederlands': ['Betaling', 'Zwarte lijst'],
   };
 
   // Buttons
   final Map<String, String>? _newContractViewButtonText = {
     'English': 'Save contract',
-    'Dutch': 'Contract opslaan'
+    'Nederlands': 'Contract opslaan'
   };
   final Map<String, String>? _newCommitmentViewButtonText = {
     'English': 'Save commitment',
-    'Dutch': 'Commitment opslaan'
+    'Nederlands': 'Commitment opslaan'
   };
   final Map<String, String>? _editContractViewButtonText = {
     'English': 'Save changes',
-    'Dutch': 'Wijzigingn opslaan'
+    'Nederlands': 'Wijzigingn opslaan'
   };
   final Map<String, String>? _editCommitmentViewButtonText = {
     'English': 'Save changes',
-    'Dutch': 'Wijzigingn opslaan'
+    'Nederlands': 'Wijzigingn opslaan'
   };
   final Map<String, String>? _resetPasswordViewButtonText = {
     'English': 'Email reset link',
-    'Dutch': 'Email reset link'
+    'Nederlands': 'Email reset link'
   };
   final Map<String, String>? _editProfileViewButtonText = {
     'English': 'Save changes',
-    'Dutch': 'Wijzingen opslaan'
+    'Nederlands': 'Wijzingen opslaan'
   };
   final Map<String, String>? _editContractViewDeleteContractButtonText = {
     'English': 'Delete contract',
-    'Dutch': 'Contract verwijderen'
+    'Nederlands': 'Contract verwijderen'
   };
   final Map<String, String>? _signInViewButtonText = {
     'English': 'Sign in',
-    'Dutch': 'Log in'
+    'Nederlands': 'Log in'
   };
   final Map<String, String>? _signUpViewButtonText = {
     'English': 'Sign up',
-    'Dutch': 'Registreer'
+    'Nederlands': 'Registreer'
   };
   final Map<String, String>? _mainViewSettingsLogoutButtonText = {
     'English': 'Log out',
-    'Dutch': 'Uitloggen'
+    'Nederlands': 'Uitloggen'
   };
   final Map<String, String>? _mainViewResendEmailVerificationButtonText = {
     'English': 'Resend',
-    'Dutch': 'Opnieuw'
+    'Nederlands': 'Opnieuw'
   };
 
   // Placeholders
   final Map<String, String>? _newContractViewContractTitlePlaceholder = {
     'English': 'Contract title',
-    'Dutch': 'Titel van het contract'
+    'Nederlands': 'Titel van het contract'
   };
   final Map<String, String>? _newCommitmentViewCommitmentPlaceholder = {
     'English': 'I promise to..',
-    'Dutch': 'Ik beloof om ..'
+    'Nederlands': 'Ik beloof om ..'
   };
   final Map<String, String>? _editContractViewContractTitlePlaceholder = {
     'English': 'Contract title',
-    'Dutch': 'Titel van het contract'
+    'Nederlands': 'Titel van het contract'
   };
   final Map<String, String>? _editCommitmentViewCommitmentPlaceholder = {
     'English': 'Commitment',
-    'Dutch': 'Commitment'
+    'Nederlands': 'Commitment'
   };
   final Map<String, String>? _resetPasswordViewEmailPlaceholder = {
     'English': 'Email',
-    'Dutch': 'Email'
+    'Nederlands': 'Email'
   };
   final Map<String, String>? _editProfileViewUsernamePlaceholder = {
     'English': 'Username',
-    'Dutch': 'Gebruikersnaam'
+    'Nederlands': 'Gebruikersnaam'
   };
   final Map<String, String>? _editProfileViewEmailPlaceholder = {
     'English': 'Email',
-    'Dutch': 'Email'
+    'Nederlands': 'Email'
   };
   final Map<String, String>? _signUpViewUsernamePlaceholder = {
     'English': 'Username',
-    'Dutch': 'Gebruikersnaam'
+    'Nederlands': 'Gebruikersnaam'
   };
   final Map<String, String>? _signInUpViewEmailPlaceholder = {
     'English': 'Email',
-    'Dutch': 'Email'
+    'Nederlands': 'Email'
   };
   final Map<String, String>? _signInUpViewPasswordPlaceholder = {
     'English': 'Password',
-    'Dutch': 'Wachtwoord'
+    'Nederlands': 'Wachtwoord'
   };
   final Map<String, String>? _addCommitmentCounterpartyPlaceholder = {
     'English': 'Choose counterparty',
-    'Dutch': 'Kies tegenpartij'
+    'Nederlands': 'Kies tegenpartij'
   };
   final Map<String, String>? _addCommitmentProofPlaceholder = {
     'English': 'Choose proof mechanism for fulfillment',
-    'Dutch': 'Kies de bewijsvorm voor nakoming'
+    'Nederlands': 'Kies de bewijsvorm voor nakoming'
   };
   final Map<String, String>? _addCommitmentResolutionPlaceholder = {
     'English': 'Choose resolution mechanism if non-compliant',
-    'Dutch': 'Kies de resolutievorm bij niet na-koming'
+    'Nederlands': 'Kies de resolutievorm bij niet na-koming'
+  };
+  final Map<String, String>? _editProfileNewPasswordPlaceholder = {
+    'English': 'New password',
+    'Nederlands': 'Nieuw wachtwoord'
+  };
+  final Map<String, String>? _editProfileRepeatNewPasswordPlaceholder = {
+    'English': 'New password again',
+    'Nederlands': 'Nieuw wachtwoord opnieuw'
   };
 
   // Error Messages
   final Map<String, String>? _newContractViewContractTitleErrorMessage = {
     'English': 'Please provide a valid contract title',
-    'Dutch': 'De ingegeven contract titel is incorrect'
+    'Nederlands': 'De ingegeven contract titel is incorrect'
   };
   final Map<String, String>? _newCommitmentViewCommitmentErrorMessage = {
     'English': 'Please provide a valid commitment',
-    'Dutch': 'Het ingegeven commitment is incorrect'
+    'Nederlands': 'Het ingegeven commitment is incorrect'
   };
   final Map<String, String>? _editContractViewContractTitleErrorMessage = {
     'English': 'Please provide a valid contract title',
-    'Dutch': 'De ingegeven contract title is incorrect'
+    'Nederlands': 'De ingegeven contract title is incorrect'
   };
   final Map<String, String>? _editCommitmentViewCommitmentErrorMessage = {
     'English': 'Please provide a valid commitment',
-    'Dutch': 'Het ingegeven commitment is incorrect'
+    'Nederlands': 'Het ingegeven commitment is incorrect'
   };
   final Map<String, String>? _resetPasswordViewEmailErrorMessage = {
     'English': 'Please provide a valid email address',
-    'Dutch': 'Het ingegeven email adres is incorrect'
+    'Nederlands': 'Het ingegeven email adres is incorrect'
   };
   final Map<String, String>? _editProfileViewUsernameErrorMessage = {
     'English': 'Please provide a valid username',
-    'Dutch': 'De ingegeven gebruikersnaam is incorrect'
+    'Nederlands': 'De ingegeven gebruikersnaam is incorrect'
   };
   final Map<String, String>? _signUpViewUsernameErrorMessage = {
     'English': 'Please provide a valid username',
-    'Dutch': 'Het ingegeven wachtwoord is incorrect'
+    'Nederlands': 'Het ingegeven wachtwoord is incorrect'
   };
   final Map<String, String>? _signInUpViewEmailErrorMessage = {
     'English': 'Please provide a valid email address',
-    'Dutch': 'De ingegeven gebruikersnaam is incorrect'
+    'Nederlands': 'De ingegeven gebruikersnaam is incorrect'
   };
   final Map<String, String>? _signInUpViewPasswordErrorMessage = {
     'English': 'testEN',
-    'Dutch': 'Er zijn nog geen commitments gemaakt'
+    'Nederlands': 'Er zijn nog geen commitments gemaakt'
   };
   final Map<String, String>? _mainViewNoContractsErrorMessage = {
     'English': 'There are no contracts yet',
-    'Dutch': 'Er zijn nog geen contracten'
+    'Nederlands': 'Er zijn nog geen contracten'
   };
   final Map<String, String>? _mainViewNoCommitmentsErrorMessage = {
     'English': 'There are no commitments yet',
-    'Dutch': 'Er zijn nog geen commitments gemaakt'
+    'Nederlands': 'Er zijn nog geen commitments gemaakt'
   };
   final Map<String, String>? _mainViewNoNotificationsErrorMessage = {
     'English': 'There are no notifications yet',
-    'Dutch': 'Er zijn nog geen notificaties'
+    'Nederlands': 'Er zijn nog geen notificaties'
   };
   final Map<String, String>? _genericAuthErrorMessage = {
     'English': 'Email address or password is incorrect',
-    'Dutch': 'Email adres of wachtwoord is incorrect'
+    'Nederlands': 'Email adres of wachtwoord is incorrect'
   };
   final Map<String, String>? _genericFirebaseErrorMessage = {
     'English': 'Something went wrong. Please try again',
-    'Dutch': 'Er is iets verkeerd gegaan. Probeert u het s.v.p. opnieuw'
+    'Nederlands': 'Er is iets verkeerd gegaan. Probeert u het s.v.p. opnieuw'
   };
 
   // Links
   final Map<String, String>? _signInViewResetPasswordLink = {
     'English': 'I forgot my password',
-    'Dutch': 'Ik ben mijn wachtwoord vergeten'
+    'Nederlands': 'Ik ben mijn wachtwoord vergeten'
   };
   final Map<String, String>? _signInViewSignUpUsingEmailLink = {
     'English': 'Sign up using email',
-    'Dutch': 'Registreer met een email adres'
+    'Nederlands': 'Registreer met een email adres'
   };
   final Map<String, String>? _signInViewgoBackToSignInLink = {
     'English': 'Go back to sign in',
-    'Dutch': 'Ga terug naar log in'
+    'Nederlands': 'Ga terug naar log in'
   };
   final Map<String, String>? _mainViewDismissebleEditCommitmentLink = {
     'English': 'Edit commitment',
-    'Dutch': 'Wijzig commitment'
+    'Nederlands': 'Wijzig commitment'
   };
   final Map<String, String>? _mainViewDismissebleDeleteCommitmentLink = {
     'English': 'Delete commitment',
-    'Dutch': 'Verwijder commitment'
+    'Nederlands': 'Verwijder commitment'
   };
   final Map<String, String>? _mainViewDismissebleMarkNotificationReadLink = {
     'English': 'Mark as read',
-    'Dutch': 'Markeren als gelezen'
+    'Nederlands': 'Markeren als gelezen'
   };
 
   // Labels
   final Map<String, String>? _mainViewSettingEditProfileLabel = {
     'English': 'Edit profile',
-    'Dutch': 'Wijzig profiel'
+    'Nederlands': 'Wijzig profiel'
   };
   final Map<String, String>? _mainViewSettingsLanguageLabel = {
     'English': 'Language',
-    'Dutch': 'Taal'
+    'Nederlands': 'Taal'
   };
   final Map<String, String>? _mainViewSettingsThemeLabel = {
     'English': 'Dark theme',
-    'Dutch': 'Donker thema'
+    'Nederlands': 'Donker thema'
   };
   final Map<String, String>? _mainViewSettingsBiometricsLabel = {
     'English': 'Biometric unlock',
-    'Dutch': 'Unlock met biometrie'
+    'Nederlands': 'Unlock met biometrie'
   };
   final Map<String, String>? _mainViewSettingsAnalyticsLabel = {
     'English': 'Share analytics',
-    'Dutch': 'Deel gebruiksgegevens'
+    'Nederlands': 'Deel gebruiksgegevens'
   };
   final Map<String, String>? _mainViewSelfLabel = {
     'English': 'you',
-    'Dutch': 'jijzelf'
+    'Nederlands': 'jijzelf'
   };
   final Map<String, String>? _mainViewUnverifiedEmailLabel = {
     'English': 'Verify your email',
-    'Dutch': 'Bevestig je email adres'
+    'Nederlands': 'Bevestig je email adres'
   };
 
   // Headers
   final Map<String, String>? _mainViewNotificationHeader = {
     'English': 'Notifications',
-    'Dutch': 'Notificaties'
+    'Nederlands': 'Notificaties'
   };
 
   // Push notifications titles
   final Map<String, String>? _activateContractNotificationTitle = {
     'English': 'Contract activated',
-    'Dutch': 'Contract geactiveerd'
+    'Nederlands': 'Contract geactiveerd'
   };
 
   // Push notifications bodies
   final Map<String, String>? _activateContractNotificationBody = {
     'English': 'Click to add commitment to the contract',
-    'Dutch': 'Contract geactiveerd'
+    'Nederlands': 'Contract geactiveerd'
   };
 
   // Email titles
   final Map<String, String>? _welcomeEmailTitle = {
     'English': 'Welcome to Commit',
-    'Dutch': 'Welkom bij Commit'
+    'Nederlands': 'Welkom bij Commit'
   };
   final Map<String, String>? _confirmAccountEmailTitle = {
     'English': 'Confirm your email address',
-    'Dutch': 'Bevestig je email address'
+    'Nederlands': 'Bevestig je email address'
   };
   final Map<String, String>? _resetPasswordEmailTitle = {
     'English': 'Reset your password',
-    'Dutch': 'Wijzig je wachtwoord'
+    'Nederlands': 'Wijzig je wachtwoord'
   };
   final Map<String, String>? _addContractEmailTitle = {
     'English': 'You have been added to a new contract',
-    'Dutch': 'Je bent toegevoegd aan een contract'
+    'Nederlands': 'Je bent toegevoegd aan een contract'
   };
 
   // Email bodies
   final Map<String, String>? _welcomeEmailBody = {
     'English': 'You have made the right decision to commit',
-    'Dutch': 'Je hebt het juiste besluit genomen om je te commiteren'
+    'Nederlands': 'Je hebt het juiste besluit genomen om je te commiteren'
   };
   final Map<String, String>? _verifyEmailEmailBody = {
     'English': 'Please confirm your email address by clicking on the link',
-    'Dutch': 'Bevestig je email adres via onderstaande link'
+    'Nederlands': 'Bevestig je email adres via onderstaande link'
   };
   final Map<String, String>? _resetPasswordEmailBody = {
     'English': 'Please click the link to reset your password',
-    'Dutch': 'Reset je wachtwoord via de link'
+    'Nederlands': 'Reset je wachtwoord via de link'
   };
   final Map<String, String>? _addContractEmailBody = {
     'English': 'You have been added as a participant in a new contract',
-    'Dutch': 'Je bent toegevoegd aan een contract'
+    'Nederlands': 'Je bent toegevoegd aan een contract'
   };
 
   /// Create the variables that hold the value to be shared with Views
@@ -417,7 +419,7 @@ class LanguageModel with ChangeNotifier {
   String? signUpViewAppBarTitle;
 
   // Dropdown lists
-  List<String>? mainViewlanguageDropdownList;
+  List<String>? mainViewLanguageDropdownList;
   List<String>? addEditCommitmentProofDropdownList;
   List<String>? addEditCommitmentResolutionDropdownList;
 
@@ -448,6 +450,8 @@ class LanguageModel with ChangeNotifier {
   String? addCommitmentCounterpartyPlaceholder;
   String? addCommitmentProofPlaceholder;
   String? addCommitmentResolutionPlaceholder;
+  String? editProfileNewPasswordPlaceholder;
+  String? editProfileRepeatNewPasswordPlaceholder;
 
   // Error Messages
   String? newContractViewContractTitleErrorMessage;
@@ -521,9 +525,9 @@ class LanguageModel with ChangeNotifier {
     signInViewAppBarTitle = _signInViewAppBarTitle?[_language].toString();
     signUpViewAppBarTitle = _signUpViewAppBarTitle?[_language].toString();
     // DropdownLists
-    mainViewlanguageDropdownList = _mainViewLanguageDropdownList[_language];
-    addEditCommitmentResolutionDropdownList =
-        _addEditCommitmentResolutionDropdownList[_language];
+    mainViewLanguageDropdownList = _mainViewLanguageDropdownList;
+    addEditCommitmentProofDropdownList =
+        _addEditCommitmentProofDropdownList[_language];
     addEditCommitmentResolutionDropdownList =
         _addEditCommitmentResolutionDropdownList[_language];
     // Buttons
@@ -574,6 +578,11 @@ class LanguageModel with ChangeNotifier {
         _addCommitmentProofPlaceholder?[_language].toString();
     addCommitmentResolutionPlaceholder =
         _addCommitmentResolutionPlaceholder?[_language].toString();
+    editProfileNewPasswordPlaceholder =
+        _editProfileNewPasswordPlaceholder?[_language].toString();
+    editProfileRepeatNewPasswordPlaceholder =
+        _editProfileRepeatNewPasswordPlaceholder?[_language].toString();
+
     // Error messages
     newContractViewContractTitleErrorMessage =
         _newContractViewContractTitleErrorMessage?[_language].toString();

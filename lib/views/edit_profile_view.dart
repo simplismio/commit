@@ -34,11 +34,32 @@ class _EditProfileViewState extends State<EditProfileView> {
   /// Generate unique form key
   final formKeyForm = GlobalKey<FormState>();
 
+  /// Initialize form variable password
+  String? password;
+
+  /// Initialize variables to show/hide password
+  bool obscureTextPassword = true;
+  bool obscureTextRepeatPassword = true;
+
   /// Initialize loading bool
   bool loading = false;
 
   String? username;
   String? email;
+
+  /// Function to toggle password
+  void showOrHidePasswordToggle() {
+    setState(() {
+      obscureTextPassword = !obscureTextPassword;
+    });
+  }
+
+  /// Function to toggle password
+  void showOrHideRepeatPasswordToggle() {
+    setState(() {
+      obscureTextRepeatPassword = !obscureTextRepeatPassword;
+    });
+  }
 
   /// Function to load AppBar
   loadAppBar() {
@@ -255,6 +276,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   loadUsernameTextField(language) {
     return TextFormField(
         decoration: InputDecoration(
+            border: const OutlineInputBorder(),
             hintText: language.editProfileViewUsernamePlaceholder),
         textAlign: TextAlign.left,
         initialValue: widget.currentUsername,
@@ -272,8 +294,9 @@ class _EditProfileViewState extends State<EditProfileView> {
   /// Function to load email text field
   loadEmailTextField(language) {
     return TextFormField(
-        decoration:
-            InputDecoration(hintText: language.editProfileViewEmailPlaceholder),
+        decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            hintText: language.editProfileViewEmailPlaceholder),
         textAlign: TextAlign.left,
         initialValue: widget.currentUserEmail,
         autofocus: true,
@@ -287,63 +310,125 @@ class _EditProfileViewState extends State<EditProfileView> {
         });
   }
 
+  // Load password text field
+  loadPasswordTextField(language) {
+    return TextFormField(
+        obscureText: obscureTextPassword,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          hintText: language.editProfileNewPasswordPlaceholder,
+          suffixIcon: InkWell(
+            onTap: showOrHidePasswordToggle,
+            child: Icon(
+              obscureTextPassword
+                  ? FontAwesomeIcons.eye
+                  : FontAwesomeIcons.eyeSlash,
+              size: 20.0,
+            ),
+          ),
+        ),
+        textAlign: TextAlign.left,
+        autofocus: true,
+        validator: (String? value) {
+          return (value != null && value.length < 2)
+              ? language.signInUpViewPasswordErrorMessage
+              : null;
+        },
+        onChanged: (val) {
+          setState(() => password = val);
+        });
+  }
+
+  // Load password text field
+  loadRepeatPasswordTextField(language) {
+    return SizedBox(
+      width: double.infinity,
+      child: TextFormField(
+          obscureText: obscureTextRepeatPassword,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            hintText: language.editProfileRepeatNewPasswordPlaceholder,
+            suffixIcon: InkWell(
+              onTap: showOrHideRepeatPasswordToggle,
+              child: Icon(
+                obscureTextRepeatPassword
+                    ? FontAwesomeIcons.eye
+                    : FontAwesomeIcons.eyeSlash,
+                size: 20.0,
+              ),
+            ),
+          ),
+          textAlign: TextAlign.left,
+          autofocus: true,
+          validator: (String? value) {
+            return (value != null && value.length < 2)
+                ? language.signInUpViewPasswordErrorMessage
+                : null;
+          },
+          onChanged: (val) {
+            setState(() => password = val);
+          }),
+    );
+  }
+
   /// Function to load form submit button
   loadFormSubmitButton(media) {
-    return ElevatedButton(
-      child: loading
-          ? const LinearProgressIndicator()
-          : Consumer<LanguageModel>(
-              builder: (context, language, _) =>
-                  Text(language.editProfileViewButtonText ?? '',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ))),
-      onPressed: () async {
-        if (formKeyForm.currentState!.validate()) {
-          setState(() => loading = true);
-          // ignore: prefer_conditional_assignment
-          if (username == null) {
-            username = widget.currentUsername;
-          }
-          // ignore: prefer_conditional_assignment
-          if (email == null) {
-            email = widget.currentUserEmail;
-          }
-
-          UserModel()
-              .updateUserProfile(
-                  widget.currentAvatarLink,
-                  media.newAvatarUrlMobile,
-                  media.newAvatarUrlWebData,
-                  username,
-                  email)
-              .then((result) {
-            if (result == null) {
-              media.newAvatarUrlMobile = null;
-              media.newAvatarUrlWeb = null;
-              if (mounted) {
-                Navigator.of(context).maybePop();
-              }
-            } else {
-              setState(() => loading = false);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Consumer<LanguageModel>(
-                    builder: (context, language, _) => Text(
-                          language.genericFirebaseErrorMessage ?? '',
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        child: loading
+            ? const LinearProgressIndicator()
+            : Consumer<LanguageModel>(
+                builder: (context, language, _) => Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(language.editProfileViewButtonText ?? '',
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          textAlign: TextAlign.center,
-                        )),
-                backgroundColor: Colors.grey[800],
-              ));
+                            fontWeight: FontWeight.bold,
+                          )),
+                    )),
+        onPressed: () async {
+          if (formKeyForm.currentState!.validate()) {
+            setState(() => loading = true);
+            // ignore: prefer_conditional_assignment
+            if (username == null) {
+              username = widget.currentUsername;
             }
-          });
-        } else {
-          setState(() => loading = false);
-        }
-      },
+            // ignore: prefer_conditional_assignment
+            if (email == null) {
+              email = widget.currentUserEmail;
+            }
+
+            UserModel()
+                .editProfile(widget.currentAvatarLink, media.newAvatarUrlMobile,
+                    media.newAvatarUrlWebData, username, email)
+                .then((result) {
+              if (result == null) {
+                media.newAvatarUrlMobile = null;
+                media.newAvatarUrlWeb = null;
+                if (mounted) {
+                  Navigator.of(context).maybePop();
+                }
+              } else {
+                setState(() => loading = false);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Consumer<LanguageModel>(
+                      builder: (context, language, _) => Text(
+                            language.genericFirebaseErrorMessage ?? '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          )),
+                  backgroundColor: Colors.grey[800],
+                ));
+              }
+            });
+          } else {
+            setState(() => loading = false);
+          }
+        },
+      ),
     );
   }
 
@@ -353,8 +438,8 @@ class _EditProfileViewState extends State<EditProfileView> {
     return Scaffold(
       appBar: loadAppBar(),
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
           child: Form(
               key: formKeyForm,
               child: Column(
@@ -368,17 +453,22 @@ class _EditProfileViewState extends State<EditProfileView> {
                   Consumer<LanguageModel>(
                       builder: (context, language, _) =>
                           loadUsernameTextField(language)),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 10.0),
                   Consumer<LanguageModel>(
                       builder: (context, language, _) =>
                           loadEmailTextField(language)),
                   const SizedBox(height: 10.0),
-                  SizedBox(
-                    width: 300,
-                    child: Consumer<MediaHelper>(
-                        builder: (context, media, child) =>
-                            loadFormSubmitButton(media)),
-                  ),
+                  Consumer<LanguageModel>(
+                      builder: (context, language, _) =>
+                          loadPasswordTextField(language)),
+                  const SizedBox(height: 10.0),
+                  Consumer<LanguageModel>(
+                      builder: (context, language, _) =>
+                          loadRepeatPasswordTextField(language)),
+                  const SizedBox(height: 20.0),
+                  Consumer<MediaHelper>(
+                      builder: (context, media, child) =>
+                          loadFormSubmitButton(media)),
                 ],
               )),
         ),

@@ -672,13 +672,15 @@ class _MainViewState extends State<MainView> {
                             onChanged: (String? newValue) {
                               language.setLanguage(newValue);
                             },
-                            items: language.mainViewlanguageDropdownList
-                                ?.map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                            items: language.mainViewLanguageDropdownList?.map(
+                              (item) {
+                                print(item);
+                                return DropdownMenuItem(
+                                  value: item,
+                                  child: Text(item),
+                                );
+                              },
+                            ).toList(),
                           )),
                 ],
               ),

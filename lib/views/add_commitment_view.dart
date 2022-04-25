@@ -184,61 +184,65 @@ class _AddCommitmentViewState extends State<AddCommitmentView> {
 
   loadProofsDropdown(language) {
     return SizedBox(
-      width: double.infinity,
-      child: DropdownButtonFormField(
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-        ),
-        value: proof,
-        hint: Text(language.addCommitmentProofPlaceholder ?? ''),
-        onChanged: (value) {
-          setState(() {
-            proof = value as String?;
-            counterpartyValue = value;
-            if (proof == '') {
-              counterpartyValue = '...';
-            }
-            //TODO: find UID and add it to a list
-          });
-        },
-        items: language.addEditCommitmentProofDropdownList.map(
-          (item) {
-            return DropdownMenuItem(
-              value: item,
-              child: Text(item),
-            );
-          },
-        ).toList(),
-      ),
-    );
+        width: double.infinity,
+        child: Consumer<LanguageModel>(
+          builder: (context, language, child) =>
+              DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            value: proof,
+            hint: Text(language.addCommitmentProofPlaceholder ?? ''),
+            onChanged: (value) {
+              setState(() {
+                proof = value as String?;
+                counterpartyValue = value;
+                if (proof == '') {
+                  counterpartyValue = '...';
+                }
+                //TODO: find UID and add it to a list
+              });
+            },
+            items: language.addEditCommitmentProofDropdownList?.map(
+              (item) {
+                return DropdownMenuItem(
+                  value: item,
+                  child: Text(item),
+                );
+              },
+            ).toList(),
+          ),
+        ));
   }
 
   loadResolutionDropdown(language) {
     return SizedBox(
-      width: double.infinity,
-      child: DropdownButtonFormField(
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-        ),
-        value: resolution,
-        hint: Text(language.addCommitmentResolutionPlaceholder ?? ''),
-        onChanged: (value) {
-          setState(() {
-            resolution = value as String?;
+        width: double.infinity,
+        child: Consumer<LanguageModel>(
+          builder: (context, language, child) =>
+              DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+            value: resolution,
+            hint: Text(language.addCommitmentResolutionPlaceholder ?? ''),
+            onChanged: (value) {
+              setState(() {
+                resolution = value as String?;
 
-            //TODO: find UID and add it to a list
-          });
-        },
-        items: language.addEditCommitmentResolutionDropdownList.map(
-          (item) {
-            return DropdownMenuItem(
-              value: item,
-              child: Text(item),
-            );
-          },
-        ).toList(),
-      ),
-    );
+                //TODO: find UID and add it to a list
+              });
+            },
+            items: language.addEditCommitmentResolutionDropdownList?.map(
+              (item) {
+                return DropdownMenuItem(
+                  value: item,
+                  child: Text(item),
+                );
+              },
+            ).toList(),
+          ),
+        ));
   }
 
   /// Function to load commitment summary
