@@ -192,7 +192,7 @@ class _AddCommitmentViewState extends State<AddCommitmentView> {
               border: OutlineInputBorder(),
             ),
             value: proof,
-            hint: Text(language.addCommitmentProofPlaceholder ?? ''),
+            hint: Text(language.addCommitmentViewProofPlaceholder ?? ''),
             onChanged: (value) {
               setState(() {
                 proof = value as String?;
@@ -225,7 +225,7 @@ class _AddCommitmentViewState extends State<AddCommitmentView> {
               border: OutlineInputBorder(),
             ),
             value: resolution,
-            hint: Text(language.addCommitmentResolutionPlaceholder ?? ''),
+            hint: Text(language.addCommitmentViewResolutionPlaceholder ?? ''),
             onChanged: (value) {
               setState(() {
                 resolution = value as String?;

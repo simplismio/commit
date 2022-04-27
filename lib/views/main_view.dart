@@ -18,6 +18,8 @@ import 'add_commitment_view.dart';
 import 'add_contract_view.dart';
 import 'edit_commitment_view.dart';
 import 'edit_contract_view.dart';
+import 'edit_email_view.dart';
+import 'edit_password_view.dart';
 import 'edit_profile_view.dart';
 import 'package:email_validator/email_validator.dart';
 
@@ -618,7 +620,7 @@ class _MainViewState extends State<MainView> {
                 ),
               ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
             Padding(
                 padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
                 child: Row(
@@ -640,10 +642,60 @@ class _MainViewState extends State<MainView> {
                                         builder: (context, user, child) =>
                                             EditProfileView(
                                               currentAvatarLink: user.avatar,
-                                              currentUserUid: user.uid,
                                               currentUsername: user.username,
+                                            ))));
+                      },
+                    ),
+                  ],
+                )),
+            const SizedBox(height: 10),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
+                child: Row(
+                  children: [
+                    Consumer<LanguageModel>(
+                        builder: (context, language, child) => Text(
+                            language.mainViewSettingEditEmailLabel ?? '',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15))),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Consumer<UserModel>(
+                                        builder: (context, user, child) =>
+                                            EditEmailView(
                                               currentUserEmail: user.email,
                                             ))));
+                      },
+                    ),
+                  ],
+                )),
+            const SizedBox(height: 10),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
+                child: Row(
+                  children: [
+                    Consumer<LanguageModel>(
+                        builder: (context, language, child) => Text(
+                            language.mainViewSettingEditPasswordLabel ?? '',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15))),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.chevron_right),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Consumer<UserModel>(
+                                        builder: (context, user, child) =>
+                                            EditPasswordView())));
                       },
                     ),
                   ],
@@ -674,7 +726,6 @@ class _MainViewState extends State<MainView> {
                             },
                             items: language.mainViewLanguageDropdownList?.map(
                               (item) {
-                                print(item);
                                 return DropdownMenuItem(
                                   value: item,
                                   child: Text(item),
@@ -731,7 +782,7 @@ class _MainViewState extends State<MainView> {
                 value: analytics.analytics,
               ),
             ),
-            const SizedBox(height: 75),
+            const SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 0),
               child: SizedBox(
@@ -881,7 +932,7 @@ class _MainViewState extends State<MainView> {
             child: Consumer<LanguageModel>(
                 builder: (context, language, _) => Row(
                       children: [
-                        Text(language.mainViewUnverifiedEmailLabel ?? ''),
+                        Text(language.mainViewUnverifiedEmailMessage ?? ''),
                         const Spacer(),
                         ElevatedButton(
                           child: loading

@@ -56,6 +56,78 @@ exports.sendWelcomeEmail = functions.https.onCall((data) => {
     return null;
 });
 
+exports.editEmailEmail = functions.https.onCall((data) => {
+    var readHTMLFile = function (path, callback) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
+            if (error) {
+                callback(error);
+                throw error;
+            } else {
+                callback(null, html);
+            }
+        });
+    };
+
+    readHTMLFile(path.resolve(__dirname, "./templates/edit_email_template.html"), function (error, html) {
+        var template = handlebars.compile(html);
+        var replacements = {
+            username: data["username"],
+            body: data["body"],
+        };
+
+        var htmlToSend = template(replacements);
+        var mailOptions = {
+            from: "Commit <forgetaboutprivacy@gmail.com>",
+            to: data["email"],
+            subject: data["title"],
+            html: htmlToSend,
+        };
+
+        mailTransport.sendMail(mailOptions, function (error) {
+            if (error) {
+                console.log(error);
+            }
+        });
+    });
+    return null;
+});
+
+exports.editPasswordEmail = functions.https.onCall((data) => {
+    var readHTMLFile = function (path, callback) {
+        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
+            if (error) {
+                callback(error);
+                throw error;
+            } else {
+                callback(null, html);
+            }
+        });
+    };
+
+    readHTMLFile(path.resolve(__dirname, "./templates/edit_password_template.html"), function (error, html) {
+        var template = handlebars.compile(html);
+        var replacements = {
+            username: data["username"],
+            body: data["body"],
+        };
+
+        var htmlToSend = template(replacements);
+        var mailOptions = {
+            from: "Commit <forgetaboutprivacy@gmail.com>",
+            to: data["email"],
+            subject: data["title"],
+            html: htmlToSend,
+        };
+
+        mailTransport.sendMail(mailOptions, function (error) {
+            if (error) {
+                console.log(error);
+            }
+        });
+    });
+    return null;
+});
+
 exports.verifyEmailEmail = functions.https.onCall((data) => {
 
     var readHTMLFile = function (path, callback) {

@@ -284,11 +284,11 @@ class UserModel extends ChangeNotifier {
   /// Function to update user profile
   /// Returns null or error
   Future editProfile(
-      String? currentAvatarUrl,
-      File? newAvatarUrlMobile,
-      Future<Uint8List> newAvatarUrlWebData,
-      String? username,
-      String? email) async {
+    String? currentAvatarUrl,
+    File? newAvatarUrlMobile,
+    Future<Uint8List>? newAvatarUrlWebData,
+    String? username,
+  ) async {
     dynamic avatarUrl;
     String path = 'avatars/' + randomAlphaNumeric(30);
 
@@ -308,10 +308,10 @@ class UserModel extends ChangeNotifier {
         return error.message;
       }
     } else {
-      Uint8List newAvatarUrlWebList = await newAvatarUrlWebData;
+      Uint8List? newAvatarUrlWebList = await newAvatarUrlWebData;
       try {
         await firebase_storage.FirebaseStorage.instance.ref(path).putData(
-            newAvatarUrlWebList,
+            newAvatarUrlWebList!,
             firebase_storage.SettableMetadata(contentType: 'image/jpeg'));
         avatarUrl = await firebase_storage.FirebaseStorage.instance
             .ref(path)
@@ -333,21 +333,13 @@ class UserModel extends ChangeNotifier {
       if (newAvatarUrlMobile != null || newAvatarUrlWebData != null) {
         await user?.updatePhotoURL(avatarUrl);
       }
-      // if (password != null) {
-      //   await user?.updatePassword(newPassword);
-      // }
       await user?.updateDisplayName(username);
-      await user?.updateEmail(email!);
       await user?.reload();
 
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
-          .update({
-        'username': username,
-        'email': email,
-        'avatar': avatarUrl
-      }).then((value) async {
+          .update({'avatar': avatarUrl}).then((value) async {
         if (kDebugMode) {
           print("User updated in the users table");
         }
@@ -377,5 +369,47 @@ class UserModel extends ChangeNotifier {
       }
       return error;
     }
+  }
+
+  Future editEmail(
+      String? newEmail, String? emailTitle, String? emailBody) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    String? formerEmail = user?.email;
+
+    await FirebaseFirestore.instance.collection('users').doc(user?.uid).update({
+      'email': email,
+    }).then((value) async {
+      if (kDebugMode) {
+        print("User updated in the users table");
+      }
+      await user?.updateEmail(newEmail!);
+      await user?.reload();
+
+      //sendEmail
+      await EmailHelper().sendEmail('editEmailEmail', formerEmail,
+          user?.displayName, emailTitle, emailBody);
+      await EmailHelper().sendEmail(
+          'editEmailEmail', newEmail, user?.displayName, emailTitle, emailBody);
+
+      return null;
+    }).catchError((error) {
+      if (kDebugMode) {
+        print("Failed to update user: $error");
+      }
+      //return error;
+    });
+  }
+
+  Future editPassword(
+      String? password, String? emailTitle, String? emailBody) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    //sendEmail
+    await EmailHelper().sendEmail('editPasswordEmail', user?.email,
+        user?.displayName, emailTitle, emailBody);
+
+    await user?.updatePassword(password!);
+    await user?.reload();
   }
 }

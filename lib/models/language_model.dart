@@ -109,6 +109,14 @@ class LanguageModel with ChangeNotifier {
     'English': 'Edit profile',
     'Nederlands': 'Wijzig profiel'
   };
+  final Map<String, String>? _editEmailViewAppBarTitle = {
+    'English': 'Change email',
+    'Nederlands': 'Wijzig email'
+  };
+  final Map<String, String>? _editPasswordViewAppBarTitle = {
+    'English': 'Change password',
+    'Nederlands': 'Wijzig password'
+  };
   final Map<String, String>? _signInViewAppBarTitle = {
     'English': 'Sign in',
     'Nederlands': 'Log in'
@@ -139,20 +147,28 @@ class LanguageModel with ChangeNotifier {
     'Nederlands': 'Commitment opslaan'
   };
   final Map<String, String>? _editContractViewButtonText = {
-    'English': 'Save changes',
-    'Nederlands': 'Wijzigingn opslaan'
+    'English': 'Save contract changes',
+    'Nederlands': 'Wijziging contract opslaan'
   };
   final Map<String, String>? _editCommitmentViewButtonText = {
-    'English': 'Save changes',
-    'Nederlands': 'Wijzigingn opslaan'
+    'English': 'Save commitment changes',
+    'Nederlands': 'Wijzigingn commitment opslaan'
   };
   final Map<String, String>? _resetPasswordViewButtonText = {
     'English': 'Email reset link',
     'Nederlands': 'Email reset link'
   };
   final Map<String, String>? _editProfileViewButtonText = {
-    'English': 'Save changes',
-    'Nederlands': 'Wijzingen opslaan'
+    'English': 'Save profile changes',
+    'Nederlands': 'Wijzingen profiel opslaan'
+  };
+  final Map<String, String>? _editEmailViewButtonText = {
+    'English': 'Save new email',
+    'Nederlands': 'Nieuw email adres opslaan'
+  };
+  final Map<String, String>? _editPasswordViewButtonText = {
+    'English': 'Save new password',
+    'Nederlands': 'Nieuw wachtwoord opslaan'
   };
   final Map<String, String>? _editContractViewDeleteContractButtonText = {
     'English': 'Delete contract',
@@ -200,9 +216,13 @@ class LanguageModel with ChangeNotifier {
     'English': 'Username',
     'Nederlands': 'Gebruikersnaam'
   };
-  final Map<String, String>? _editProfileViewEmailPlaceholder = {
-    'English': 'Email',
-    'Nederlands': 'Email'
+  final Map<String, String>? _editEmailViewEmailPlaceholder = {
+    'English': 'Current email',
+    'Nederlands': 'Huidig email adres'
+  };
+  final Map<String, String>? _editEmailViewNewEmailPlaceholder = {
+    'English': 'New email',
+    'Nederlands': 'Nieuw email address'
   };
   final Map<String, String>? _signUpViewUsernamePlaceholder = {
     'English': 'Username',
@@ -216,23 +236,23 @@ class LanguageModel with ChangeNotifier {
     'English': 'Password',
     'Nederlands': 'Wachtwoord'
   };
-  final Map<String, String>? _addCommitmentCounterpartyPlaceholder = {
+  final Map<String, String>? _addCommitmentViewCounterpartyPlaceholder = {
     'English': 'Choose counterparty',
     'Nederlands': 'Kies tegenpartij'
   };
-  final Map<String, String>? _addCommitmentProofPlaceholder = {
+  final Map<String, String>? _addCommitmentViewProofPlaceholder = {
     'English': 'Choose proof mechanism for fulfillment',
     'Nederlands': 'Kies de bewijsvorm voor nakoming'
   };
-  final Map<String, String>? _addCommitmentResolutionPlaceholder = {
+  final Map<String, String>? _addCommitmentViewResolutionPlaceholder = {
     'English': 'Choose resolution mechanism if non-compliant',
     'Nederlands': 'Kies de resolutievorm bij niet na-koming'
   };
-  final Map<String, String>? _editProfileNewPasswordPlaceholder = {
+  final Map<String, String>? _editProfileViewNewPasswordPlaceholder = {
     'English': 'New password',
     'Nederlands': 'Nieuw wachtwoord'
   };
-  final Map<String, String>? _editProfileRepeatNewPasswordPlaceholder = {
+  final Map<String, String>? _editProfileViewRepeatNewPasswordPlaceholder = {
     'English': 'New password again',
     'Nederlands': 'Nieuw wachtwoord opnieuw'
   };
@@ -262,13 +282,21 @@ class LanguageModel with ChangeNotifier {
     'English': 'Please provide a valid username',
     'Nederlands': 'De ingegeven gebruikersnaam is incorrect'
   };
+  final Map<String, String>? _editEmailViewEmailErrorMessage = {
+    'English': 'Please provide a valid email address',
+    'Nederlands': 'Het ingegeven email adres is incorrect'
+  };
+  final Map<String, String>? _editEmailViewNewEmailErrorMessage = {
+    'English': 'Please provide a valid email address',
+    'Nederlands': 'Het ingegeven email adres is incorrect'
+  };
   final Map<String, String>? _signUpViewUsernameErrorMessage = {
     'English': 'Please provide a valid username',
-    'Nederlands': 'Het ingegeven wachtwoord is incorrect'
+    'Nederlands': 'De ingegeven gebruikersnaam is incorrect'
   };
   final Map<String, String>? _signInUpViewEmailErrorMessage = {
     'English': 'Please provide a valid email address',
-    'Nederlands': 'De ingegeven gebruikersnaam is incorrect'
+    'Nederlands': 'Het ingegeven email adres is incorrect'
   };
   final Map<String, String>? _signInUpViewPasswordErrorMessage = {
     'English': 'testEN',
@@ -293,6 +321,14 @@ class LanguageModel with ChangeNotifier {
   final Map<String, String>? _genericFirebaseErrorMessage = {
     'English': 'Something went wrong. Please try again',
     'Nederlands': 'Er is iets verkeerd gegaan. Probeert u het s.v.p. opnieuw'
+  };
+  final Map<String, String>? _editPasswordViewNewPasswordErrorMessage = {
+    'English': 'Please provide a valid password',
+    'Nederlands': 'Het ingegeven wachtwoord is incorrect'
+  };
+  final Map<String, String>? _editPasswordViewRepeatNewPasswordErrorMessage = {
+    'English': 'The provided passwords are not the same',
+    'Nederlands': 'De ingegeven wachtwoorden zijn niet gelijk'
   };
 
   // Links
@@ -326,6 +362,14 @@ class LanguageModel with ChangeNotifier {
     'English': 'Edit profile',
     'Nederlands': 'Wijzig profiel'
   };
+  final Map<String, String>? _mainViewSettingEditEmailLabel = {
+    'English': 'Change email',
+    'Nederlands': 'Wijzig email'
+  };
+  final Map<String, String>? _mainViewSettingEditPasswordLabel = {
+    'English': 'Change password',
+    'Nederlands': 'Wijzig wachtwoord'
+  };
   final Map<String, String>? _mainViewSettingsLanguageLabel = {
     'English': 'Language',
     'Nederlands': 'Taal'
@@ -346,9 +390,21 @@ class LanguageModel with ChangeNotifier {
     'English': 'you',
     'Nederlands': 'jijzelf'
   };
-  final Map<String, String>? _mainViewUnverifiedEmailLabel = {
+
+  // Messages
+  final Map<String, String>? _mainViewUnverifiedEmailMessage = {
     'English': 'Verify your email',
     'Nederlands': 'Bevestig je email adres'
+  };
+  final Map<String, String>? _editEmailViewSignOutMessage = {
+    'English': 'You need to sign in again after making this change',
+    'Nederlands':
+        'Je zult opnieuw moeten inloggen na het maken van deze wijziging'
+  };
+  final Map<String, String>? _editPasswordViewSignOutMessage = {
+    'English': 'You need to sign in again after making this change',
+    'Nederlands':
+        'Je zult opnieuw moeten inloggen na het maken van deze wijziging'
   };
 
   // Headers
@@ -386,6 +442,18 @@ class LanguageModel with ChangeNotifier {
     'English': 'You have been added to a new contract',
     'Nederlands': 'Je bent toegevoegd aan een contract'
   };
+  final Map<String, String>? _editProfileViewEmailTitle = {
+    'English': 'Your profile has been updated',
+    'Nederlands': 'Je profiel is bijgewerkt'
+  };
+  final Map<String, String>? _editEmailViewEmailTitle = {
+    'English': 'Your email address has been changed',
+    'Nederlands': 'Je email adres is gewijzigd.'
+  };
+  final Map<String, String>? _editPasswordViewEmailTitle = {
+    'English': 'Your password has been changed',
+    'Nederlands': 'Je wachwoord is gewijzigd'
+  };
 
   // Email bodies
   final Map<String, String>? _welcomeEmailBody = {
@@ -404,6 +472,24 @@ class LanguageModel with ChangeNotifier {
     'English': 'You have been added as a participant in a new contract',
     'Nederlands': 'Je bent toegevoegd aan een contract'
   };
+  final Map<String, String>? _editProfileViewEmailBody = {
+    'English':
+        'Your profile has been updated. If you did not make this change, please contact us immediately',
+    'Nederlands':
+        'Je profiel is bijgewerkt. Indien je deze wijziging niet zelf gemaakt hebt, neem s.v.p. direct contact met ons op'
+  };
+  final Map<String, String>? _editEmailViewEmailBody = {
+    'English':
+        'Your email has been updated. If you did not make this change, please contact us immediately',
+    'Nederlands':
+        'Je email adres is gewijzigd. Indien je deze wijziging niet zelf gemaakt hebt, neem s.v.p. direct contact met ons op'
+  };
+  final Map<String, String>? _editPasswordViewEmailBody = {
+    'English':
+        'Your password has been updated. If you did not make this change, please contact us immediately',
+    'Nederlands':
+        'Je wachwoord is gewijzigd. Indien je deze wijziging niet zelf gemaakt hebt, neem s.v.p. direct contact met ons op'
+  };
 
   /// Create the variables that hold the value to be shared with Views
 
@@ -415,6 +501,8 @@ class LanguageModel with ChangeNotifier {
   String? editCommitmentViewAppBarTitle;
   String? resetPasswordViewAppBarTitle;
   String? editProfileViewAppBarTitle;
+  String? editEmailViewAppBarTitle;
+  String? editPasswordViewAppBarTitle;
   String? signInViewAppBarTitle;
   String? signUpViewAppBarTitle;
 
@@ -430,6 +518,8 @@ class LanguageModel with ChangeNotifier {
   String? editCommitmentViewButtonText;
   String? resetPasswordViewButtonText;
   String? editProfileViewButtonText;
+  String? editEmailViewButtonText;
+  String? editPasswordViewButtonText;
   String? editContractViewDeleteContractButtonText;
   String? signInViewButtonText;
   String? signUpViewButtonText;
@@ -443,15 +533,16 @@ class LanguageModel with ChangeNotifier {
   String? editCommitmentViewCommitmentPlaceholder;
   String? resetPasswordViewEmailPlaceholder;
   String? editProfileViewUsernamePlaceholder;
-  String? editProfileViewEmailPlaceholder;
+  String? editEmailViewEmailPlaceholder;
+  String? editEmailViewNewEmailPlaceholder;
   String? signUpViewUsernamePlaceholder;
   String? signInUpViewEmailPlaceholder;
   String? signInUpViewPasswordPlaceholder;
-  String? addCommitmentCounterpartyPlaceholder;
-  String? addCommitmentProofPlaceholder;
-  String? addCommitmentResolutionPlaceholder;
-  String? editProfileNewPasswordPlaceholder;
-  String? editProfileRepeatNewPasswordPlaceholder;
+  String? addCommitmentViewCounterpartyPlaceholder;
+  String? addCommitmentViewProofPlaceholder;
+  String? addCommitmentViewResolutionPlaceholder;
+  String? editProfileViewNewPasswordPlaceholder;
+  String? editProfileViewRepeatNewPasswordPlaceholder;
 
   // Error Messages
   String? newContractViewContractTitleErrorMessage;
@@ -460,6 +551,8 @@ class LanguageModel with ChangeNotifier {
   String? editCommitmentViewCommitmentErrorMessage;
   String? resetPasswordViewEmailErrorMessage;
   String? editProfileViewUsernameErrorMessage;
+  String? editEmailViewEmailErrorMessage;
+  String? editEmailViewNewEmailErrorMessage;
   String? signUpViewUsernameErrorMessage;
   String? signInUpViewEmailErrorMessage;
   String? signInUpViewPasswordErrorMessage;
@@ -468,6 +561,8 @@ class LanguageModel with ChangeNotifier {
   String? mainViewNoNotificationsErrorMessage;
   String? genericAuthErrorMessage;
   String? genericFirebaseErrorMessage;
+  String? editPasswordViewNewPasswordErrorMessage;
+  String? editPasswordViewRepeatNewPasswordErrorMessage;
 
   // Links
   String? signInViewResetPasswordLink;
@@ -479,12 +574,18 @@ class LanguageModel with ChangeNotifier {
 
   // Labels
   String? mainViewSettingEditProfileLabel;
+  String? mainViewSettingEditEmailLabel;
+  String? mainViewSettingEditPasswordLabel;
   String? mainViewSettingsLanguageLabel;
   String? mainViewSettingsThemeLabel;
   String? mainViewSettingsBiometricsLabel;
   String? mainViewSettingsAnalyticsLabel;
   String? mainViewSelfLabel;
-  String? mainViewUnverifiedEmailLabel;
+
+  // Messages
+  String? mainViewUnverifiedEmailMessage;
+  String? editEmailViewSignOutMessage;
+  String? editPasswordViewSignOutMessage;
 
   // Headers
   String? mainViewNotificationHeader;
@@ -500,15 +601,22 @@ class LanguageModel with ChangeNotifier {
   String? verifyEmailEmailTitle;
   String? resetPasswordEmailTitle;
   String? addContractEmailTitle;
+  String? editProfileViewEmailTitle;
+  String? editEmailViewEmailTitle;
+  String? editPasswordViewEmailTitle;
 
   // Email bodies
   String? welcomeEmailBody;
   String? verifyEmailEmailBody;
   String? resetPasswordEmailBody;
   String? addContractEmailBody;
+  String? editProfileViewEmailBody;
+  String? editEmailViewEmailBody;
+  String? editPasswordViewEmailBody;
 
   /// Function to switch the language immediately
   void switchLanguage(_language) {
+    // Titles
     mainViewAppBarTitle = _mainViewAppBarTitle?[_language].toString();
     newContractViewAppBarTitle =
         _newContractViewAppBarTitle?[_language].toString();
@@ -522,6 +630,9 @@ class LanguageModel with ChangeNotifier {
         _resetPasswordViewAppBarTitle?[_language].toString();
     editProfileViewAppBarTitle =
         _editProfileViewAppBarTitle?[_language].toString();
+    editEmailViewAppBarTitle = _editEmailViewAppBarTitle?[_language].toString();
+    editPasswordViewAppBarTitle =
+        _editPasswordViewAppBarTitle?[_language].toString();
     signInViewAppBarTitle = _signInViewAppBarTitle?[_language].toString();
     signUpViewAppBarTitle = _signUpViewAppBarTitle?[_language].toString();
     // DropdownLists
@@ -543,6 +654,9 @@ class LanguageModel with ChangeNotifier {
         _resetPasswordViewButtonText?[_language].toString();
     editProfileViewButtonText =
         _editProfileViewButtonText?[_language].toString();
+    editEmailViewButtonText = _editEmailViewButtonText?[_language].toString();
+    editPasswordViewButtonText =
+        _editPasswordViewButtonText?[_language].toString();
     editContractViewDeleteContractButtonText =
         _editContractViewDeleteContractButtonText?[_language].toString();
     signInViewButtonText = _signInViewButtonText?[_language].toString();
@@ -564,25 +678,26 @@ class LanguageModel with ChangeNotifier {
         _resetPasswordViewEmailPlaceholder?[_language].toString();
     editProfileViewUsernamePlaceholder =
         _editProfileViewUsernamePlaceholder?[_language].toString();
-    editProfileViewEmailPlaceholder =
-        _editProfileViewEmailPlaceholder?[_language].toString();
+    editEmailViewEmailPlaceholder =
+        _editEmailViewEmailPlaceholder?[_language].toString();
+    editEmailViewNewEmailPlaceholder =
+        _editEmailViewNewEmailPlaceholder?[_language].toString();
     signUpViewUsernamePlaceholder =
         _signUpViewUsernamePlaceholder?[_language].toString();
     signInUpViewEmailPlaceholder =
         _signInUpViewEmailPlaceholder?[_language].toString();
     signInUpViewPasswordPlaceholder =
         _signInUpViewPasswordPlaceholder?[_language].toString();
-    addCommitmentCounterpartyPlaceholder =
-        _addCommitmentCounterpartyPlaceholder?[_language].toString();
-    addCommitmentProofPlaceholder =
-        _addCommitmentProofPlaceholder?[_language].toString();
-    addCommitmentResolutionPlaceholder =
-        _addCommitmentResolutionPlaceholder?[_language].toString();
-    editProfileNewPasswordPlaceholder =
-        _editProfileNewPasswordPlaceholder?[_language].toString();
-    editProfileRepeatNewPasswordPlaceholder =
-        _editProfileRepeatNewPasswordPlaceholder?[_language].toString();
-
+    addCommitmentViewCounterpartyPlaceholder =
+        _addCommitmentViewCounterpartyPlaceholder?[_language].toString();
+    addCommitmentViewProofPlaceholder =
+        _addCommitmentViewProofPlaceholder?[_language].toString();
+    addCommitmentViewResolutionPlaceholder =
+        _addCommitmentViewResolutionPlaceholder?[_language].toString();
+    editProfileViewNewPasswordPlaceholder =
+        _editProfileViewNewPasswordPlaceholder?[_language].toString();
+    editProfileViewRepeatNewPasswordPlaceholder =
+        _editProfileViewRepeatNewPasswordPlaceholder?[_language].toString();
     // Error messages
     newContractViewContractTitleErrorMessage =
         _newContractViewContractTitleErrorMessage?[_language].toString();
@@ -602,6 +717,10 @@ class LanguageModel with ChangeNotifier {
         _signInUpViewPasswordErrorMessage?[_language].toString();
     editProfileViewUsernameErrorMessage =
         _editProfileViewUsernameErrorMessage?[_language].toString();
+    editEmailViewEmailErrorMessage =
+        _editEmailViewEmailErrorMessage?[_language].toString();
+    editEmailViewNewEmailErrorMessage =
+        _editEmailViewNewEmailErrorMessage?[_language].toString();
     mainViewNoContractsErrorMessage =
         _mainViewNoContractsErrorMessage?[_language].toString();
     mainViewNoCommitmentsErrorMessage =
@@ -611,6 +730,10 @@ class LanguageModel with ChangeNotifier {
     genericAuthErrorMessage = _genericAuthErrorMessage?[_language].toString();
     genericFirebaseErrorMessage =
         _genericFirebaseErrorMessage?[_language].toString();
+    editPasswordViewNewPasswordErrorMessage =
+        _editPasswordViewNewPasswordErrorMessage?[_language].toString();
+    editPasswordViewRepeatNewPasswordErrorMessage =
+        _editPasswordViewRepeatNewPasswordErrorMessage?[_language].toString();
     // Links
     signInViewResetPasswordLink =
         _signInViewResetPasswordLink?[_language].toString();
@@ -627,6 +750,10 @@ class LanguageModel with ChangeNotifier {
     // Labels
     mainViewSettingEditProfileLabel =
         _mainViewSettingEditProfileLabel?[_language].toString();
+    mainViewSettingEditEmailLabel =
+        _mainViewSettingEditEmailLabel?[_language].toString();
+    mainViewSettingEditPasswordLabel =
+        _mainViewSettingEditPasswordLabel?[_language].toString();
     mainViewSettingsLanguageLabel =
         _mainViewSettingsLanguageLabel?[_language].toString();
     mainViewSettingsThemeLabel =
@@ -636,8 +763,13 @@ class LanguageModel with ChangeNotifier {
     mainViewSettingsAnalyticsLabel =
         _mainViewSettingsAnalyticsLabel?[_language].toString();
     mainViewSelfLabel = _mainViewSelfLabel?[_language].toString();
-    mainViewUnverifiedEmailLabel =
-        _mainViewUnverifiedEmailLabel?[_language].toString();
+    // Messages
+    mainViewUnverifiedEmailMessage =
+        _mainViewUnverifiedEmailMessage?[_language].toString();
+    editEmailViewSignOutMessage =
+        _editEmailViewSignOutMessage?[_language].toString();
+    editPasswordViewSignOutMessage =
+        _editPasswordViewSignOutMessage?[_language].toString();
     // Header
     mainViewNotificationHeader =
         _mainViewNotificationHeader?[_language].toString();
@@ -652,10 +784,20 @@ class LanguageModel with ChangeNotifier {
     verifyEmailEmailTitle = _confirmAccountEmailTitle?[_language].toString();
     resetPasswordEmailTitle = _resetPasswordEmailTitle?[_language].toString();
     addContractEmailTitle = _addContractEmailTitle?[_language].toString();
+    editProfileViewEmailTitle =
+        _editProfileViewEmailTitle?[_language].toString();
+    editEmailViewEmailTitle = _editEmailViewEmailTitle?[_language].toString();
+    editPasswordViewEmailTitle =
+        _editPasswordViewEmailTitle?[_language].toString();
+
     // Email bodies
     welcomeEmailBody = _welcomeEmailBody?[_language].toString();
     verifyEmailEmailBody = _verifyEmailEmailBody?[_language].toString();
     resetPasswordEmailBody = _resetPasswordEmailBody?[_language].toString();
     addContractEmailBody = _addContractEmailBody?[_language].toString();
+    editProfileViewEmailBody = _editProfileViewEmailBody?[_language].toString();
+    editEmailViewEmailBody = _editEmailViewEmailBody?[_language].toString();
+    editPasswordViewEmailBody =
+        _editPasswordViewEmailBody?[_language].toString();
   }
 }

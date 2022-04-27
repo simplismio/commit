@@ -171,7 +171,8 @@ class _SignInUpViewState extends State<SignInUpView> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => const SignInUpView(),
+                        builder: (BuildContext context) =>
+                            const AuthorizationHelper(),
                       ));
                 }
               } else {
