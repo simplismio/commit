@@ -1,3 +1,4 @@
+import 'package:commit/views/main_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -165,15 +166,10 @@ class _SignInUpViewState extends State<SignInUpView> {
                     language.verifyEmailEmailBody)
                 .then((result) {
               if (result == null) {
-                UserModel().signOut();
                 if (mounted) {
-                  UserModel().signOut();
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const AuthorizationHelper(),
-                      ));
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const MainView()),
+                      (Route<dynamic> route) => false);
                 }
               } else {
                 setState(() => loading = false);

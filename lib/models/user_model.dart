@@ -15,6 +15,7 @@ import 'package:random_string/random_string.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'analytics_model.dart';
 import '../helpers/email_helper.dart';
+import 'language_model.dart';
 
 /// User model class
 /// Uses ChangeNotifier to update changes to Main
@@ -163,36 +164,21 @@ class UserModel extends ChangeNotifier {
     }
   }
 
-  Future resetPasswordWhileNotSignedIn(String? email) async {
+  Future resetPassword(String? email) async {
     try {
       if (kDebugMode) {
         print('Sending password reset email');
       }
-      // await FirebaseAuth.instance
-      //     .setLanguageCode(LanguageModel.defaultLanguage);
+      await FirebaseAuth.instance.setLanguageCode('nl');
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email!);
-      return null;
     } on FirebaseAuthException catch (error) {
-      return error.message;
-    }
-  }
-
-  /// Function to reset password
-  /// Returns null or error
-  Future resetPasswordWhileSignedIn(
-      email, resetPasswordEmailTitle, resetPasswordEmailBody) async {
-    try {
       if (kDebugMode) {
-        print('Sending password reset email');
+        print(error.code);
+        print(error.message);
       }
-      final user = FirebaseAuth.instance.currentUser;
-
-      await EmailHelper().sendEmail('resetPasswordEmail', email, '',
-          resetPasswordEmailTitle, resetPasswordEmailBody);
-      return null;
-    } on FirebaseAuthException catch (error) {
       return error.message;
     }
+    return null;
   }
 
   /// Function to sign user out of Firebase session
@@ -294,33 +280,37 @@ class UserModel extends ChangeNotifier {
 
     if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.android) {
-      try {
-        await firebase_storage.FirebaseStorage.instance
-            .ref(path)
-            .putFile(newAvatarUrlMobile!);
-        avatarUrl = await firebase_storage.FirebaseStorage.instance
-            .ref(path)
-            .getDownloadURL();
-      } on firebase_core.FirebaseException catch (error) {
-        if (kDebugMode) {
-          print(error.message);
+      if (newAvatarUrlMobile != null) {
+        try {
+          await firebase_storage.FirebaseStorage.instance
+              .ref(path)
+              .putFile(newAvatarUrlMobile);
+          avatarUrl = await firebase_storage.FirebaseStorage.instance
+              .ref(path)
+              .getDownloadURL();
+        } on firebase_core.FirebaseException catch (error) {
+          if (kDebugMode) {
+            print(error.message);
+          }
+          return error.message;
         }
-        return error.message;
       }
     } else {
-      Uint8List? newAvatarUrlWebList = await newAvatarUrlWebData;
-      try {
-        await firebase_storage.FirebaseStorage.instance.ref(path).putData(
-            newAvatarUrlWebList!,
-            firebase_storage.SettableMetadata(contentType: 'image/jpeg'));
-        avatarUrl = await firebase_storage.FirebaseStorage.instance
-            .ref(path)
-            .getDownloadURL();
-      } on firebase_core.FirebaseException catch (error) {
-        if (kDebugMode) {
-          print(error.message);
+      if (newAvatarUrlWebData != null) {
+        Uint8List? newAvatarUrlWebList = await newAvatarUrlWebData;
+        try {
+          await firebase_storage.FirebaseStorage.instance.ref(path).putData(
+              newAvatarUrlWebList,
+              firebase_storage.SettableMetadata(contentType: 'image/jpeg'));
+          avatarUrl = await firebase_storage.FirebaseStorage.instance
+              .ref(path)
+              .getDownloadURL();
+        } on firebase_core.FirebaseException catch (error) {
+          if (kDebugMode) {
+            print(error.message);
+          }
+          return error.message;
         }
-        return error.message;
       }
     }
 
@@ -339,7 +329,8 @@ class UserModel extends ChangeNotifier {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
-          .update({'avatar': avatarUrl}).then((value) async {
+          .update({'avatar': avatarUrl, 'username': username}).then(
+              (value) async {
         if (kDebugMode) {
           print("User updated in the users table");
         }

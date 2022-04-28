@@ -88,10 +88,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
         onPressed: () async {
           if (formKeyForm.currentState!.validate()) {
             setState(() => loading = true);
-            // UserModel()
-            //     .resetPasswordWhileSignedIn(email, language.resetPasswordEmailTitle,
-            //         language.resetPasswordEmailBody)
-            UserModel().resetPasswordWhileNotSignedIn(email).then((result) {
+            UserModel().resetPassword(email).then((result) {
               if (result == null) {
                 Navigator.of(context).maybePop();
               } else {
@@ -128,7 +125,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
             key: formKeyForm,
             child: Column(
               children: <Widget>[
-                SizedBox(height: 30.0),
+                const SizedBox(height: 30.0),
                 Consumer<LanguageModel>(
                     builder: (context, language, _) =>
                         loadEmailTextField(language)),

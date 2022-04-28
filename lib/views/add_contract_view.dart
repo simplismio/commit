@@ -97,39 +97,47 @@ class _AddContractViewState extends State<AddContractView> {
 
   /// Function to load title text field
   loadTitleTextField(language) {
-    return TextFormField(
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(20),
-        ],
-        decoration: InputDecoration(
-            hintText: language.newContractViewContractTitlePlaceholder),
-        textAlign: TextAlign.left,
-        autofocus: true,
-        validator: (String? value) {
-          //print(value.length);
-          return (value != null && value.length < 2)
-              ? language.newContractViewContractTitleErrorMessage
-              : null;
-        },
-        onChanged: (val) {
-          setState(() => title = val);
-        });
+    return SizedBox(
+      width: double.infinity,
+      child: TextFormField(
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(20),
+          ],
+          decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: language.newContractViewContractTitlePlaceholder),
+          textAlign: TextAlign.left,
+          autofocus: true,
+          validator: (String? value) {
+            //print(value.length);
+            return (value != null && value.length < 2)
+                ? language.newContractViewContractTitleErrorMessage
+                : null;
+          },
+          onChanged: (val) {
+            setState(() => title = val);
+          }),
+    );
   }
 
   /// Function to load participant text field
   loadParticipantTextField(users) {
-    return TextFormField(
-        controller: participantController,
-        decoration:
-            const InputDecoration(hintText: "Participants' username or email"),
-        textAlign: TextAlign.left,
-        autofocus: true,
-        onChanged: (val) {
-          setState(() {
-            participant = val;
-            getSuggestions(val.toLowerCase(), users);
-          });
-        });
+    return SizedBox(
+      width: double.infinity,
+      child: TextFormField(
+          controller: participantController,
+          decoration: const InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: "Participants' username or email"),
+          textAlign: TextAlign.left,
+          autofocus: true,
+          onChanged: (val) {
+            setState(() {
+              participant = val;
+              getSuggestions(val.toLowerCase(), users);
+            });
+          }),
+    );
   }
 
   /// Function to load autocomplete username matches
@@ -200,9 +208,12 @@ class _AddContractViewState extends State<AddContractView> {
                       }),
                       child: Padding(
                         padding: const EdgeInsets.all(0.0),
-                        child: Card(
-                          child: ListTile(
-                              title: Text(matches[index]?.username ?? '')),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            child: ListTile(
+                                title: Text(matches[index]?.username ?? '')),
+                          ),
                         ),
                       ),
                     );
@@ -214,12 +225,14 @@ class _AddContractViewState extends State<AddContractView> {
   /// Function to load autocomplete email matches
   loadAutoCompleteEmailMatches() {
     return SizedBox(
-      width: 300,
+      width: double.infinity,
       child: GestureDetector(
         onTap: () {
           setState(() {
             participantUsernames.add(emailParticipant);
             participantUids.add(emailParticipant);
+            participantEmails.add(emailParticipant);
+
             participant = '';
             emailParticipant = '';
           });
@@ -241,52 +254,60 @@ class _AddContractViewState extends State<AddContractView> {
   }
 
   // Function to load form submit button
-  loadFormSubmitButton(language) {
-    return ElevatedButton(
-      child: loading
-          ? const LinearProgressIndicator()
-          : Text(language.newContractViewButtonText ?? '',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              )),
-      onPressed: () async {
-        if (formKeyForm.currentState!.validate()) {
-          setState(() => loading = true);
-          ContractModel()
-              .addContract(
-                  title,
-                  participantUids,
-                  participantEmails,
-                  participantUsernames,
-                  language.addContractEmailTitle,
-                  language.addContractEmailBody)
-              .then((result) {
-            if (result == null) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const MainView(),
-                  ));
-            } else {
-              setState(() => loading = false);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  language.genericFirebaseErrorMessage ?? '',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                backgroundColor: Colors.grey[800],
-              ));
-            }
-          });
-        } else {
-          setState(() => loading = false);
-        }
-      },
-    );
+  loadFormSubmitButton() {
+    return Consumer<LanguageModel>(
+        builder: (context, language, _) => SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                child: loading
+                    ? const LinearProgressIndicator()
+                    : Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(language.newContractViewButtonText ?? '',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                onPressed: () async {
+                  if (formKeyForm.currentState!.validate()) {
+                    setState(() => loading = true);
+                    ContractModel()
+                        .addContract(
+                            title,
+                            participantUids,
+                            participantEmails,
+                            participantUsernames,
+                            language.addContractEmailTitle,
+                            language.addContractEmailBody)
+                        .then((result) {
+                      if (result == null) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const MainView(),
+                            ));
+                      } else {
+                        setState(() => loading = false);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            language.genericFirebaseErrorMessage ?? '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          backgroundColor: Colors.grey[800],
+                        ));
+                      }
+                    });
+                  } else {
+                    setState(() => loading = false);
+                  }
+                },
+              ),
+            ));
   }
 
   /// AddContractView view state class
@@ -298,7 +319,7 @@ class _AddContractViewState extends State<AddContractView> {
     return Scaffold(
       appBar: loadAppBar(),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Form(
             key: formKeyForm,
             child: Column(
@@ -318,13 +339,8 @@ class _AddContractViewState extends State<AddContractView> {
                 emailParticipant == ''
                     ? Container()
                     : loadAutoCompleteEmailMatches(),
-                const SizedBox(height: 5),
-                SizedBox(
-                  width: 300,
-                  child: Consumer<LanguageModel>(
-                      builder: (context, language, _) =>
-                          loadFormSubmitButton(language)),
-                ),
+                const SizedBox(height: 20),
+                loadFormSubmitButton(),
               ],
             )),
       ),

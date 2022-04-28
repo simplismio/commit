@@ -128,11 +128,12 @@ class LanguageModel with ChangeNotifier {
 
   // Dropdown Lists
   final List<String> _mainViewLanguageDropdownList = ['English', 'Nederlands'];
-  final Map<String, List<String>> _addEditCommitmentProofDropdownList = {
+  final Map<String, List<String>> _addEditCommitmentViewProofDropdownList = {
     'English': ['Bank statement', 'Transaction'],
     'Nederlands': ['Bankafschrift', 'Transactie'],
   };
-  final Map<String, List<String>> _addEditCommitmentResolutionDropdownList = {
+  final Map<String, List<String>> _addEditCommitmentViewResolutionDropdownList =
+      {
     'English': ['Payment', 'Blacklist'],
     'Nederlands': ['Betaling', 'Zwarte lijst'],
   };
@@ -245,8 +246,8 @@ class LanguageModel with ChangeNotifier {
     'Nederlands': 'Kies de bewijsvorm voor nakoming'
   };
   final Map<String, String>? _addCommitmentViewResolutionPlaceholder = {
-    'English': 'Choose resolution mechanism if non-compliant',
-    'Nederlands': 'Kies de resolutievorm bij niet na-koming'
+    'English': 'Choose resolution mechanism',
+    'Nederlands': 'Kies de resolutievorm'
   };
   final Map<String, String>? _editProfileViewNewPasswordPlaceholder = {
     'English': 'New password',
@@ -407,6 +408,12 @@ class LanguageModel with ChangeNotifier {
         'Je zult opnieuw moeten inloggen na het maken van deze wijziging'
   };
 
+  // Words
+  final Map<String, String>? _addCommitmentViewPromiseWord = {
+    'English': 'promises',
+    'Nederlands': 'belooft'
+  };
+
   // Headers
   final Map<String, String>? _mainViewNotificationHeader = {
     'English': 'Notifications',
@@ -508,8 +515,8 @@ class LanguageModel with ChangeNotifier {
 
   // Dropdown lists
   List<String>? mainViewLanguageDropdownList;
-  List<String>? addEditCommitmentProofDropdownList;
-  List<String>? addEditCommitmentResolutionDropdownList;
+  List<String>? addEditCommitmentViewProofDropdownList;
+  List<String>? addEditCommitmentViewResolutionDropdownList;
 
   // Buttons
   String? newContractViewButtonText;
@@ -587,6 +594,9 @@ class LanguageModel with ChangeNotifier {
   String? editEmailViewSignOutMessage;
   String? editPasswordViewSignOutMessage;
 
+  // Words
+  String? addCommitmentViewPromiseWord;
+
   // Headers
   String? mainViewNotificationHeader;
 
@@ -637,10 +647,10 @@ class LanguageModel with ChangeNotifier {
     signUpViewAppBarTitle = _signUpViewAppBarTitle?[_language].toString();
     // DropdownLists
     mainViewLanguageDropdownList = _mainViewLanguageDropdownList;
-    addEditCommitmentProofDropdownList =
-        _addEditCommitmentProofDropdownList[_language];
-    addEditCommitmentResolutionDropdownList =
-        _addEditCommitmentResolutionDropdownList[_language];
+    addEditCommitmentViewProofDropdownList =
+        _addEditCommitmentViewProofDropdownList[_language];
+    addEditCommitmentViewResolutionDropdownList =
+        _addEditCommitmentViewResolutionDropdownList[_language];
     // Buttons
     newContractViewButtonText =
         _newContractViewButtonText?[_language].toString();
@@ -770,6 +780,9 @@ class LanguageModel with ChangeNotifier {
         _editEmailViewSignOutMessage?[_language].toString();
     editPasswordViewSignOutMessage =
         _editPasswordViewSignOutMessage?[_language].toString();
+    // Words
+    addCommitmentViewPromiseWord =
+        _addCommitmentViewPromiseWord?[_language].toString();
     // Header
     mainViewNotificationHeader =
         _mainViewNotificationHeader?[_language].toString();

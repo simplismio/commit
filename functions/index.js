@@ -11,7 +11,7 @@ admin.initializeApp({
 });
 
 const gmailEmail = "forgetaboutprivacy@gmail.com";
-const gmailPassword = "LvB$$95dJ@@!$6||";
+const gmailPassword = "vyqbuvvmyiqlxphj";
 const mailTransport = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -164,76 +164,6 @@ exports.verifyEmailEmail = functions.https.onCall((data) => {
                 var template = handlebars.compile(html);
                 var replacements = {
                     username: data["username"],
-                    body: data["body"],
-                    link: link
-                };
-
-
-                var htmlToSend = template(replacements);
-                var mailOptions = {
-                    from: "Commit <forgetaboutprivacy@gmail.com>",
-                    to: data["email"],
-                    subject: data["title"],
-                    html: htmlToSend,
-                };
-
-                mailTransport.sendMail(mailOptions, function (error) {
-                    if (error) {
-                        console.log(error);
-                    }
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-
-    });
-
-    return null;
-});
-
-exports.resetPasswordEmail = functions.https.onCall((data) => {
-
-    var readHTMLFile = function (path, callback) {
-        fs.readFile(path, { encoding: "utf-8" }, function (error, html) {
-            if (error) {
-                callback(error);
-                throw error;
-            } else {
-                callback(null, html);
-            }
-        });
-    };
-
-    readHTMLFile(path.resolve(__dirname, "./templates/reset_password_template.html"), function (error, html) {
-
-        // const actionCodeSettings = {
-        //     url: 'http://localhost:3000',
-        //     handleCodeInApp: false
-        // };
-
-        const actionCodeSettings = {
-            url: 'https://commit-b9e29.web.app',
-            handleCodeInApp: true,
-            iOS: {
-                bundleId: 'com.j0ost.commit',
-            },
-            android: {
-                packageName: 'com.j0ost.commit',
-                installApp: true,
-                minimumVersion: '23',
-            },
-            // FDL custom domain.
-            dynamicLinkDomain: 'https://commit-b9e29.web.app',
-        };
-
-        admin.auth().generatePasswordResetLink(data["email"], actionCodeSettings)
-            .then((link) => {
-
-                var template = handlebars.compile(html);
-                var replacements = {
-                    username: data["username"] ?? '',
                     body: data["body"],
                     link: link
                 };
